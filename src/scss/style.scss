@@ -1,0 +1,386 @@
+@import "./base/vars";
+@import "./base/reset";
+@import "./base/base";
+@import "./base/mixin";
+
+.registration-panel{
+    height: 100vh;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    &__content{
+        position: relative;
+        display: flex;
+        height: 100vh;
+        padding: 15px 0;
+    }
+    &__design-block{
+        flex: 1 1 auto;
+    }
+    &__form-wrapper{
+        flex: 0 0 490px;
+    }
+    &__form-content{
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.double-form{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgb(203, 203, 214);
+    transition: all .5s ease;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    &__title{
+        font-size:30px;
+        margin-bottom: 10px;
+    }
+    &__head{
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    &__marquee{
+        margin-top: auto;
+    }
+    &__list{
+        height: 500px;
+        overflow: hidden;
+    }
+}
+
+.form{
+    height: 0px;
+    overflow: hidden;
+    transform: translateX(-100%);
+    transition: transform .5s ease;
+    &_act{
+        transform: translateX(0);
+        height: 100%;
+    }
+    &__body{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    &__send{
+        background-color: rgb(219, 92, 2);
+        color: white;
+        padding: 12px 25px;
+        margin-right: auto;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+}
+.switch{
+    flex: 0 0 70px;
+    height: 30px;
+    border-radius: 8px;
+    background-color: rgb(236, 236, 244);
+    position: relative;
+    display: block;
+    cursor: pointer;
+    &__input{
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        &:checked + .switch__element{
+            left: calc(100% - 3px - 24px);
+            &::before{
+                content: "\f2f6";
+            }
+        }
+    }
+    &__element{
+        width: 24px;
+        height: 24px;
+        background-color: rgb(219, 92, 2);
+        border-radius: 7px;
+        position: absolute;
+        left: 3px;
+        top:50%;
+        transform: translate(0, -50%);
+        transition: all .3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            content: "\f234";
+            @include font-awesome;
+            color: white;
+            font-size: 12px;
+        }
+    }
+}
+.marquee{
+    width: 100%;
+    overflow: hidden;
+    &__wrapper{
+        display: flex;
+        width: 200%;
+    }
+    &__block-list{
+       width: 100%;
+       display: flex;
+       justify-content: space-around;
+       &1{
+            animation: marquee-infinite1 10s linear infinite;
+            animation-delay: -10s;
+       }
+       &2{
+            animation: marquee-infinite2 10s linear infinite;
+            animation-delay: -5s;
+       }
+    }
+    &__block{
+        flex:0 0 60px;
+        height: 60px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            @include font-awesome;
+            color: white;
+            font-size: 30px;
+        }
+        &_icon1{
+            background-color: rgb(2, 255, 183);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon2{
+            background-color: rgb(219, 92, 2);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon3{
+            background-color: rgb(225, 54, 105);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon4{
+            background-color: rgb(168, 225, 54);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon5{
+            background-color: red;
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon6{
+            background-color: rgb(255, 217, 0);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon7{
+            background-color: rgb(0, 255, 255);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon8{
+            background-color: rgb(255, 0, 166);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon9{
+            background-color: rgb(79, 79, 180);
+            &::before{
+                content: "\f234";
+            }
+        }
+        &_icon10{
+            background-color: rgb(149, 53, 18);
+            &::before{
+                content: "\f234";
+            }
+        }
+    }
+
+    @keyframes marquee-infinite1 {
+        0%{
+            transform: translateX(100%);
+        }
+        100%{
+            transform: translateX(-100%);
+        }
+    }
+    @keyframes marquee-infinite2 {
+        0%{
+            transform: translateX(0%);
+        }
+        100%{
+            transform: translateX(-200%);
+        }
+    }
+}
+
+
+.form-input-container{
+    width: 100%;
+    &__name{
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+    &__wrapper-input{
+        width: 100%;
+        height: 45px;
+        background-color: rgb(236, 236, 244);
+        border-radius: 8px;
+        position: relative;
+        padding: 0 3px;
+        overflow: hidden;
+    }
+    &__input{
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        &:focus + .form-input-container__label, &:valid + .form-input-container__label{
+            opacity: 0;
+            left: -10px;
+        }
+    }
+    &__label{
+        position: absolute;
+        top:50%;
+        left: 3px;
+        transform: translate(0, -50%);
+        font-size: 14px;
+        opacity: 1;
+        transition: all .3s ease;
+        pointer-events: none;
+    }
+}
+.form-input-container-double{
+    width: 100%;
+    &__name{
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+    &__wrapper-inputs{
+        display: flex;
+        gap: 10px;
+    }
+    &__wrapper-input{
+        width: 100%;
+        height: 45px;
+        background-color: rgb(236, 236, 244);
+        border-radius: 8px;
+        position: relative;
+        padding: 0 3px;
+        overflow: hidden;
+    }
+    &__input{
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        &:focus + .form-input-container-double__label, &:valid + .form-input-container-double__label{
+            opacity: 0;
+            left: -10px;
+        }
+    }
+    &__label{
+        position: absolute;
+        top:50%;
+        left: 3px;
+        transform: translate(0, -50%);
+        font-size: 14px;
+        opacity: 1;
+        transition: all .3s ease;
+        pointer-events: none;
+    }
+}
+.form-input-container-checkbox{
+    display: flex;
+    gap: 5px;
+    &__input-wrapper{
+        flex: 0 0 20px;
+        height: 20px;
+        background-color: rgb(236, 236, 244);
+        border-radius: 3px;
+        margin-top: 2px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    &__input{
+        opacity: 0;
+        position: absolute;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+    &__icon::before{
+        content: "\f00c";
+        @include font-awesome;
+        color: rgb(219, 92, 2);
+        font-size: 14px;
+        opacity: 0;
+        z-index: 3;
+        transition: all .3s ease;
+    }
+    &__input:checked + .form-input-container-checkbox__icon::before{
+        opacity: 1;  
+    }
+    &__paragraph{
+        cursor: pointer;
+        font-size: 15px;
+        color: black;
+        font-weight: 500;
+    }
+    &__span{
+        color: rgb(219, 92, 2);
+    }
+}
+
+.design-block{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    &__header{
+
+    }
+    &__body{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        margin-top: auto;
+    }
+    &__chart{
+        width: 100%;
+        max-width: 90%;
+        z-index: 100;
+        background-color: transparent;
+    }
+    &__footer{
+        margin-top: auto;
+    }
+    &__title{
+        font-size: 50px;
+        color: rgb(219, 92, 2);
+    }
+    &__description{
+        max-width: 650px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+}
