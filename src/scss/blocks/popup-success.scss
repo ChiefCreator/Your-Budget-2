@@ -1,0 +1,40 @@
+.popup-success{
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 3;
+    background-color: rgb(85, 216, 70);
+    border: 2px solid green;
+    border-radius: 9px;
+    padding: 4px 10px 4px 4px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 300px;
+    transform: translateX(calc(100% + 20px));
+    transition: transform .3s ease;
+    &_act{
+        transform: translateX(0);
+    }
+    &__icon{
+        flex: 0 0 30px;
+        min-height: 30px;
+        max-height: 100%;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            content: "\f058";
+            @include font-awesome;
+            font-size: 20px;
+            color: green;
+        }
+    }
+    &__text{
+        color: white;
+        font-weight: 500;
+        text-wrap: wrap;
+        word-wrap: break-word;
+    }
+}

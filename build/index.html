@@ -8,22 +8,27 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="popup-error">
+    <div class="popup-error__icon"></div>
+    <p class="popup-error__text">Аккаунт уже существует</p>
+</div>
+    <div class="popup-success">
+    <div class="popup-success__icon"></div>
+    <p class="popup-success__text">Аккаунт уже существует</p>
+</div>
     <div class="registration-panel">
         <div class="container">
             <div class="registration-panel__content">
                 <div class="registration-panel__design-block design-block">
                     <header class="design-block__head">
                         <h1 class="design-block__title">Your Budget</h1>
-                        <p class="design-block__description">- это удобное и легкое в использовании приложение, которое помогает пользователям эффективно управлять своими финансами, планировать бюджет и добиваться финансовой стабильности.</p>
+                        <!-- <p class="design-block__description">- это удобное и легкое в использовании приложение, которое помогает пользователям эффективно управлять своими финансами, планировать бюджет и добиваться финансовой стабильности.</p> -->
                     </header>
                     <div class="design-block__body">
                         <div class="design-block__chart">
                             <canvas id="myChart"></canvas>
                         </div>
                     </div>
-                    <!-- <footer class="design-block__footer">
-                        <p class="design-block__description">Your Budget - это удобное и легкое в использовании приложение, которое помогает пользователям эффективно управлять своими финансами, планировать бюджет и добиваться финансовой стабильности.</p>
-                    </footer> -->
                 </div>
                 <div class="registration-panel__form-wrapper">
                     <div class="registration-panel__form-content">
@@ -37,33 +42,37 @@
                                 </label>
                             </header>
                             <div class="double-form__list">
-                                <form class="form form_singUp form_act">
+                                <form class="form form_singUp form_act" novalidate>
                                     <div class="form__body">
                                         <div class="form-input-container">
                                             <p class="form-input-container__name">Электронный адрес:</p>
                                             <div class="form-input-container__wrapper-input">
-                                                <input class="form-input-container__input" required>
+                                                <input class="form-input-container__input form-input-container__input_email" required>
                                                 <label class="form-input-container__label">Введите e-mail</label>
+                                                <span class="form-error"></span>
                                             </div>
                                         </div>
                                         <div class="form-input-container-double">
                                             <p class="form-input-container-double__name">Имя и фамилия:</p>
                                             <div class="form-input-container-double__wrapper-inputs">
                                                 <div class="form-input-container-double__wrapper-input">
-                                                    <input class="form-input-container-double__input" required>
+                                                    <input class="form-input-container-double__input form-input-container-double__input_name" required>
                                                     <label class="form-input-container-double__label">Введите имя</label>
+                                                    <span class="form-error"></span>
                                                 </div>
                                                 <div class="form-input-container-double__wrapper-input">
-                                                    <input class="form-input-container-double__input" required>
+                                                    <input class="form-input-container-double__input form-input-container-double__input_surname" required>
                                                     <label class="form-input-container-double__label">Введите фамилию</label>
+                                                    <span class="form-error"></span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-input-container">
                                             <p class="form-input-container__name">Пароль:</p>
                                             <div class="form-input-container__wrapper-input">
-                                                <input class="form-input-container__input" required>
+                                                <input class="form-input-container__input form-input-container__input_password" required>
                                                 <label class="form-input-container__label">Создайте пароль</label>
+                                                <span class="form-error"></span>
                                             </div>
                                         </div>
                                         <div class="form-input-container-checkbox">
@@ -73,26 +82,28 @@
                                             </span>
                                             <label class="form-input-container-checkbox__paragraph" for="check">Регистрируясь, вы принимаете наши <span class="form-input-container-checkbox__span">Условия пользования</span></label>
                                         </div>
-                                        <button class="form__send">Создать аккаунт</button>
+                                        <button class="form__send button-submit button-submit_signUp" type="submit"></button>
                                     </div>
                                 </form>
-                                <form class="form form_singIn">
+                                <form class="form form_singIn" novalidate>
                                     <div class="form__body">
                                         <div class="form-input-container">
                                             <p class="form-input-container__name">Электронный адрес:</p>
                                             <div class="form-input-container__wrapper-input">
-                                                <input class="form-input-container__input" required>
+                                                <input class="form-input-container__input form-input-container__input_email" required>
                                                 <label class="form-input-container__label">Введите e-mail</label>
+                                                <span class="form-error"></span>
                                             </div>
                                         </div>
                                         <div class="form-input-container">
                                             <p class="form-input-container__name">Пароль:</p>
                                             <div class="form-input-container__wrapper-input">
-                                                <input class="form-input-container__input" required>
+                                                <input class="form-input-container__input form-input-container__input_password" required>
                                                 <label class="form-input-container__label">Введите пароль</label>
+                                                <span class="form-error"></span>
                                             </div>
                                         </div>
-                                        <button class="form__send">Войти в аккаунт</button>
+                                        <button class="form__send button-submit button-submit_signIn" type="submit"></button>
                                     </div>
                                 </form>
                             </div>

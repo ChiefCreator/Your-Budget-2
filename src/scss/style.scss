@@ -3,10 +3,15 @@
 @import "./base/base";
 @import "./base/mixin";
 
+@import "./blocks/popup-error.scss";
+@import "./blocks/popup-success.scss";
+@import "./blocks/submit-button.scss";
+
 .registration-panel{
     height: 100vh;
     width: 100%;
     background-color: rgb(255, 255, 255);
+    background-color: #fcfcfc;
     &__content{
         position: relative;
         display: flex;
@@ -68,15 +73,15 @@
         flex-direction: column;
         gap: 20px;
     }
-    &__send{
-        background-color: rgb(219, 92, 2);
-        color: white;
-        padding: 12px 25px;
-        margin-right: auto;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 15px;
-    }
+    // &__send{
+    //     background-color: $main-color;
+    //     color: white;
+    //     padding: 12px 25px;
+    //     margin-right: auto;
+    //     border-radius: 8px;
+    //     cursor: pointer;
+    //     font-size: 15px;
+    // }
 }
 .switch{
     flex: 0 0 70px;
@@ -101,7 +106,7 @@
     &__element{
         width: 24px;
         height: 24px;
-        background-color: rgb(219, 92, 2);
+        background-color: $main-color;
         border-radius: 7px;
         position: absolute;
         left: 3px;
@@ -152,15 +157,15 @@
             font-size: 30px;
         }
         &_icon1{
-            background-color: rgb(2, 255, 183);
+            background-color: rgb(219, 92, 2);
             &::before{
-                content: "\f234";
+                content: "\f805";
             }
         }
         &_icon2{
-            background-color: rgb(219, 92, 2);
+            background-color: #133054;
             &::before{
-                content: "\f234";
+                content: "\f553";
             }
         }
         &_icon3{
@@ -172,43 +177,43 @@
         &_icon4{
             background-color: rgb(168, 225, 54);
             &::before{
-                content: "\f234";
+                content: "\f561";
             }
         }
         &_icon5{
             background-color: red;
             &::before{
-                content: "\f234";
+                content: "\f21e";
             }
         }
         &_icon6{
             background-color: rgb(255, 217, 0);
             &::before{
-                content: "\f234";
+                content: "\f4b8";
             }
         }
         &_icon7{
-            background-color: rgb(0, 255, 255);
+            background-color: #8dd1d5;
             &::before{
-                content: "\f234";
+                content: "\f0f4";
             }
         }
         &_icon8{
             background-color: rgb(255, 0, 166);
             &::before{
-                content: "\f234";
+                content: "\e59d";
             }
         }
         &_icon9{
             background-color: rgb(79, 79, 180);
             &::before{
-                content: "\f234";
+                content: "\f06b";
             }
         }
         &_icon10{
-            background-color: rgb(149, 53, 18);
+            background-color: rgb(42, 171, 19);
             &::before{
-                content: "\f234";
+                content: "\f53a";
             }
         }
     }
@@ -244,8 +249,10 @@
         background-color: rgb(236, 236, 244);
         border-radius: 8px;
         position: relative;
-        padding: 0 3px;
+        padding: 0 5px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
     }
     &__input{
         width: 100%;
@@ -267,6 +274,20 @@
         pointer-events: none;
     }
 }
+.form-error{
+    display: block;
+    transform: translateY(50px);
+    transition: transform .3s ease;
+    &::before{
+        content: "\f06a";
+        font-size: 18px;
+        color: red;
+        @include font-awesome;
+    }
+    &_act{
+        transform: translateY(0);
+    }
+}
 .form-input-container-double{
     width: 100%;
     &__name{
@@ -285,6 +306,8 @@
         position: relative;
         padding: 0 3px;
         overflow: hidden;
+        display: flex;
+        align-items: center;
     }
     &__input{
         width: 100%;
@@ -320,6 +343,10 @@
         align-items: center;
         justify-content: center;
         position: relative;
+        transition: background-color .3s ease;
+        &_act{
+            background-color: red;
+        }
     }
     &__input{
         opacity: 0;
@@ -332,7 +359,7 @@
     &__icon::before{
         content: "\f00c";
         @include font-awesome;
-        color: rgb(219, 92, 2);
+        color: $main-color;
         font-size: 14px;
         opacity: 0;
         z-index: 3;
@@ -348,7 +375,8 @@
         font-weight: 500;
     }
     &__span{
-        color: rgb(219, 92, 2);
+        text-decoration:underline;
+        color: $main-color;
     }
 }
 
@@ -375,8 +403,8 @@
         margin-top: auto;
     }
     &__title{
-        font-size: 50px;
-        color: rgb(219, 92, 2);
+        font-size: 80px;
+        color: $main-color;
     }
     &__description{
         max-width: 650px;
