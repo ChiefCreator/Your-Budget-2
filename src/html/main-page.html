@@ -8,9 +8,19 @@
     <title>Document</title>
 </head>
 <body>
-    @@include("./blocks/popup-error.html")
-    @@include("./blocks/popup-success.html")
-    @@include("./blocks/registration-panel.html")
-    <script src="./../js/index.bundle.js"></script>
+    <div class="overblock"></div>
+    <header class="header">
+        <div class="container">
+            @@include("./blocks/navigation.html")
+        </div>
+    </header>
+    <main class="page-index">
+        <div class="container">
+            <div class="page-index__content">
+                @@include("./blocks/categories.html")
+            </div>
+        </div>
+    </main>
+    <script src="./../js/mainPage.bundle.js"></script>
 </body>
 </html>

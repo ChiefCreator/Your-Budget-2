@@ -27,6 +27,7 @@
   "dependencies": {
     "chart.js": "^4.4.2",
     "css-loader": "^7.1.1",
-    "style-loader": "^4.0.0"
+    "style-loader": "^4.0.0",
+    "swiper": "^11.1.1"
   }
 }

@@ -16,6 +16,7 @@ function signUp() {
         if (error == 0) {
             submitButton("before");
             signUpOnSubmit(email, password)
+                .then(data => setEmailToLocalStorage(data.email))
                 .catch(() => submitButton("after", false))
         }
     })
@@ -41,9 +42,10 @@ function signUp() {
         } else {
             submitButton("after", true)
             showSuccess("Вы вошли в аккаунт")
+            redirectToPage("http://localhost:8000/main-page.html")
         }
 
-        return response;
+        return userData;
     }
     
     function submitButton(state, isSuccess) {
@@ -65,6 +67,14 @@ function signUp() {
                 }, 2000)
             }
         }
+    }
+
+    function redirectToPage(url) {
+        window.location.href = url;
+    }
+
+    function setEmailToLocalStorage(email) {
+        return localStorage.setItem("email", email);
     }
 }
 
