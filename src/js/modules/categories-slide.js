@@ -7,7 +7,7 @@ function categoriesSlide() {
     let expensesTab = document.querySelector(".categories__tab_expenses");
     let incomeTab = document.querySelector(".categories__tab_income");
 
-    const swiper = new Swiper('.swiper', {
+    const swiper = new Swiper('.slider-categories', {
         speed: 600,
         spaceBetween: 0,
         effect: 'flip',
@@ -26,6 +26,10 @@ function categoriesSlide() {
                 switchCategory()   
             },
         },
+    });
+
+    switchBtn.addEventListener('click', function() {
+        switchCategory()   
     });
 
     function switchCategory() {

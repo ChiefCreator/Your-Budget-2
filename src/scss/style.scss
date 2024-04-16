@@ -1,13 +1,20 @@
+// базовые стили
 @import "./base/vars";
 @import "./base/reset";
 @import "./base/base";
 @import "./base/mixin";
 
+// общие стили
+@import "./blocks/common.scss";
+
+// панель регистрации
 @import "./pages/registration-panel.scss";
 @import "./blocks/popup-error.scss";
 @import "./blocks/popup-success.scss";
 @import "./blocks/submit-button.scss";
 
+// главная страница
 @import "./pages/main-page.scss";
 @import "./blocks/navigation.scss";
 @import "./blocks/categories.scss";
+@import "./blocks/popup-category-done.scss";
