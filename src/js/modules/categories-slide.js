@@ -28,10 +28,6 @@ function categoriesSlide() {
         },
     });
 
-    switchBtn.addEventListener('click', function() {
-        switchCategory()   
-    });
-
     function switchCategory() {
         switchBtn.classList.toggle("slide-button_active");
         sliderCategory.classList.toggle("slider-categories_active");
