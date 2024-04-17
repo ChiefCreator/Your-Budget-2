@@ -42,7 +42,7 @@ function signUp() {
         } else {
             submitButton("after", true)
             showSuccess("Вы вошли в аккаунт")
-            redirectToPage("http://localhost:8000/main-page.html")
+            setTimeout(() => redirectToPage("http://localhost:8000/main-page.html"), 500);
         }
 
         return userData;
