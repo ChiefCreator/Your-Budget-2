@@ -2,13 +2,24 @@
     margin-top: 15px;
     flex: 1 1 auto;
     &__chart{
-        flex: 1 1 auto;
+        width: 99.99% !important;
+        margin-bottom: 15px;
     }   
-    #chartBar{
-        // width: 100% !important;
-        // height: 400px !important;
-    }
 }
+.switch-operations{
+    &__input{
+        &:checked + .switch-operations__element{
+            &::before{
+                content: "\f53a";
+            }
+        }
+    }
+    &__element{
+        &::before{
+            content: "\f291";
+        }
+    }
+} 
 .dashboard-statistics{
     padding: 10px 0;
     display: flex;
@@ -90,6 +101,7 @@
     cursor: pointer;
     &_mt{
         margin-top: 15px;
+        margin-bottom: 10px;
     }
     &:hover .tool-operation__item-arrow{
         animation: anim-arrow .5s ease 2;

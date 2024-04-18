@@ -948,17 +948,3 @@
         }
     }
 }  
-.switch-operations{
-    &__input{
-        &:checked + .switch-operations__element{
-            &::before{
-                content: "\e097";
-            }
-        }
-    }
-    &__element{
-        &::before{
-            content: "\e098";
-        }
-    }
-} 

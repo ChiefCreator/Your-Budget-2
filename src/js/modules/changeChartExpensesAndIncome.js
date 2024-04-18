@@ -79,6 +79,9 @@ function changeChart(arr) {
             arrDate.push(key);
         }
 
+        chartExpensesAndIncome.data.datasets= []
+        chartExpensesAndIncome.update();
+
         chartExpensesAndIncome.data.labels = arrDate
         for (let i = 0;i < OperationSumCosts.length;i++) {
             if (!chartExpensesAndIncome.data.datasets[i]) {

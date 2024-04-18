@@ -10,6 +10,7 @@ function addOperationincome() {
     let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
     let closeBtn = popupOperation.querySelector(".popup-operation__close");
     let more = document.querySelector(".operation-list__more_income");
+    let switchButton = document.querySelector(".switch-operations");
 
     let arr = [];
 
@@ -44,8 +45,10 @@ function addOperationincome() {
 
         arr.push(obj);
         setOperationToList(sortByDate(arr));
-        changeChart(arr);
+        changeChart(sortByDate(arr));
         addToFirestore(obj);
+
+        switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
     })
 
     overblock.addEventListener("click", function() {
@@ -313,7 +316,6 @@ function addOperationincome() {
         })).sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
-    let switchButton = document.querySelector(".switch-operations");
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == true) {
             changeChart(sortByDate(arr))

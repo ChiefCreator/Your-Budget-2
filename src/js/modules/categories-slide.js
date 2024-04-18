@@ -2,7 +2,7 @@ import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 
 function categoriesSlide() {
-    let switchBtn = document.querySelector(".slide-button");
+    let switchBtns = document.querySelectorAll(".switch-categories");
     let sliderCategory = document.querySelector(".slider-categories");
     let expensesTab = document.querySelector(".categories__tab_expenses");
     let incomeTab = document.querySelector(".categories__tab_income");
@@ -12,8 +12,9 @@ function categoriesSlide() {
         spaceBetween: 0,
         effect: 'flip',
         loop:true,
+        delay: 5000,
         navigation: {
-            nextEl: '.slide-button',
+            nextEl: '.switch-categories',
           },
 
         on: {
@@ -29,9 +30,10 @@ function categoriesSlide() {
     });
 
     function switchCategory() {
-        switchBtn.classList.toggle("slide-button_active");
+        switchBtns.forEach(btn => {
+            btn.classList.toggle("switch-categories_active");
+        })
         sliderCategory.classList.toggle("slider-categories_active");
-
         expensesTab.classList.toggle("categories__tab_active");
         incomeTab.classList.toggle("categories__tab_active");
     }

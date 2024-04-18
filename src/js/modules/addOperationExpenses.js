@@ -10,6 +10,7 @@ function addOperationExpenses() {
     let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
     let closeBtn = popupOperation.querySelector(".popup-operation__close");
     let more = document.querySelector(".operation-list__more_expenses");
+    let switchButton = document.querySelector(".switch-operations");
 
     let arr = [];
 
@@ -44,8 +45,10 @@ function addOperationExpenses() {
 
         arr.push(obj);
         setOperationToList(sortByDate(arr));
-        changeChart(arr);
+        changeChart(sortByDate(arr));
         addToFirestore(obj);
+
+        switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
     })
 
     overblock.addEventListener("click", function() {
@@ -311,7 +314,6 @@ function addOperationExpenses() {
         return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
-    let switchButton = document.querySelector(".switch-operations");
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == false) {
             changeChart(sortByDate(arr))

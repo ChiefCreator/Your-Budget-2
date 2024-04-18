@@ -7,7 +7,7 @@
     &__slider-wrapper{
         margin-top: 15px;
         max-width: 450px;
-        min-height: 180px;
+        min-height: 200px;
         position: relative;
     }
     &__body{
@@ -31,7 +31,7 @@
 }
 .slider-categories{
     width: 100%;
-    min-height: 180px;
+    min-height: 200px;
     &__item{
         border-radius: 10px;
         box-shadow: 0 0 10px rgb(203, 203, 214);
@@ -46,20 +46,13 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
+        margin-bottom: 15px;
     }
     &__title{
         text-transform: uppercase;
         font-weight: 700;
         font-size: 20px;
         letter-spacing: 3px;
-    }
-    &__icon{
-        &::before{
-            content: "\f08e";
-            @include font-awesome;
-            color: black;
-            font-size: 18px;
-        }
     }
     &__body{
         margin-top: auto;
@@ -78,48 +71,28 @@
         color: black;
     }
 }
-.slide-button{
-    width: 20px;
-    height: 40px;
-    border-radius: 10px;
-    background-color: $main-color;
-    box-shadow: 0 0 10px rgb(175, 172, 172);
-    position: absolute;
-    right: -40px;
-    top:0;
-    overflow: hidden;
-    cursor: pointer;
-    &_active{
-        .slide-button__circle{
-            top: calc(100% - 14px - 2.5px);
+.switch-categories{
+    &__input{
+        &:checked + .switch-categories__element{
+            &::before{
+                content: "\e098";
+            }
         }
     }
-    &__content{
-        width: 100%;
-        height: 100%;
-        position: relative;
+    &__element{
+        &::before{
+            content: "\e097";
+        }
     }
-    &__inp{
-        width: 100%;
-        height: 100%;
-        display: none;
+    &_active{
+        .switch-categories__element{
+            left: calc(100% - 3px - 24px);
+            &::before{
+                content: "\e098";
+            }
+        }
     }
-    &__circle{
-        position: absolute;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background-color: white;
-        top: 2.5px;
-        left: 50%;
-        transform: translate(-50%, 0);
-        transition: all .3s ease;
-        cursor: pointer;
-    }
-    &__bg{
-
-    }
-}
+} 
 .list-categories{
     display: flex;
     flex-direction: column;
