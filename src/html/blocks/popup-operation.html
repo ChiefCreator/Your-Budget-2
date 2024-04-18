@@ -1,0 +1,83 @@
+<div class="popup-operation popup-operation_expenses">
+    <header class="popup-operation__head">
+        <div class="popup-operation__head-content">
+            <h4 class="popup-operation__title">Новая операция</h4>
+            <div class="popup-operation__close"></div>
+        </div>
+    </header>
+    <div class="popup-operation__body">
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="list-categories">
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="popup-operation__input-container">
+                    <div class="popup-operation__input-icon popup-operation__input-icon_price">
+
+                    </div>
+                    <div class="popup-operation__input-content">
+                        <input class="popup-operation__input" required>
+                        <label class="popup-operation__input-label">Введите стоимость</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="popup-operation__input-container">
+                    <div class="popup-operation__input-icon popup-operation__input-icon_date">
+
+                    </div>
+                    <div class="popup-operation__input-content">
+                        <div class="popup-operation-datepicker">
+                            <input class="popup-operation__input popup-operation__input_date" id="date-operation-expenses" required>
+                            <label class="popup-operation__input-label">Введите дату</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="popup-operation__select-wrapper">
+                    <div class="popup-operation__input-icon popup-operation__input-icon_price">
+
+                    </div>
+                    <div class="popup-operation__select-content">
+                        <div class="select">
+                            <button class="select__button" data-lang="switch-lang">Выберите счет</button>
+                            <div class="select__dropdown">
+                                <ul class="select__dropdown-list">
+                                    <li class="select__dropdown-item" data-value="ru">Наличные</li>
+                                    <li class="select__dropdown-item" data-value="en">Карта</li>
+                                </ul>
+                                <input type="text" name="select-category" value="" class="select__input-hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="popup-operation__textarrea-container">
+                    <div class="popup-operation__textarrea-icon">
+
+                    </div>
+                    <div class="popup-operation__textarrea-content">
+                        <textarea class="popup-operation__textarrea" required></textarea>
+                        <label class="popup-operation__textarrea-label">Введите комментарий</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper popup-operation__block-wrapper_without-border">
+            <div class="popup-operation__block">
+                <button class="button popup-operation__button">Создать операцию</button>
+            </div>
+        </div>
+    </div>
+</div>

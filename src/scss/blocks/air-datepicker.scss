@@ -1,0 +1,29 @@
+.air-datepicker-global-container {
+    width: 200px !important;
+    .air-datepicker{
+        top: 15px !important;
+    }
+}
+.popup-operation-datepicker, .popup-change-operation-expenses-datepicker, .popup-change-operation-income-datepicker{
+    height: 100%;
+    .air-datepicker {
+        width: 250px !important;
+        top: -35px !important;
+    }
+}
+.air-datepicker {
+    border-radius: 10px !important;
+    background: white !important;
+    z-index: 100 !important;
+    position: relative !important;
+    border: none !important;
+}
+.air-datepicker-body--day-name {
+    color: #0c6cde !important;
+}
+.air-datepicker-cell.-selected- {
+    background: $main-color !important;
+}
+.air-datepicker-cell.-current- {
+    color: #0c6cde !important;
+}

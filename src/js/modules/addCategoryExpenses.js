@@ -72,7 +72,7 @@ function addCategoryExpenses() {
 
     function setItemToList(objCategory) {
         let blockToPaste = document.querySelector(".categories__list");
-        let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-index="${objCategory.index}">
+        let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-options='{"index": ${objCategory.index}, "title": "${objCategory.title}", "cost": ${objCategory.cost}, "icon": "${objCategory.icon}", "bg": "${objCategory.bg}", "color": "${objCategory.color}"}'>
         <div class="item-category__head">
             <div class="item-category__icon ${objCategory.icon}" style="background-color:${objCategory.bg}"></div>
             <div class="item-category__info">
@@ -202,7 +202,7 @@ function addCategoryExpenses() {
     function setItemToListFromDatabase(arr) {
         let blockToPaste = document.querySelector(".categories__list");
         for (let i = 0;i < arr.length;i++) {
-            let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-index="${arr[i].index}">
+            let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-options='{"index": ${arr[i].index}, "title": "${arr[i].title}", "cost": ${arr[i].cost}, "icon": "${arr[i].icon}", "bg": "${arr[i].bg}", "color": "${arr[i].color}"}'>
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
