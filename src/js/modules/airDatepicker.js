@@ -7,6 +7,12 @@ function airDatepicker() {
         position:'right top',
         container: '.popup-operation-datepicker'
     })
+
+    let dateOperationIncome = new AirDatepicker('#date-operation-income', {
+        inline: false,
+        position:'right top',
+        container: '.popup-operation-datepicker_income'
+    })
 }
 
 export default airDatepicker;

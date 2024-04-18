@@ -1,29 +1,29 @@
 import firebaseConfig from "./firebaseConfig";
 
-function addOperationExpenses() {
-    let popupOperation = document.querySelector(".popup-operation_expenses");
+function addOperationincome() {
+    let popupOperation = document.querySelector(".popup-operation_income");
     let overblock = document.querySelector(".overblock");
     let btnCreate = popupOperation.querySelector(".popup-operation__button");
     let inputCost = popupOperation.querySelector(".popup-operation__input");
-    let inputDate = popupOperation.querySelector("#date-operation-expenses");
+    let inputDate = popupOperation.querySelector("#date-operation-income");
     let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
     let closeBtn = popupOperation.querySelector(".popup-operation__close");
-    let more = document.querySelector(".operation-list__more_expenses");
+    let more = document.querySelector(".operation-list__more_income");
 
     let arr = [];
 
-    let collectionName = localStorage.getItem("email") + "OperationsExpenses";
+    let collectionName = localStorage.getItem("email") + "OperationsIncome";
 
     getDataFromFirestore();
     
 
     window.addEventListener("click", function(e) {
-        if (e.target.closest(".list-categories_expenses .list-categories__item")) {
-            document.querySelectorAll(".list-categories_expenses .list-categories__item").forEach(cat => {
+        if (e.target.closest(".list-categories_income .list-categories__item")) {
+            document.querySelectorAll(".list-categories_income .list-categories__item").forEach(cat => {
                 cat.classList.remove("act");
             })
 
-            let category = e.target.closest(".list-categories_expenses .list-categories__item");
+            let category = e.target.closest(".list-categories_income .list-categories__item");
             category.classList.add("act");
 
             addPopup();
@@ -38,7 +38,7 @@ function addOperationExpenses() {
         let cost = +inputCost.value;
         let date = inputDate.value;
         let comment = textarreaComment.value;
-        let index = setIndexToOperation("expenses");
+        let index = setIndexToOperation("income");
         let obj = objOperation(cost, date, comment, index, JSON.parse(category.dataset.options));
 
         arr.push(obj);
@@ -73,9 +73,9 @@ function addOperationExpenses() {
             category.style.display = "none";
         })
 
-        let blockToPaste = document.querySelector(".list-categories");
+        let blockToPaste = document.querySelector(".popup-operation_income .list-categories");
                       
-        let itemCategory = `<div class="item-category item-category_expenses">
+        let itemCategory = `<div class="item-category item-category_income">
         <div class="item-category__head">
             <div class="item-category__icon ${obj.icon}" style="background-color: ${obj.bg}"></div>
             <div class="item-category__info">
@@ -120,21 +120,21 @@ function addOperationExpenses() {
     }
 
     function setOperationToList(arr) {
-        let blockToPaste = document.querySelector(".operation-list__item_expenses");
+        let blockToPaste = document.querySelector(".operation-list__item_income");
 
         blockToPaste.querySelectorAll(".operation-list__wrapper").forEach(block => {
             block.remove()
         })
 
         for (let i = 0;i < arr.length;i++) {
-            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="expenses${arr[i].date}">
+            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="income${arr[i].date}">
             <p class="wrapper-operation__date">${arr[i].date}</p>
-            <div class="wrapper-operation__wrapper-content" data-dat="expenses${arr[i].date}"></div>
+            <div class="wrapper-operation__wrapper-content" data-dat="income${arr[i].date}"></div>
             </div>`;
 
             let itemCategory = "";
             if (arr[i].comment) {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_income expand-operation" data-index="${arr[i].index}">
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
@@ -156,7 +156,7 @@ function addOperationExpenses() {
             </div>
                 </div>`;
             } else {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_income expand-operation" data-index="${arr[i].index}">
                 <div class="item-category__head">
                     <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                     <div class="item-category__info">
@@ -195,10 +195,10 @@ function addOperationExpenses() {
             }
             function pasteThreeOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="income${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="income${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`).length - 1].remove()
                 }
 
                 if (arr.length < 4) {
@@ -219,10 +219,10 @@ function addOperationExpenses() {
             }
             function pasteAllOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="income${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="income${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`).length - 1].remove()
                 }
             }
         }
@@ -312,4 +312,4 @@ function addOperationExpenses() {
     }
 }
 
-export default addOperationExpenses;
+export default addOperationincome;

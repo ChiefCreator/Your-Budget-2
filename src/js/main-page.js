@@ -2,8 +2,10 @@ import categoriesSlide from "./modules/categories-slide";
 import addCategoryExpenses from "./modules/addCategoryExpenses";
 import addCategoryIncome from "./modules/addCategoryIncome";
 import addOperationExpenses from "./modules/addOperationExpenses";
+import addOperationincome from "./modules/addOperationIncome";
 import expandOperation from "./modules/expand-operation";
 import addMoreOperations from "./modules/moreOperationsExpenses";
+import addMoreOperationsIncome from "./modules/moreOperationIncome";
 import airDatepicker from "./modules/airDatepicker";
 import Chart from 'chart.js/auto';
 
@@ -11,9 +13,11 @@ categoriesSlide();
 addCategoryExpenses();
 addCategoryIncome();
 addOperationExpenses();
+addOperationincome();
 airDatepicker();
 expandOperation();
 addMoreOperations();
+addMoreOperationsIncome();
 
 
 

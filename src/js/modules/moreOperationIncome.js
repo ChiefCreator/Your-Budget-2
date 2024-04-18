@@ -1,11 +1,11 @@
 import firebaseConfig from "./firebaseConfig";
 
-function addMoreOperations() {
-    let more = document.querySelector(".operation-list__more_expenses");
+function addMoreOperationsIncome() {
+    let more = document.querySelector(".operation-list__more_income");
     let moreText = more.querySelector(".tool-operation__item-text");
 
     let arr = [];
-    let collectionName = localStorage.getItem("email") + "OperationsExpenses";
+    let collectionName = localStorage.getItem("email") + "OperationsIncome";
     getDataFromFirestore();
 
     more.addEventListener("click", addOperations);
@@ -24,21 +24,21 @@ function addMoreOperations() {
     }
 
     function setOperationToList(arr) {
-        let blockToPaste = document.querySelector(".operation-list__item_expenses");
+        let blockToPaste = document.querySelector(".operation-list__item_income");
 
         blockToPaste.querySelectorAll(".operation-list__wrapper").forEach(block => {
             block.remove()
         })
 
         for (let i = 0;i < arr.length;i++) {
-            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="expenses${arr[i].date}">
+            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="income${arr[i].date}">
             <p class="wrapper-operation__date">${arr[i].date}</p>
-            <div class="wrapper-operation__wrapper-content" data-dat="expenses${arr[i].date}"></div>
+            <div class="wrapper-operation__wrapper-content" data-dat="income${arr[i].date}"></div>
             </div>`;
 
             let itemCategory = "";
             if (arr[i].comment) {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_income expand-operation" data-index="${arr[i].index}">
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
@@ -60,7 +60,7 @@ function addMoreOperations() {
             </div>
                 </div>`;
             } else {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_income expand-operation" data-index="${arr[i].index}">
                 <div class="item-category__head">
                     <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                     <div class="item-category__info">
@@ -99,10 +99,10 @@ function addMoreOperations() {
             }
             function pasteThreeOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="income${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="income${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`).length - 1].remove()
                 }
 
                 if (arr.length < 4) {
@@ -123,10 +123,10 @@ function addMoreOperations() {
             }
             function pasteAllOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="income${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="income${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="income${arr[i].date}"]`).length - 1].remove()
                 }
             }
         }
@@ -179,4 +179,4 @@ function addMoreOperations() {
     }
 }
 
-export default addMoreOperations;
+export default addMoreOperationsIncome;
