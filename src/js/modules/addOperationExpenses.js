@@ -1,4 +1,5 @@
 import firebaseConfig from "./firebaseConfig";
+import changeChart from "./changeChartExpensesAndIncome";
 
 function addOperationExpenses() {
     let popupOperation = document.querySelector(".popup-operation_expenses");
@@ -43,6 +44,7 @@ function addOperationExpenses() {
 
         arr.push(obj);
         setOperationToList(sortByDate(arr));
+        changeChart(arr);
         addToFirestore(obj);
     })
 
@@ -278,7 +280,8 @@ function addOperationExpenses() {
             .then(data => {
                 if (Object.keys(data).length != 0) {
                     arr = transformToArrayFromDatabase(data);
-                    setOperationToList(sortByDate(arr))
+                    setOperationToList(sortByDate(arr));
+                    changeChart(arr);
                 }
             })
             .catch(error => {
@@ -305,11 +308,15 @@ function addOperationExpenses() {
     }
 
     function sortByDate(arr) {
-        return arr.map(obj => ({
-            ...obj,
-            date: obj.date.split('.').reverse().join('-')
-        })).sort((a, b) => new Date(b.date) - new Date(a.date));
+        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
+
+    let switchButton = document.querySelector(".switch-operations");
+    switchButton.addEventListener("click", function() {
+        if (switchButton.querySelector(".switch-operations__input").checked == false) {
+            changeChart(sortByDate(arr))
+        }
+    })
 }
 
 export default addOperationExpenses;

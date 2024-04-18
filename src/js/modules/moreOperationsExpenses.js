@@ -172,10 +172,7 @@ function addMoreOperations() {
     }
 
     function sortByDate(arr) {
-        return arr.map(obj => ({
-            ...obj,
-            date: obj.date.split('.').reverse().join('-')
-        })).sort((a, b) => new Date(b.date) - new Date(a.date));
+        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 }
 

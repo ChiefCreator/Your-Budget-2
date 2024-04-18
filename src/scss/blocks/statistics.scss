@@ -1,6 +1,28 @@
 .statistics{
     margin-top: 15px;
-    width: 100%;
+    flex: 1 1 auto;
+    &__chart{
+        flex: 1 1 auto;
+    }   
+    #chartBar{
+        // width: 100% !important;
+        // height: 400px !important;
+    }
+}
+.dashboard-statistics{
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    &__title{
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 20px;
+        letter-spacing: 3px;
+    }
+    &__switch{
+        width: 60px;
+    }
 }
 .operation-list{
     display: flex;
