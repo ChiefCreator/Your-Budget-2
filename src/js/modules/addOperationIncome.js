@@ -1,7 +1,7 @@
 import firebaseConfig from "./firebaseConfig";
 import changeChart from "./changeChartExpensesAndIncome";
 
-function addOperationincome() {
+function addOperationincome(chartIncomePie) {
     let popupOperation = document.querySelector(".popup-operation_income");
     let overblock = document.querySelector(".overblock");
     let btnCreate = popupOperation.querySelector(".popup-operation__button");
@@ -10,11 +10,12 @@ function addOperationincome() {
     let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
     let closeBtn = popupOperation.querySelector(".popup-operation__close");
     let more = document.querySelector(".operation-list__more_income");
+    let moreText = more.querySelector(".tool-operation__item-text");
     let switchButton = document.querySelector(".switch-operations");
 
     let arr = [];
 
-    let collectionName = localStorage.getItem("email") + "OperationsIncome";
+    let userEmail = localStorage.getItem("email").replace(".", "*");
 
     getDataFromFirestore();
     
@@ -45,11 +46,16 @@ function addOperationincome() {
 
         arr.push(obj);
         setOperationToList(sortByDate(arr));
+        addToChartPie(arr);
         changeChart(sortByDate(arr));
-        addToFirestore(obj);
+        addToFirestore(arr);
+        changeCostsOfCategories(updateOperation(arr));
+        addToFirestoreCategories(updateOperation(arr));
 
         switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
     })
+
+    more.addEventListener("click", addOperations);
 
     overblock.addEventListener("click", function() {
         closePopup();
@@ -233,17 +239,12 @@ function addOperationincome() {
         }
     }
 
-    function addToFirestore(obj) {
-        console.log(obj)
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
+    function addToFirestore(arr) {
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/operationsIncome.json`;
         
-        const data = {
-            fields: toObject(obj)
-        };
-
         fetch(firestoreUrl, {
-            method: 'POST',
-            body: JSON.stringify(data),
+            method: 'PUT',
+            body: JSON.stringify(arr),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -255,23 +256,10 @@ function addOperationincome() {
         .catch(error => {
           console.error('Error adding category:', error);
         });
-
-        function toObject(obj) {
-            return {
-                title: {stringValue: obj.title},
-                icon: {stringValue: obj.icon},
-                index: {stringValue: obj.index},
-                cost: {integerValue: obj.cost},
-                bg: {stringValue: obj.bg},
-                color: {stringValue: obj.color},
-                comment: {stringValue: obj.comment},
-                date: {stringValue: obj.date},
-            };
-        }
     }
 
     function getDataFromFirestore() {
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/operationsIncome.json`;
     
         fetch(firestoreUrl)
             .then(response => {
@@ -282,8 +270,9 @@ function addOperationincome() {
             })
             .then(data => {
                 if (Object.keys(data).length != 0) {
-                    arr = transformToArrayFromDatabase(data);
+                    arr = data;
                     setOperationToList(sortByDate(arr));
+                    addToChartPie(arr);
                 }
             })
             .catch(error => {
@@ -291,22 +280,23 @@ function addOperationincome() {
             });
     }
 
-    function transformToArrayFromDatabase(data) {
-        const transformedArray = data.documents.map(doc => {
-            const {title, icon, index, cost, bg, color, date, comment} = doc.fields;
-            return {
-                title: title.stringValue,
-                icon: icon.stringValue,
-                index: index ? parseInt(index.integerValue) : null,
-                cost: parseInt(cost.integerValue),
-                bg: bg ? bg.stringValue : null,
-                color: color ? color.stringValue : null,
-                date: date.stringValue,
-                comment: comment ? comment.stringValue : null,
-            };
+    function addToFirestoreCategories(arr) {
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesIncome.json`;
+        
+        fetch(firestoreUrl, {
+            method: 'PUT',
+            body: JSON.stringify(arr),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Category added:', data);
+        })
+        .catch(error => {
+          console.error('Error adding category:', error);
         });
-
-        return transformedArray
     }
 
     function sortByDate(arr) {
@@ -316,11 +306,76 @@ function addOperationincome() {
         })).sort((a, b) => new Date(b.date) - new Date(a.date));
     }
 
+    function addToChartPie(arr) {
+        let objCosts = {};
+        for (let obj of arr) {
+            if (!objCosts[obj.title]) {
+                objCosts[obj.title] = obj.cost;
+            } else {
+                objCosts[obj.title] += obj.cost; 
+            }
+        }
+
+        let costsArray = Object.values(objCosts);
+
+        chartIncomePie.data.datasets[0].data = costsArray;
+        chartIncomePie.update();
+    }
+
+    function updateOperation(arr) {
+        const groupedByTitle = arr.reduce((acc, obj) => {
+            const existingObj = acc.find(item => item.title === obj.title);
+            if (existingObj) {
+                existingObj.cost += obj.cost;
+            } else {
+                acc.push({ ...obj });
+            }
+            return acc;
+        }, []);
+        
+        let indexCounter = 1;
+        
+        const newArray = groupedByTitle.map((obj) => {
+            const { date, comment, ...rest } = obj;
+            return { ...rest, index: indexCounter++ };
+        });
+        
+        console.log(newArray);
+
+        return newArray;
+    }
+
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == true) {
             changeChart(sortByDate(arr))
         }
     })
+
+    function addOperations() {
+
+        if (!more.classList.contains("open")) {
+            moreText.textContent = "Свернуть операции";
+            more.classList.add("open");
+        } else {
+            moreText.textContent = "Все операции";
+            more.classList.remove("open");
+        }
+
+        setOperationToList(sortByDate(arr));
+    }
+
+    function changeCostsOfCategories(arr) {
+        let total = 0;
+
+        document.querySelectorAll(".list-categories_income .list-categories__item").forEach((category, i) => {
+            if (arr[i]) {
+                total += arr[i].cost;
+
+                category.querySelector(".item-category__total").textContent = arr[i].cost + " BYN";
+            }
+        })
+        document.querySelector(".slider-categories__item_income .slider-categories__total-num").textContent = total;
+    }
 }
 
 export default addOperationincome;

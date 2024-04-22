@@ -1,27 +1,8 @@
 import firebaseConfig from "./firebaseConfig";
-import Chart from 'chart.js/auto';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 
-function addCategoryExpenses() {
-    const chartExpensesPie = new Chart(document.getElementById('chartExpensesPie'), {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: [],
-                borderWidth: 1,
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: false
-                },
-            }
-        },
-    });
+function addCategoryExpenses(chartExpensesPie) {
     const swiper = new Swiper('.swiper_categories-expenses', {
         speed: 600,
         spaceBetween: 0,
@@ -38,7 +19,7 @@ function addCategoryExpenses() {
     let properties = {};
     let arrProperties = [];
     let index = 0;
-    let collectionName = localStorage.getItem("email") + "CategoriesExpenses";
+    let userEmail = localStorage.getItem("email").replace(".", "*");
 
     getDataFromFirestore();
     togglePopup();
@@ -53,7 +34,7 @@ function addCategoryExpenses() {
             arrProperties.push(properties);
 
             setItemToList(properties);
-            addToFirestore(properties);
+            addToFirestore(arrProperties);
             chart(arrProperties, chartExpensesPie);
         }
     })
@@ -127,16 +108,12 @@ function addCategoryExpenses() {
         chart.update();
     }
 
-    function addToFirestore(obj) {
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
-        
-        const data = {
-            fields: toObject(obj)
-        };
+    function addToFirestore(arr) {
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesExpenses.json`;
 
         fetch(firestoreUrl, {
-            method: 'POST',
-            body: JSON.stringify(data),
+            method: 'PUT',
+            body: JSON.stringify(arr),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -148,21 +125,10 @@ function addCategoryExpenses() {
         .catch(error => {
           console.error('Error adding category:', error);
         });
-
-        function toObject(obj) {
-            return {
-                title: {stringValue: obj.title},
-                icon: {stringValue: obj.icon},
-                index: {integerValue: obj.index},
-                cost: {integerValue: obj.cost},
-                bg: {stringValue: obj.bg},
-                color: {stringValue: obj.color},
-            };
-        }
     }
 
     function getDataFromFirestore() {
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesExpenses.json`;
     
         fetch(firestoreUrl)
             .then(response => {
@@ -173,30 +139,15 @@ function addCategoryExpenses() {
             })
             .then(data => {
                 if (Object.keys(data).length != 0) {
-                    arrProperties = transformToArrayFromDatabase(data);
+                    arrProperties = data;
                     setItemToListFromDatabase(arrProperties);
                     chart(arrProperties, chartExpensesPie);
+                    changeCostsOfCategories(arrProperties)
                 }
             })
             .catch(error => {
                 console.error('Error fetching data from Firestore:', error);
             });
-    }
-
-    function transformToArrayFromDatabase(data) {
-        const transformedArray = data.documents.map(doc => {
-            const { title, icon, index, cost, bg, color } = doc.fields;
-            return {
-                title: title.stringValue,
-                icon: icon.stringValue,
-                index: index ? parseInt(index.integerValue) : null,
-                cost: parseInt(cost.integerValue),
-                bg: bg ? bg.stringValue : null,
-                color: color ? color.stringValue : null
-            };
-        });
-
-        return transformedArray
     }
 
     function setItemToListFromDatabase(arr) {
@@ -219,6 +170,19 @@ function addCategoryExpenses() {
         }
         blockToPaste.append(parser(itemCategory))
         }
+    }
+
+    function changeCostsOfCategories(arr) {
+        let total = 0;
+
+        document.querySelectorAll(".list-categories_expenses .list-categories__item").forEach((category, i) => {
+            if (arr[i]) {
+                total += arr[i].cost;
+
+                category.querySelector(".item-category__total").textContent = arr[i].cost + " BYN";
+            }
+        })
+        document.querySelector(".slider-categories__total-num").textContent = total;
     }
 }
 

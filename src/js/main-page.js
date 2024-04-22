@@ -4,20 +4,56 @@ import addCategoryIncome from "./modules/addCategoryIncome";
 import addOperationExpenses from "./modules/addOperationExpenses";
 import addOperationincome from "./modules/addOperationIncome";
 import expandOperation from "./modules/expand-operation";
-import addMoreOperations from "./modules/moreOperationsExpenses";
-import addMoreOperationsIncome from "./modules/moreOperationIncome";
+// import addMoreOperationsIncome from "./modules/moreOperationIncome";
 import airDatepicker from "./modules/airDatepicker";
-// import Chart from 'chart.js/auto';
+import Chart from 'chart.js/auto';
+
+const chartExpensesPie = new Chart(document.getElementById('chartExpensesPie'), {
+    type: 'doughnut',
+    data: {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: [],
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+        }
+    },
+});
+const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
+    type: 'doughnut',
+    data: {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: [],
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+        }
+    },
+});
 
 categoriesSlide();
-addCategoryExpenses();
-addCategoryIncome();
-addOperationExpenses();
-addOperationincome();
+addCategoryExpenses(chartExpensesPie);
+addCategoryIncome(chartIncomePie);
+addOperationExpenses(chartExpensesPie);
+addOperationincome(chartIncomePie);
 airDatepicker();
 expandOperation();
-addMoreOperations();
-addMoreOperationsIncome();
+// addMoreOperationsIncome();
+
 
 
 

@@ -1,27 +1,8 @@
 import firebaseConfig from "./firebaseConfig";
-import Chart from 'chart.js/auto';
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 
-function addCategoryIncome() {
-    const chartData = new Chart(document.getElementById('chartIncomePie'), {
-        type: 'doughnut',
-        data: {
-            labels: [],
-            datasets: [{
-                data: [],
-                backgroundColor: [],
-                borderWidth: 1,
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    display: false
-                },
-            }
-        },
-    });
+function addCategoryIncome(chartIncomePie) {
     const swiper = new Swiper('.swiper_categories-income', {
         speed: 600,
         spaceBetween: 0,
@@ -38,7 +19,7 @@ function addCategoryIncome() {
     let properties = {};
     let arrProperties = [];
     let index = 0;
-    let collectionName = localStorage.getItem("email") + "CategoriesIncome";
+    let userEmail = localStorage.getItem("email").replace(".", "*");
 
     getDataFromFirestore();
     togglePopup();
@@ -53,8 +34,8 @@ function addCategoryIncome() {
             arrProperties.push(properties);
 
             setItemToList(properties);
-            addToFirestore(properties);
-            chart(arrProperties, chartData);
+            addToFirestore(arrProperties);
+            chart(arrProperties, chartIncomePie);
         }
     })
 
@@ -127,16 +108,12 @@ function addCategoryIncome() {
         chart.update();
     }
 
-    function addToFirestore(obj) {
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
-        
-        const data = {
-            fields: toObject(obj)
-        };
+    function addToFirestore(arr) {
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesIncome.json`;
 
         fetch(firestoreUrl, {
-            method: 'POST',
-            body: JSON.stringify(data),
+            method: 'PUT',
+            body: JSON.stringify(arr),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -148,21 +125,10 @@ function addCategoryIncome() {
         .catch(error => {
           console.error('Error adding category:', error);
         });
-
-        function toObject(obj) {
-            return {
-                title: {stringValue: obj.title},
-                icon: {stringValue: obj.icon},
-                index: {integerValue: obj.index},
-                cost: {integerValue: obj.cost},
-                bg: {stringValue: obj.bg},
-                color: {stringValue: obj.color},
-            };
-        }
     }
 
     function getDataFromFirestore() {
-        const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${firebaseConfig.projectId}/databases/(default)/documents/${collectionName}?key=${firebaseConfig.apiKey}`;
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesIncome.json`;
     
         fetch(firestoreUrl)
             .then(response => {
@@ -173,30 +139,15 @@ function addCategoryIncome() {
             })
             .then(data => {
                 if (Object.keys(data).length != 0) {
-                    arrProperties = transformToArrayFromDatabase(data);
+                    arrProperties = data;
                     setItemToListFromDatabase(arrProperties);
-                    chart(arrProperties, chartData);
+                    chart(arrProperties, chartIncomePie);
+                    changeCostsOfCategories(arrProperties);
                 }
             })
             .catch(error => {
                 console.error('Error fetching data from Firestore:', error);
             });
-    }
-
-    function transformToArrayFromDatabase(data) {
-        const transformedArray = data.documents.map(doc => {
-            const { title, icon, index, cost, bg, color } = doc.fields;
-            return {
-                title: title.stringValue,
-                icon: icon.stringValue,
-                index: index ? parseInt(index.integerValue) : null,
-                cost: parseInt(cost.integerValue),
-                bg: bg ? bg.stringValue : null,
-                color: color ? color.stringValue : null
-            };
-        });
-
-        return transformedArray
     }
 
     function setItemToListFromDatabase(arr) {
@@ -219,6 +170,19 @@ function addCategoryIncome() {
         }
         blockToPaste.append(parser(itemCategory))
         }
+    }
+
+    function changeCostsOfCategories(arr) {
+        let total = 0;
+
+        document.querySelectorAll(".list-categories_income .list-categories__item").forEach((category, i) => {
+            if (arr[i]) {
+                total += arr[i].cost;
+
+                category.querySelector(".item-category__total").textContent = arr[i].cost + " BYN";
+            }
+        })
+        document.querySelector(".slider-categories__item_income .slider-categories__total-num").textContent = total;
     }
 }
 
