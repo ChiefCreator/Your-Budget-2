@@ -91,7 +91,6 @@ function addCategoryExpenses(chartExpensesPie) {
         changeCostsOfCategories(arrProperties)
 
         setOperationToList(sortByDate(arr));
-        addToChartPie(arrProperties);
         changeChart(sortByDate(arr));
         addToFirestore2(arr);
 
@@ -316,34 +315,11 @@ function addCategoryExpenses(chartExpensesPie) {
                     arr = data;
                     setOperationToList(sortByDate(arr));
                     changeChart(arr);
-                    // addToChartPie(arr);
                 }
             })
             .catch(error => {
                 console.error('Error fetching data from Firestore:', error);
             });
-    }
-
-    function addToChartPie(arr) {
-        let titles = [];
-        let bgArr = [];
-        let costArr = [];
-
-        arr.forEach(item => {
-            titles.push(item.title);
-            bgArr.push(item.bg);
-
-            if (item.cost == 0) {
-                costArr.push(1);
-            } else {
-                costArr.push(item.cost);
-            }
-        })
-
-        chartExpensesPie.data.labels = titles;
-        chartExpensesPie.data.datasets[0].data = costArr;
-        chartExpensesPie.data.datasets[0].backgroundColor = bgArr;
-        chartExpensesPie.update();
     }
 
     switchButton.addEventListener("click", function() {
