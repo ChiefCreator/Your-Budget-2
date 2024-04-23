@@ -96,7 +96,7 @@ function changeChart(arr) {
         }
         chartExpensesAndIncome.update();
 
-        console.log(titles, costArray, OperationSumCosts, bgArray, arrDate)
+        // console.log(titles, costArray, OperationSumCosts, bgArray, arrDate)
     }
 
     function createObjDateKey(arr) {

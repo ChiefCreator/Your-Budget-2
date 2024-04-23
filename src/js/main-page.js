@@ -1,10 +1,8 @@
 import categoriesSlide from "./modules/categories-slide";
 import addCategoryExpenses from "./modules/addCategoryExpenses";
 import addCategoryIncome from "./modules/addCategoryIncome";
-import addOperationExpenses from "./modules/addOperationExpenses";
 import addOperationincome from "./modules/addOperationIncome";
 import expandOperation from "./modules/expand-operation";
-// import addMoreOperationsIncome from "./modules/moreOperationIncome";
 import airDatepicker from "./modules/airDatepicker";
 import Chart from 'chart.js/auto';
 
@@ -48,7 +46,6 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
 categoriesSlide();
 addCategoryExpenses(chartExpensesPie);
 addCategoryIncome(chartIncomePie);
-addOperationExpenses(chartExpensesPie);
 addOperationincome(chartIncomePie);
 airDatepicker();
 expandOperation();
