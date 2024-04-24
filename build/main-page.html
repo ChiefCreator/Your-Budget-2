@@ -21,7 +21,7 @@
             <div class="popup-category-done__block popup-category-done__block_no-padding">
                 <div class="swiper swiper_categories-expenses">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
+                        <div class="swiper-slide popup-category-done__slide">
                             <div class="done-categories">
                                 <div class="item-category done-expenses" data-category-done='{"bg": "#ff9900", "color": "#ffffff", "cost": 0, "icon": "icon-food1", "title": "Еда"}'>
                                     <div class="item-category__head">
@@ -95,18 +95,9 @@
                                         <div class="item-category__total">0 BYN</div>
                                     </div>
                                 </div>
-                                <div class="item-category done-expenses" data-category-done='{"bg": "#99d312", "color": "#ffffff", "cost": 0, "icon": "icon-food19", "title": "Клубы"}'>
-                                    <div class="item-category__head">
-                                        <div class="item-category__icon icon-food19" style="background-color:#99d312"></div>
-                                        <div class="item-category__info">
-                                            <p class="item-category__name">Клубы</p>
-                                        </div>
-                                        <div class="item-category__total">0 BYN</div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
-                        <div class="swiper-slide">
+                        <div class="swiper-slide popup-category-done__slide">
                             <div class="done-categories">
                                 <div class="item-category done-expenses" data-category-done='{"bg": "#615196", "color": "#ffffff", "cost": 0, "icon": "icon-transport1", "title": "Машина"}'>
                                     <div class="item-category__head">
@@ -180,6 +171,19 @@
                                         <div class="item-category__total">0 BYN</div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="swiper-slide popup-category-done__slide">
+                            <div class="done-categories">
+                                <div class="item-category done-expenses" data-category-done='{"bg": "#99d312", "color": "#ffffff", "cost": 0, "icon": "icon-food19", "title": "Клубы"}'>
+                                    <div class="item-category__head">
+                                        <div class="item-category__icon icon-food19" style="background-color:#99d312"></div>
+                                        <div class="item-category__info">
+                                            <p class="item-category__name">Клубы</p>
+                                        </div>
+                                        <div class="item-category__total">0 BYN</div>
+                                    </div>
+                                </div>
                                 <div class="item-category done-expenses" data-category-done='{"bg": "#8dd1d5", "color": "#ffffff", "cost": 0, "icon": "icon-money5", "title": "Платежи и коммисиии"}'>
                                     <div class="item-category__head">
                                         <div class="item-category__icon icon-money5" style="background-color:#8dd1d5"></div>
@@ -196,7 +200,7 @@
                 <div class="pagination pagination_done-expenses"></div>
             </div>
         </div>
-        <div class="popup-category-done__block-wrapper popup-category-done__block-wrapper_without-border">
+        <div class="popup-category-done__block-wrapper popup-category-done__block-wrapper_button popup-category-done__block-wrapper_without-border">
             <div class="popup-category-done__block">
                 <button class="button popup-category-done__button">Добавить категорию</button>
             </div>
@@ -264,38 +268,35 @@
         </div>
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
-                <div class="popup-operation__input-container">
-                    <div class="popup-operation__input-icon popup-operation__input-icon_price">
-
+                <div class="input-cost">
+                    <p class="input-cost__name">Введите сумму</p>
+                    <div class="input-cost__inp-wrapper">
+                        <input class="input-cost__input" required>
+                        <label class="input-cost__input-label">0</label>
                     </div>
-                    <div class="popup-operation__input-content">
-                        <input class="popup-operation__input" required>
-                        <label class="popup-operation__input-label">Введите стоимость</label>
-                    </div>
+                    <span class="input-cost__currency">BYN</span>
                 </div>
             </div>
         </div>
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
-                <div class="popup-operation__input-container">
-                    <div class="popup-operation__input-icon popup-operation__input-icon_date">
-
+                <div class="input-date">
+                    <p class="input-cost__name">Введите дату</p>
+                    <div class="input-date__inp-wrapper">
+                        <input class="input-date__input" required>
                     </div>
-                    <div class="popup-operation__input-content">
+                    <div class="input-date__icon-wrapper">
                         <div class="popup-operation-datepicker">
-                            <input class="popup-operation__input popup-operation__input_date" id="date-operation-expenses" required>
-                            <label class="popup-operation__input-label">Введите дату</label>
+                            <input class="input-date__icon-input" id="date-operation-expenses">
                         </div>
+                        <span class="input-date__icon"></span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="popup-operation__block-wrapper">
+        <!-- <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
                 <div class="popup-operation__select-wrapper">
-                    <div class="popup-operation__input-icon popup-operation__input-icon_price">
-
-                    </div>
                     <div class="popup-operation__select-content">
                         <div class="select">
                             <button class="select__button" data-lang="switch-lang">Выберите счет</button>
@@ -310,13 +311,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
                 <div class="popup-operation__textarrea-container">
-                    <div class="popup-operation__textarrea-icon">
-
-                    </div>
                     <div class="popup-operation__textarrea-content">
                         <textarea class="popup-operation__textarrea" required></textarea>
                         <label class="popup-operation__textarrea-label">Введите комментарий</label>
@@ -324,7 +322,7 @@
                 </div>
             </div>
         </div>
-        <div class="popup-operation__block-wrapper popup-operation__block-wrapper_without-border">
+        <div class="popup-operation__block-wrapper popup-operation__block-wrapper_button popup-operation__block-wrapper_without-border">
             <div class="popup-operation__block">
                 <button class="button popup-operation__button">Создать операцию</button>
             </div>

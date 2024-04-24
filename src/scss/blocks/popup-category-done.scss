@@ -1,14 +1,16 @@
 .popup-category-done{
     position: fixed;
-    left: calc(100% + 500px);
-    top:0;
-    width: 500px;
-    min-height: 100vh;
+    left: calc(100% + 490px);
+    top:15px;
+    width: 490px;
+    height: calc(100vh - 30px);
+    border-radius: 10px;
     background-color: white;
     display: flex;
     flex-direction: column;
     z-index: 4;
     transition: left .3s ease;
+    overflow-y: auto;
     &_open{
         left: calc(100% - 500px);
     }
@@ -51,6 +53,9 @@
     }
     &__block-wrapper{
         border-bottom: 2px solid #eef0f4;
+        &_button{
+            margin-top: auto;
+        }
         &_without-border{
             border-bottom: none;
         }
