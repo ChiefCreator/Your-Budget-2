@@ -96,7 +96,7 @@
 .tool-operation{
     width: 100%;
     border-radius: 10px;
-    background-color:rgb(242, 243, 247);
+    background-color:$light-color;
     padding: 10px;
     cursor: pointer;
     &_mt{
@@ -123,7 +123,7 @@
         align-items: center;
         justify-content: center;
         &::before{
-            content: "\e589";
+            content: "\f309";
             @include font-awesome;
             color: rgb(255, 255, 255);
             font-size: 18px;
@@ -145,6 +145,13 @@
             content: "\f105";
             @include font-awesome;
             font-size: 15px;
+        }
+    }
+}
+.tool-operation.open{
+    .tool-operation__icon{
+        &::before{
+            content: "\f30c";
         }
     }
 }

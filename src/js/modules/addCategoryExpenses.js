@@ -24,8 +24,8 @@ function addCategoryExpenses(chartExpensesPie) {
     let popupOperation = document.querySelector(".popup-operation_expenses");
     let overblock = document.querySelector(".overblock");
     let btnCreate = popupOperation.querySelector(".popup-operation__button");
-    let inputCost = popupOperation.querySelector(".popup-operation__input");
-    let inputDate = popupOperation.querySelector("#date-operation-expenses");
+    let inputCost = popupOperation.querySelector(".input-cost__input");
+    let inputDate = popupOperation.querySelector(".input-date__input");
     let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
     let closeBtn = popupOperation.querySelector(".popup-operation__close");
     let more = document.querySelector(".operation-list__more_expenses");
@@ -49,7 +49,6 @@ function addCategoryExpenses(chartExpensesPie) {
         }
         if (e.target.closest(".popup-category-done_expenses .popup-category-done__button")) {
             arrProperties.push(properties);
-            console.log("prop", arrProperties);
 
             setItemToList(properties);
             addToFirestore(arrProperties);

@@ -2,20 +2,6 @@ import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 
 function airDatepicker() {
-    let dateOperationExpenses = new AirDatepicker('#date-operation-expenses', {
-        inline: false,
-        position:'left top',
-        container: '.popup-operation-datepicker',
-        dateFormat: 'yyyy-MM-dd',
-        onSelect: ({date, formattedDate, datepicker}) => {
-            if (formattedDate) {
-                document.querySelector(".input-date__input").value = formattedDate
-                return;
-            }
-            document.querySelector(".input-date__input").value = "";
-        },
-    })
-
     function formatDate(date) {
         const year = date.getFullYear();
 
@@ -31,14 +17,35 @@ function airDatepicker() {
 
         return `${year}-${month}-${day}`;
     }
-    
     document.querySelector(".input-date__input").value = formatDate(new Date());
+    document.querySelector(".input-date__input_income").value = formatDate(new Date());
+
+    let dateOperationExpenses = new AirDatepicker('#date-operation-expenses', {
+        inline: false,
+        position:'left top',
+        container: '.popup-operation-datepicker',
+        dateFormat: 'yyyy-MM-dd',
+        onSelect: ({date, formattedDate, datepicker}) => {
+            if (formattedDate) {
+                document.querySelector(".input-date__input").value = formattedDate
+                return;
+            }
+            document.querySelector(".input-date__input").value = "";
+        },
+    })
 
     let dateOperationIncome = new AirDatepicker('#date-operation-income', {
         inline: false,
-        position:'right top',
-        container: '.popup-operation-datepicker_income',
+        position:'left top',
+        container: '.popup-operation-datepicker-income',
         dateFormat: 'yyyy-MM-dd',
+        onSelect: ({date, formattedDate, datepicker}) => {
+            if (formattedDate) {
+                document.querySelector(".input-date__input_income").value = formattedDate
+                return;
+            }
+            document.querySelector(".input-date__input_income").value = "";
+        },
     })
 }
 

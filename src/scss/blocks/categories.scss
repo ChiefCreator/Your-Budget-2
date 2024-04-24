@@ -99,6 +99,7 @@
     gap: 10px;
 }
 .tools-categories{
+    margin-bottom: 10px;
     margin-top: 15px;
     display: flex;
     gap: 20px;
@@ -106,7 +107,7 @@
 .tool-category{
     flex: 1 1 auto;
     border-radius: 10px;
-    background-color:rgb(242, 243, 247);
+    background-color:$light-color;
     padding: 10px;
     cursor: pointer;
     &:hover .tool-category__item-arrow{
@@ -129,10 +130,20 @@
         align-items: center;
         justify-content: center;
         &::before{
-            content: "\e589";
+            content: "\2b";
             @include font-awesome;
             color: rgb(255, 255, 255);
             font-size: 18px;
+        }
+        &_add{
+            &::before{
+                content: "\f0ca";
+            }
+        }
+        &_create{
+            &::before{
+                content: "\2b";
+            }
         }
     }
     &__item{

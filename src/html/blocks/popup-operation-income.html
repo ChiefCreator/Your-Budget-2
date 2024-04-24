@@ -14,28 +14,28 @@
         </div>
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
-                <div class="popup-operation__input-container">
-                    <div class="popup-operation__input-icon popup-operation__input-icon_price">
-
+                <div class="input-cost">
+                    <p class="input-cost__name">Введите сумму</p>
+                    <div class="input-cost__inp-wrapper">
+                        <input class="input-cost__input" required>
+                        <label class="input-cost__input-label">0</label>
                     </div>
-                    <div class="popup-operation__input-content">
-                        <input class="popup-operation__input" required>
-                        <label class="popup-operation__input-label">Введите стоимость</label>
-                    </div>
+                    <span class="input-cost__currency">BYN</span>
                 </div>
             </div>
         </div>
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
-                <div class="popup-operation__input-container">
-                    <div class="popup-operation__input-icon popup-operation__input-icon_date">
-
+                <div class="input-date">
+                    <p class="input-cost__name">Введите дату</p>
+                    <div class="input-date__inp-wrapper">
+                        <input class="input-date__input input-date__input_income" required>
                     </div>
-                    <div class="popup-operation__input-content">
-                        <div class="popup-operation-datepicker popup-operation-datepicker_income">
-                            <input class="popup-operation__input popup-operation__input_date" id="date-operation-income" required>
-                            <label class="popup-operation__input-label">Введите дату</label>
+                    <div class="input-date__icon-wrapper">
+                        <div class="popup-operation-datepicker popup-operation-datepicker-income">
+                            <input class="input-date__icon-input" id="date-operation-income">
                         </div>
+                        <span class="input-date__icon"></span>
                     </div>
                 </div>
             </div>
@@ -43,9 +43,6 @@
         <div class="popup-operation__block-wrapper">
             <div class="popup-operation__block">
                 <div class="popup-operation__textarrea-container">
-                    <div class="popup-operation__textarrea-icon">
-
-                    </div>
                     <div class="popup-operation__textarrea-content">
                         <textarea class="popup-operation__textarrea" required></textarea>
                         <label class="popup-operation__textarrea-label">Введите комментарий</label>
@@ -53,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="popup-operation__block popup-operation__block_button">
+        <div class="popup-operation__block popup-operation__block-wrapper_button popup-operation__block_button">
             <button class="button popup-operation__button">Создать операцию</button>
         </div>
     </div>
