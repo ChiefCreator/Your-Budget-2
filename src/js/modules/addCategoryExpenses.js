@@ -505,6 +505,152 @@ function addCategoryExpenses(chartExpensesPie) {
         })
         document.querySelector(".slider-categories__total-num").textContent = total;
     }
+
+    // создание категории
+
+    let popupCategory = document.querySelector(".popup-category");
+    let createBtnsExpenses = document.querySelectorAll(".create-expenses");
+
+    let objCategory = {};
+    let inpTitle = popupCategory.querySelector(".popup-category__input");
+    let inpBg = popupCategory.querySelector(".input-color__input_bg");
+    let wrapperInpBg = inpBg.parentElement;
+    let inpColor = popupCategory.querySelector(".input-color__input_color");
+    let wrapperInpColor = inpColor.parentElement;
+    let icons = popupCategory.querySelectorAll(".popup-category__icon");
+    let buttonCreate = popupCategory.querySelector(".popup-category__button");
+
+    createBtnsExpenses.forEach(addBtn => {
+        addBtn.addEventListener("click", function() {
+            popupCategory.classList.add("popup-category_open");
+            overblock.classList.add("overblock_open");
+        })
+    })
+    overblock.addEventListener("click", function() {
+        popupCategory.classList.remove("popup-category_open");
+        overblock.classList.remove("overblock_open");
+    })
+
+    changeColor();
+
+    buttonCreate.addEventListener("click", function() {
+        objCategory = setValueToObject(objCategory, index);
+
+        if (validation(objCategory)) {
+            index++;
+
+            arrProperties.push(objCategory); 
+            addToFirestore(arrProperties);
+
+            setItemToList(objCategory);   
+            chart(arrProperties, chartExpensesPie);
+
+            popupCategory.classList.remove("popup-category_open");
+            overblock.classList.remove("overblock_open");
+        }
+    })
+
+    function setValueToObject(obj, index) {
+        obj.index = index;
+        obj.title = inpTitle.value;
+        obj.bg = inpBg.value;
+        obj.color = inpColor.value;
+        obj.cost = 0;
+        return obj;
+    }
+
+    function validation(objCategory) {
+        let isError = true;
+        if (objCategory.title == "") {
+            isError = false;
+        }
+        if (!objCategory.icon) {
+            isError = false;
+        }
+        console.log(isError)
+        return isError;
+    }
+
+    function changeColor() {
+
+        icons.forEach(icon => {
+            icon.style.backgroundColor = inpBg.value;
+            icon.style.color = inpColor.value; 
+    
+            wrapperInpBg.style.backgroundColor = inpBg.value;
+            wrapperInpColor.style.backgroundColor = inpColor.value; 
+        })
+
+        window.addEventListener("click", function(event) {
+            let icon = event.target.closest(".popup-category__icon");
+
+            if (event.target.closest(".popup-category__icon")) {
+                document.querySelectorAll(".popup-category__icon").forEach(icon => {
+                    icon.style.backgroundColor = "#A2A6B4";
+                    icon.style.color = "white"; 
+                    icon.classList.remove("act");
+                })
+
+                icon.classList.add("act");
+                icon.style.backgroundColor = changeColor(inpBg, inpColor, icon)[0]; 
+                icon.style.color = changeColor(inpBg, inpColor, icon)[1]; 
+                objCategory.icon = icon.dataset.categoryIcon;
+            } else if (!event.target.closest(".popup-category__block-wrapper") && !event.target.closest(".popup-category__icon")) {
+                document.querySelectorAll(".popup-category__icon").forEach(icon => {
+                    icon.style.backgroundColor = "#A2A6B4";
+                    icon.style.color = "white"; 
+                    icon.classList.remove("act");
+                })
+            }
+        })
+
+        function changeColor(inpBg, inpColor, icon) {
+            let bg = inpBg.value;
+            let color = inpColor.value;
+            inpBg.addEventListener("input", function() {
+                bg = inpBg.value;
+    
+                if (icon.classList.contains("act")) {
+                    icon.style.backgroundColor = bg;
+                }
+            })
+            inpColor.addEventListener("input", function() {
+                color = inpColor.value;
+    
+                if (icon.classList.contains("act")) {
+                    icon.style.color = color;
+                }
+            })
+            return [bg, color]
+        }
+    
+        wrapperInpColor.style.border = `2px solid #eef0f4`;
+        wrapperInpBg.style.border = `2px solid ${inpBg.value}`;
+    
+        function changeBgOFInputs() {
+            inpBg.addEventListener("input", function() {
+                wrapperInpBg.style.backgroundColor = inpBg.value;
+    
+                if (inpBg.value == "#ffffff") {
+                    wrapperInpBg.style.border = `2px solid #eef0f4`;
+                } else {
+                    wrapperInpBg.style.border = `2px solid ${inpBg.value}`;
+                }
+            })
+    
+            inpColor.addEventListener("input", function() {
+                wrapperInpColor.style.backgroundColor = inpColor.value;
+            
+                if (inpColor.value == "#ffffff") {
+                    wrapperInpColor.style.border = `2px solid #eef0f4`;
+                } else {
+                    wrapperInpColor.style.border = `2px solid ${inpColor.value}`;
+                }
+            
+            })
+        }
+        changeBgOFInputs();
+    }
 }
 
 export default addCategoryExpenses;

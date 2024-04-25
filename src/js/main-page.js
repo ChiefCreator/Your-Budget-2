@@ -5,6 +5,7 @@ import expandOperation from "./modules/expand-operation";
 import inputTextarrea from "./modules/inputTextarrea";
 import airDatepicker from "./modules/airDatepicker";
 import Chart from 'chart.js/auto';
+import sliders from "./modules/sliders";
 
 const chartExpensesPie = new Chart(document.getElementById('chartExpensesPie'), {
     type: 'doughnut',
@@ -49,3 +50,4 @@ addCategoryIncome(chartIncomePie);
 airDatepicker();
 expandOperation();
 inputTextarrea();
+sliders();
