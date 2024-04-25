@@ -2,6 +2,8 @@ import firebaseConfig from "./firebaseConfig";
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import changeChart from "./changeChartExpensesAndIncome";
+import AirDatepicker from 'air-datepicker';
+import 'air-datepicker/air-datepicker.css';
 
 function addCategoryExpenses(chartExpensesPie) {
     const swiper = new Swiper('.swiper_categories-expenses', {
@@ -34,11 +36,14 @@ function addCategoryExpenses(chartExpensesPie) {
 
     let arr = [];
 
+    let operationsByCurrentDate = [];
+    let categoriesByCurrentDate = [];
+
 
     let userEmail = localStorage.getItem("email").replace(".", "*");
 
-    getDataFromFirestore();
     getDataFromFirestore2();
+    getDataFromFirestore();
     togglePopup();
 
     window.addEventListener("click", function(e) {
@@ -650,6 +655,117 @@ function addCategoryExpenses(chartExpensesPie) {
             })
         }
         changeBgOFInputs();
+    }
+
+    // календарь
+
+    // let operationsByCurrentDate = [];
+    // let categoriesByCurrentDate = [];
+
+    let dateText = document.querySelector(".main-date__value");
+    let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
+
+    if (!localStorage.getItem("currentDate")) {
+        localStorage.setItem("currentDate", currentDate); 
+    }
+    dateText.textContent = transformDate(localStorage.getItem("currentDate"))
+
+    let buttonYear = {
+        content: 'Выбрать год',
+        className: 'custom-button-classname',
+        onClick: (dp) => {
+            if (dp.currentView == "years") {
+                buttonYear.content = 'Выбрать год'
+                dp.update({
+                    view : "months",
+                    minView : "months",
+                    dateFormat: 'yyyy-MM',
+                })
+            } else if (dp.currentView == "months") {
+                buttonYear.content = 'Выбрать месяц'
+                dp.update({
+                    view : "years",
+                    minView : "years",
+                    dateFormat: 'yyyy',
+                })
+            }
+        }
+    }
+    let buttonAll = {
+        content: 'Все время',
+        className: 'custom-button-classname',
+        onClick: (dp) => {
+            dateText.textContent = "Все время";
+            localStorage.setItem("currentDate", "Все время");
+        }
+    }
+    let mainDatePicker = new AirDatepicker('#main-picker', {
+        inline: false,
+        position:'left top',
+        view: "months",
+        minView:"months",
+        dateFormat: 'yyyy-MM',
+        buttons: [buttonYear, buttonAll],
+        onSelect: ({date, formattedDate, datepicker}) => {
+            let mounth = transformDate(formattedDate)
+        
+            if (datepicker.currentView == "months") {
+                if (date) {
+                    dateText.textContent = mounth;  
+                } else {
+                    dateText.textContent = "Выберите дату";  
+                }
+            } else {
+                if (date) {
+                    dateText.textContent = formattedDate;  
+                } else {
+                    dateText.textContent = "Выберите дату";  
+                }
+            }
+
+            localStorage.setItem("currentDate", formattedDate);
+
+            operationsByCurrentDate = sortArrayByCurrentDate(arr);
+            categoriesByCurrentDate = updateOperation(arrProperties, operationsByCurrentDate);
+
+
+            // addToFirestore(arrProperties);
+            chart(categoriesByCurrentDate, chartExpensesPie);
+            changeCostsOfCategories(categoriesByCurrentDate)
+
+            setOperationToList(sortByDate(operationsByCurrentDate));
+            changeChart(sortByDate(operationsByCurrentDate));
+            // addToFirestore2(operationsByCurrentDate);
+        }
+    })
+
+    function transformDate(date) {
+        if (date) {
+            if (date == "Все время") {
+                return date;
+            }
+            if (date.length == 7) {
+                return new Date(date).toLocaleString('default', { month: 'long' }) + " " + new Date(date).getFullYear();
+            } 
+            else if (date.length == 4) {
+                return date
+            }
+        } else {
+            return new Date().toLocaleString('default', { month: 'long' }) + " " + new Date().getFullYear();
+        }
+    }
+
+    function sortArrayByCurrentDate(arr) {
+        function filterExpensesByMonth(arr, yearMonth) {
+            const [year, month] = yearMonth.split('-');
+            return arr.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getFullYear() === parseInt(year) && expenseDate.getMonth() + 1 === parseInt(month);
+            });
+        }
+    
+        return filterExpensesByMonth(arr, localStorage.getItem("currentDate"));
+    
     }
 }
 
