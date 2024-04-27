@@ -46,7 +46,7 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
 
 categoriesSlide();
 addCategoryExpenses(chartExpensesPie);
-addCategoryIncome(chartIncomePie);
+// addCategoryIncome(chartIncomePie);
 airDatepicker();
 expandOperation();
 inputTextarrea();

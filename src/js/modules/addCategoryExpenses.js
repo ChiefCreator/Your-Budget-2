@@ -6,6 +6,25 @@ import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 
 function addCategoryExpenses(chartExpensesPie) {
+    // expenses переменные
+    let categoryExpenses = {};
+    let categoriesExpenses = [];
+    let operationsExpenses = [];
+    let operationsExpensesByCurrentDate = [];
+    let categoriesExpensesByCurrentDate = [];
+
+    let btnAddDoneCategoriesExpenses = document.querySelector(".add-expenses");
+    let popupDoneCategoriesExpenses = document.querySelector(".popup-category-done_expenses");
+
+    let popupOperationExpenses = document.querySelector(".popup-operation_expenses");
+    let btnCreateopupOperationExpenses = popupOperationExpenses.querySelector(".popup-operation__button");
+    let inputCostExpenses = popupOperationExpenses.querySelector(".input-cost__input");
+    let inputDateExpenses = popupOperationExpenses.querySelector(".input-date__input");
+    let textarreaCommentExpenses = popupOperationExpenses.querySelector(".popup-operation__textarrea");
+    let closeBtnPopupOperationExpenses = popupOperationExpenses.querySelector(".popup-operation__close");
+    let moreExpenses = document.querySelector(".operation-list__more_expenses");
+    let moreExpensesText = moreExpenses.querySelector(".tool-operation__item-text");
+
     const swiper = new Swiper('.swiper_categories-expenses', {
         speed: 600,
         spaceBetween: 0,
@@ -16,74 +35,223 @@ function addCategoryExpenses(chartExpensesPie) {
         },
     })
 
-    let btnAdd = document.querySelector(".add-expenses");
-    let popup = document.querySelector(".popup-category-done_expenses");
+    // income переменные 
+    let categoryIncome = {};
+    let categoriesIncome = [];
+    let operationsIncome = [];
+    let operationsIncomeByCurrentDate = [];
+    let categoriesIncomeByCurrentDate = [];
 
-    let properties = {};
-    let arrProperties = [];
+    let btnAddDoneCategoriesIncome = document.querySelector(".add-expenses");
+    let popupDoneCategoriesIncome = document.querySelector(".popup-category-done_expenses");
+
+    let popupOperationIncome = document.querySelector(".popup-operation_expenses");
+    let btnCreateopupOperationIncome = popupOperationIncome.querySelector(".popup-operation__button");
+    let inputCostIncome = popupOperationIncome.querySelector(".input-cost__input");
+    let inputDateIncome = popupOperationIncome.querySelector(".input-date__input");
+    let textarreaCommentIncome = popupOperationIncome.querySelector(".popup-operation__textarrea");
+    let closeBtnPopupOperationIncome = popupOperationIncome.querySelector(".popup-operation__close");
+    let moreIncome = document.querySelector(".operation-list__more_expenses");
+    let moreIncomeText = moreIncome.querySelector(".tool-operation__item-text");
+    
+    // общие 
     let index = 0;
-
-    let popupOperation = document.querySelector(".popup-operation_expenses");
     let overblock = document.querySelector(".overblock");
-    let btnCreate = popupOperation.querySelector(".popup-operation__button");
-    let inputCost = popupOperation.querySelector(".input-cost__input");
-    let inputDate = popupOperation.querySelector(".input-date__input");
-    let textarreaComment = popupOperation.querySelector(".popup-operation__textarrea");
-    let closeBtn = popupOperation.querySelector(".popup-operation__close");
-    let more = document.querySelector(".operation-list__more_expenses");
-    let moreText = more.querySelector(".tool-operation__item-text");
     let switchButton = document.querySelector(".switch-operations");
-
-    let arr = [];
-
-    let operationsByCurrentDate = [];
-    let categoriesByCurrentDate = [];
-
-
     let userEmail = localStorage.getItem("email").replace(".", "*");
 
-    getDataFromFirestoreOperations();
-    getDataFromFirestoreCategoriesByDate();
-    getDataFromFirestoreOperationsByDate();
-    getDataFromFirestoreCategories();
-    togglePopup();
+    getData();
+    function getData() {
+        // expenses
+        getDataFromFirestore("operationsExpenses")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                operationsExpenses = data;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("categoriesExpensesByDate")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                categoriesExpensesByCurrentDate = data;
+
+                setItemToListFromDatabase(categoriesExpensesByCurrentDate, "expenses");
+                chart(categoriesExpensesByCurrentDate, chartExpensesPie);
+                changeCostsOfCategories(categoriesExpensesByCurrentDate, "expenses")
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("operationsExpensesByDate")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                operationsExpensesByCurrentDate = data;
+                setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, "expenses");
+                changeChart(operationsExpensesByCurrentDate);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("categoriesExpenses")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                categoriesExpenses = data;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+
+        // income
+        getDataFromFirestore("operationsIncome")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                operationsIncome = data;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("categoriesIncomeByDate")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                categoriesIncomeByCurrentDate = data;
+
+                setItemToListFromDatabase(categoriesIncomeByCurrentDate, "expenses");
+                chart(categoriesIncomeByCurrentDate, chartIncomePie);
+                changeCostsOfCategories(categoriesIncomeByCurrentDate)
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("operationsIncomeByDate")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                operationsIncomeByCurrentDate = data;
+                setOperationToList(sortByDate(operationsIncomeByCurrentDate));
+                changeChart(operationsIncomeByCurrentDate);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    getDataFromFirestore("categoriesIncome")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch data from Firestore');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (Object.keys(data).length != 0) {
+                categoriesIncome = data;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data from Firestore:', error);
+        });
+    }
+
+    togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
 
     // добавление категорий
 
-    window.addEventListener("click", function(e) {
-        let category = e.target.closest(".done-expenses");
+    window.addEventListener("click", (event) => addCategory(event, categoryExpenses, categoriesExpenses, operationsExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, "expenses", "Expenses"));
 
-        if (e.target.closest(".done-expenses")) {
-            chooseCategory(category)
+    function addCategory(event, objCategory, categories,operations, categoriesByCurrentDate, operationsByCurrentDate, typeS, typeXL) {
+        let category = event.target.closest(`.done-${typeS}`);
+
+        if (event.target.closest(`.done-${typeS}`)) {
+            chooseCategory(category, objCategory, typeS)
         }
-        if (e.target.closest(".popup-category-done_expenses .popup-category-done__button")) {
-            arrProperties.push(properties);
-            categoriesByCurrentDate = updateOperation(arrProperties, operationsByCurrentDate);
+        if (event.target.closest(`.popup-category-done_${typeS} .popup-category-done__button`)) {
+            categories.push(Object.assign({}, objCategory));
 
-            addToFirestore(arrProperties, "categoriesExpenses");
-            addToFirestore(updateOperation(categoriesByCurrentDate, operationsByCurrentDate), "categoriesExpensesByDate");
+            for (let obj of operationsByCurrentDate) {
+                operationsByCurrentDate.pop()
+            }
+            operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
 
-            setItemToList(properties);
+            categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
+            console.log(operationsByCurrentDate, categoriesByCurrentDate)
+
+            addToFirestore(categories, `categories${typeXL}`);
+            addToFirestore(updateOperation(categoriesByCurrentDate, operationsByCurrentDate), `categories${typeXL}ByDate`);
+
+            setItemToList(objCategory, typeS);
             chart(categoriesByCurrentDate, chartExpensesPie);
-            changeCostsOfCategories(categoriesByCurrentDate)
+            changeCostsOfCategories(categoriesByCurrentDate, "expenses")
         }
-    })
+    }
 
-    function chooseCategory(category) {
-        let actCategory = document.querySelector(".done-expenses_act");
+    function chooseCategory(category, objCategory, type) {
+        let actCategory = document.querySelector(`.done-${type}_act`);
 
         if (actCategory && actCategory != category) {
-            actCategory.classList.remove("done-expenses_act");
+            actCategory.classList.remove(`done-${type}_act`);
         }
-        category.classList.toggle("done-expenses_act");
-        properties = JSON.parse(category.dataset.categoryDone);
+        category.classList.toggle(`done-${type}_act`);
+        
+        objCategory.title = JSON.parse(category.dataset.categoryDone).title
+        objCategory.icon = JSON.parse(category.dataset.categoryDone).icon
+        objCategory.cost = JSON.parse(category.dataset.categoryDone).cost
+        objCategory.bg = JSON.parse(category.dataset.categoryDone).bg
+        objCategory.color = JSON.parse(category.dataset.categoryDone).color
+
         index++;
-        properties.index = index;
+        objCategory.index = index;
     }
     
-    function setItemToList(objCategory) {
-        let blockToPaste = document.querySelector(".categories__list");
-        let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-options='{"index": ${objCategory.index}, "title": "${objCategory.title}", "cost": ${objCategory.cost}, "icon": "${objCategory.icon}", "bg": "${objCategory.bg}", "color": "${objCategory.color}"}'>
+    function setItemToList(objCategory, typeS) {
+        let blockToPaste = document.querySelector(`.list-categories_${typeS}`);
+        let itemCategory = `<div class="list-categories__item item-category item-category_${typeS}" data-options='{"index": ${objCategory.index}, "title": "${objCategory.title}", "cost": ${objCategory.cost}, "icon": "${objCategory.icon}", "bg": "${objCategory.bg}", "color": "${objCategory.color}"}'>
         <div class="item-category__head">
             <div class="item-category__icon ${objCategory.icon}" style="background-color:${objCategory.bg}"></div>
             <div class="item-category__info">
@@ -102,10 +270,10 @@ function addCategoryExpenses(chartExpensesPie) {
         blockToPaste.append(parser(itemCategory))
     }
 
-    function togglePopup() {
+    function togglePopup(btn, popup) {
         let overblock = document.querySelector(".overblock");
 
-        btnAdd.addEventListener("click", function() {
+        btn.addEventListener("click", function() {
             popup.classList.add("popup-category-done_open");
             overblock.classList.add("overblock_open");
         })
@@ -149,38 +317,24 @@ function addCategoryExpenses(chartExpensesPie) {
             }
         })
         .then(response => response.json())
-        .then(data => {
-          console.log('Category added:', data);
-        })
+        // .then(data => {
+        //   console.log('Category added:', data);
+        // })
         .catch(error => {
           console.error('Error adding category:', error);
         });
     }
 
-    function getDataFromFirestoreCategories() {
-        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesExpenses.json`;
+    function getDataFromFirestore(collection) {
+        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
     
-        fetch(firestoreUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data from Firestore');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (Object.keys(data).length != 0) {
-                    arrProperties = data;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data from Firestore:', error);
-            });
+        return fetch(firestoreUrl)
     }
 
-    function setItemToListFromDatabase(arr) {
-        let blockToPaste = document.querySelector(".categories__list");
+    function setItemToListFromDatabase(arr, typeS) {
+        let blockToPaste = document.querySelector(`.list-categories_${typeS}`);
         for (let i = 0;i < arr.length;i++) {
-            let itemCategory = `<div class="list-categories__item item-category item-category_expenses" data-options='{"index": ${arr[i].index}, "title": "${arr[i].title}", "cost": ${arr[i].cost}, "icon": "${arr[i].icon}", "bg": "${arr[i].bg}", "color": "${arr[i].color}"}'>
+            let itemCategory = `<div class="list-categories__item item-category item-category_${typeS}" data-options='{"index": ${arr[i].index}, "title": "${arr[i].title}", "cost": ${arr[i].cost}, "icon": "${arr[i].icon}", "bg": "${arr[i].bg}", "color": "${arr[i].color}"}'>
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
@@ -199,10 +353,10 @@ function addCategoryExpenses(chartExpensesPie) {
         }
     }
 
-    function changeCostsOfCategories(arr) {
+    function changeCostsOfCategories(arr, typeS) {
         let total = 0;
 
-        document.querySelectorAll(".list-categories_expenses .list-categories__item").forEach((category, i) => {
+        document.querySelectorAll(`.list-categories_${typeS} .list-categories__item`).forEach((category, i) => {
             if (arr[i]) {
                 total += arr[i].cost;
 
@@ -214,83 +368,88 @@ function addCategoryExpenses(chartExpensesPie) {
 
     // создание операций
 
-    window.addEventListener("click", function(e) {
-        if (e.target.closest(".list-categories_expenses .list-categories__item")) {
-            document.querySelectorAll(".list-categories_expenses .list-categories__item").forEach(cat => {
+    window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "expenses", popupOperationExpenses))
+
+    btnCreateopupOperationExpenses.addEventListener("click", () => createOperation(inputCostExpenses, inputDateExpenses, textarreaCommentExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie))
+
+    function addCategoryToPopupOperation(event, typeS, popup) {
+        if (event.target.closest(`.list-categories_${typeS} .list-categories__item`)) {
+            document.querySelectorAll(`.list-categories_${typeS} .list-categories__item`).forEach(cat => {
                 cat.classList.remove("act");
             })
 
-            let category = e.target.closest(".list-categories_expenses .list-categories__item");
+            let category = event.target.closest(`.list-categories_${typeS} .list-categories__item`);
             category.classList.add("act");
 
-            addPopup();
+            addPopup(popup);
 
-            addCategoryToPopup(category);
+            addCategoryToPopup(category, "expenses");
         }
-    })
+    }
 
-    btnCreate.addEventListener("click", function() {
+    function createOperation(inputCost, inputDate, inputComment, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
         let category = document.querySelector(".list-categories__item.act")
 
         let cost = +inputCost.value;
         let date = inputDate.value;
-        let comment = textarreaComment.value;
-        let index = setIndexToOperation("expenses");
+        let comment = inputComment.value;
+        let index = setIndexToOperation(typeS);
         let obj = objOperation(cost, date, comment, index, JSON.parse(category.dataset.options));
 
-        arr.push(obj);
-        operationsByCurrentDate = sortArrayByCurrentDate(arr);
+        operations.push(Object.assign({}, obj));
+        for (let obj of operationsByCurrentDate) {
+            operationsByCurrentDate.pop()
+        }
+        operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
 
-        arrProperties = updateOperation(arrProperties, arr);
-        categoriesByCurrentDate = updateOperation(categoriesByCurrentDate, operationsByCurrentDate);
+        categories = Object.assign(categories, updateOperation(categories, operations));
+        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
 
-        addToFirestore(arrProperties);
-        addToFirestore(categoriesByCurrentDate, "categoriesExpensesByDate");
+        addToFirestore(categories, `categories${typeXL}`);
+        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
 
-        chart(categoriesByCurrentDate, chartExpensesPie);
-        changeCostsOfCategories(categoriesByCurrentDate);
+        chart(categoriesByCurrentDate, chartPie);
+        changeCostsOfCategories(categoriesByCurrentDate, "expenses");
 
-        addToFirestore(arr, "operationsExpenses");
-        addToFirestore(operationsByCurrentDate, "operationsExpensesByDate");
+        addToFirestore(operations, `operations${typeXL}`);
+        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
 
-        setOperationToList(sortByDate(operationsByCurrentDate));
+        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, "expenses");
         changeChart(sortByDate(operationsByCurrentDate));
 
         switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
-    })
-
-    more.addEventListener("click", addOperations);
+    }
 
     overblock.addEventListener("click", function() {
-        closePopup();
+        closePopup(popupOperationExpenses, inputCostExpenses);
     })
 
-    closeBtn.addEventListener("click", function() {
-        closePopup();
+    closeBtnPopupOperationExpenses.addEventListener("click", function() {
+        closePopup(popupOperationExpenses, inputCostExpenses);
     })
 
-    function addPopup() {
-        popupOperation.classList.add("popup-operation_open");
+    function addPopup(popup) {
+        popup.classList.add("popup-operation_open");
         overblock.classList.add("overblock_open");
     }
 
-    function closePopup() {
-        popupOperation.classList.remove("popup-operation_open");
+    function closePopup(popup, inputCost) {
+        popup.classList.remove("popup-operation_open");
         overblock.classList.remove("overblock_open");
 
         inputCost.value = "";
     }
 
-    function addCategoryToPopup(category) {
+    function addCategoryToPopup(category, typeS) {
         let obj = JSON.parse(category.dataset.options);
 
         document.querySelectorAll(".popup-operation__body .item-category").forEach(category => {
             category.style.display = "none";
         })
 
-        let blockToPaste = document.querySelector(".list-categories");
+        let blockToPaste = document.querySelector(`.popup-operation_${typeS} .list-categories`);
                       
-        let itemCategory = `<div class="item-category item-category_expenses">
+        let itemCategory = `<div class="item-category item-category_${typeS}">
         <div class="item-category__head">
             <div class="item-category__icon ${obj.icon}" style="background-color: ${obj.bg}"></div>
             <div class="item-category__info">
@@ -334,22 +493,22 @@ function addCategoryExpenses(chartExpensesPie) {
         }
     }
 
-    function setOperationToList(arr) {
-        let blockToPaste = document.querySelector(".operation-list__item_expenses");
+    function setOperationToList(arr, more, typeS) {
+        let blockToPaste = document.querySelector(`.operation-list__item_${typeS}`);
 
         blockToPaste.querySelectorAll(".operation-list__wrapper").forEach(block => {
             block.remove()
         })
 
         for (let i = 0;i < arr.length;i++) {
-            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="expenses${arr[i].date}">
+            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="${typeS}${arr[i].date}">
             <p class="wrapper-operation__date">${arr[i].date}</p>
-            <div class="wrapper-operation__wrapper-content" data-dat="expenses${arr[i].date}"></div>
+            <div class="wrapper-operation__wrapper-content" data-dat="${typeS}${arr[i].date}"></div>
             </div>`;
 
             let itemCategory = "";
             if (arr[i].comment) {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_${typeS} expand-operation" data-index="${arr[i].index}">
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
@@ -371,7 +530,7 @@ function addCategoryExpenses(chartExpensesPie) {
             </div>
                 </div>`;
             } else {
-                itemCategory = `<div class="list-category__item item-category item-category_expenses expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_${typeS} expand-operation" data-index="${arr[i].index}">
                 <div class="item-category__head">
                     <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                     <div class="item-category__info">
@@ -408,12 +567,13 @@ function addCategoryExpenses(chartExpensesPie) {
             } else {
                 pasteThreeOperations();
             }
+
             function pasteThreeOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="${typeS}${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="${typeS}${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`).length - 1].remove()
                 }
 
                 if (arr.length < 4) {
@@ -434,84 +594,18 @@ function addCategoryExpenses(chartExpensesPie) {
             }
             function pasteAllOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="expenses${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="${typeS}${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="expenses${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="expenses${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="${typeS}${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`).length - 1].remove()
                 }
             }
         }
     }
 
-    function getDataFromFirestoreOperations() {
-        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/operationsExpenses.json`;
-    
-        fetch(firestoreUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data from Firestore');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (Object.keys(data).length != 0) {
-                    arr = data;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data from Firestore:', error);
-            });
-    }
-
-    function getDataFromFirestoreOperationsByDate() {
-        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/operationsExpensesByDate.json`;
-    
-        fetch(firestoreUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data from Firestore');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (Object.keys(data).length != 0) {
-                    operationsByCurrentDate = data;
-                    setOperationToList(sortByDate(operationsByCurrentDate));
-                    changeChart(operationsByCurrentDate);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data from Firestore:', error);
-            });
-    }
-
-    function getDataFromFirestoreCategoriesByDate() {
-        const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/categoriesExpensesByDate.json`;
-    
-        fetch(firestoreUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data from Firestore');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (Object.keys(data).length != 0) {
-                    categoriesByCurrentDate = data;
-
-                    setItemToListFromDatabase(categoriesByCurrentDate);
-                    chart(categoriesByCurrentDate, chartExpensesPie);
-                    changeCostsOfCategories(categoriesByCurrentDate)
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data from Firestore:', error);
-            });
-    }
-
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == false) {
-            changeChart(sortByDate(operationsByCurrentDate))
+            changeChart(sortByDate(operationsExpensesByCurrentDate))
         }
     })
 
@@ -531,7 +625,15 @@ function addCategoryExpenses(chartExpensesPie) {
         return categories
     }
 
-    function addOperations() {
+    function sortByDate(arr) {
+        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    // больше меньше операций
+
+    moreExpenses.addEventListener("click", () => addOperations(moreExpenses, moreExpensesText));
+
+    function addOperations(more, moreText) {
 
         if (!more.classList.contains("open")) {
             moreText.textContent = "Свернуть операции";
@@ -541,11 +643,7 @@ function addCategoryExpenses(chartExpensesPie) {
             more.classList.remove("open");
         }
 
-        setOperationToList(sortByDate(operationsByCurrentDate));
-    }
-
-    function sortByDate(arr) {
-        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, "expenses");
     }
 
     // создание категории
@@ -581,14 +679,14 @@ function addCategoryExpenses(chartExpensesPie) {
         if (validation(objCategory)) {
             index++;
 
-            arrProperties.push(Object.assign({}, objCategory))
-            categoriesByCurrentDate = updateOperation(arrProperties, operationsByCurrentDate);
+            categoriesExpenses.push(Object.assign({}, objCategory))
+            categoriesExpensesByCurrentDate = updateOperation(categoriesExpenses, operationsExpensesByCurrentDate);
 
-            addToFirestore(arrProperties, "categoriesExpenses");
-            addToFirestore(categoriesByCurrentDate, "categoriesExpensesByDate");
+            addToFirestore(categoriesExpenses, "categoriesExpenses");
+            addToFirestore(categoriesExpensesByCurrentDate, "categoriesExpensesByDate");
 
             setItemToList(objCategory);
-            chart(categoriesByCurrentDate, chartExpensesPie);
+            chart(categoriesExpensesByCurrentDate, chartExpensesPie);
 
             popupCategory.classList.remove("popup-category_open");
             overblock.classList.remove("overblock_open");
@@ -736,7 +834,7 @@ function addCategoryExpenses(chartExpensesPie) {
             localStorage.setItem("currentDate", "Все время");
         }
     }
-    let mainDatePicker = new AirDatepicker('#main-picker', {
+    let mainDatePickerSettings = {
         inline: false,
         position:'left top',
         view: "months",
@@ -760,21 +858,26 @@ function addCategoryExpenses(chartExpensesPie) {
                 }
             }
 
-            localStorage.setItem("currentDate", formattedDate);
+            localStorage.setItem("currentDate", formattedDate); 
+            changeMainDate(operationsExpensesByCurrentDate, categoriesExpensesByCurrentDate, operationsExpenses, categoriesExpenses, chartExpensesPie, moreExpenses, "expenses", "Expenses")      
+        },
+    }
+    let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
 
-            operationsByCurrentDate = sortArrayByCurrentDate(arr);
-            categoriesByCurrentDate = updateOperation(arrProperties, operationsByCurrentDate);
 
-            addToFirestore(operationsByCurrentDate, "operationsExpensesByDate")
-            addToFirestore(categoriesByCurrentDate, "categoriesExpensesByDate")
-            chart(categoriesByCurrentDate, chartExpensesPie);
-            changeCostsOfCategories(categoriesByCurrentDate)
+    function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operations, categories, chartPie, more, typeS, typeXL) {
+        operationsByCurrentDate = Object.assign(operationsByCurrentDate.filter(() => false), sortArrayByCurrentDate(operations))
+        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate,updateOperation(categories, operationsByCurrentDate))
 
-            setOperationToList(sortByDate(operationsByCurrentDate));
-            changeChart(sortByDate(operationsByCurrentDate));
-        }
-    })
+        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
+        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
+        chart(categoriesByCurrentDate, chartPie);
+        changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
+        setOperationToList(sortByDate(operationsByCurrentDate), more, typeS);
+        changeChart(sortByDate(operationsByCurrentDate));
+    }
+    
     function transformDate(date) {
         if (date) {
             if (date == "Все время") {
@@ -800,6 +903,7 @@ function addCategoryExpenses(chartExpensesPie) {
             });
         }
     
+        console.log(filterExpensesByMonth(arr, localStorage.getItem("currentDate")), "filtered")
         return filterExpensesByMonth(arr, localStorage.getItem("currentDate"));
     
     }
