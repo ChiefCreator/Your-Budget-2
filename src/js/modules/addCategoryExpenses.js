@@ -642,10 +642,10 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
 
     // больше меньше операций
 
-    moreExpenses.addEventListener("click", () => addOperations(moreExpenses, moreExpensesText, "expenses"));
-    moreIncome.addEventListener("click", () => addOperations(moreIncome, moreIncomeText, "income"));
+    moreExpenses.addEventListener("click", () => addOperations(moreExpenses, moreExpensesText, "expenses", operationsExpensesByCurrentDate));
+    moreIncome.addEventListener("click", () => addOperations(moreIncome, moreIncomeText, "income", operationsIncomeByCurrentDate));
 
-    function addOperations(more, moreText, typeS) {
+    function addOperations(more, moreText, typeS, operationsByCurrentDate) {
 
         if (!more.classList.contains("open")) {
             moreText.textContent = "Свернуть операции";
@@ -655,7 +655,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             more.classList.remove("open");
         }
 
-        setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, typeS);
+        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, typeS);
     }
 
     // создание категории
