@@ -5,7 +5,7 @@ import changeChart from "./changeChartExpensesAndIncome";
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 
-function addCategoryExpenses(chartExpensesPie) {
+function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
     // expenses переменные
     let categoryExpenses = {};
     let categoriesExpenses = [];
@@ -42,16 +42,16 @@ function addCategoryExpenses(chartExpensesPie) {
     let operationsIncomeByCurrentDate = [];
     let categoriesIncomeByCurrentDate = [];
 
-    let btnAddDoneCategoriesIncome = document.querySelector(".add-expenses");
-    let popupDoneCategoriesIncome = document.querySelector(".popup-category-done_expenses");
+    let btnAddDoneCategoriesIncome = document.querySelector(".add-income");
+    let popupDoneCategoriesIncome = document.querySelector(".popup-category-done_income");
 
-    let popupOperationIncome = document.querySelector(".popup-operation_expenses");
+    let popupOperationIncome = document.querySelector(".popup-operation_income");
     let btnCreateopupOperationIncome = popupOperationIncome.querySelector(".popup-operation__button");
     let inputCostIncome = popupOperationIncome.querySelector(".input-cost__input");
     let inputDateIncome = popupOperationIncome.querySelector(".input-date__input");
     let textarreaCommentIncome = popupOperationIncome.querySelector(".popup-operation__textarrea");
     let closeBtnPopupOperationIncome = popupOperationIncome.querySelector(".popup-operation__close");
-    let moreIncome = document.querySelector(".operation-list__more_expenses");
+    let moreIncome = document.querySelector(".operation-list__more_income");
     let moreIncomeText = moreIncome.querySelector(".tool-operation__item-text");
     
     // общие 
@@ -157,9 +157,9 @@ function addCategoryExpenses(chartExpensesPie) {
             if (Object.keys(data).length != 0) {
                 categoriesIncomeByCurrentDate = data;
 
-                setItemToListFromDatabase(categoriesIncomeByCurrentDate, "expenses");
+                setItemToListFromDatabase(categoriesIncomeByCurrentDate, "income");
                 chart(categoriesIncomeByCurrentDate, chartIncomePie);
-                changeCostsOfCategories(categoriesIncomeByCurrentDate)
+                changeCostsOfCategories(categoriesIncomeByCurrentDate, "income")
             }
         })
         .catch(error => {
@@ -175,8 +175,7 @@ function addCategoryExpenses(chartExpensesPie) {
         .then(data => {
             if (Object.keys(data).length != 0) {
                 operationsIncomeByCurrentDate = data;
-                setOperationToList(sortByDate(operationsIncomeByCurrentDate));
-                changeChart(operationsIncomeByCurrentDate);
+                setOperationToList(sortByDate(operationsIncomeByCurrentDate), moreIncome, "income");
             }
         })
         .catch(error => {
@@ -200,12 +199,14 @@ function addCategoryExpenses(chartExpensesPie) {
     }
 
     togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
+    togglePopup(btnAddDoneCategoriesIncome, popupDoneCategoriesIncome);
 
     // добавление категорий
 
-    window.addEventListener("click", (event) => addCategory(event, categoryExpenses, categoriesExpenses, operationsExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, "expenses", "Expenses"));
+    window.addEventListener("click", (event) => addCategory(event, categoryExpenses, categoriesExpenses, operationsExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, chartExpensesPie, "expenses", "Expenses"));
+    window.addEventListener("click", (event) => addCategory(event, categoryIncome, categoriesIncome, operationsIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, "income", "Income"));
 
-    function addCategory(event, objCategory, categories,operations, categoriesByCurrentDate, operationsByCurrentDate, typeS, typeXL) {
+    function addCategory(event, objCategory, categories,operations, categoriesByCurrentDate, operationsByCurrentDate, chartPie, typeS, typeXL) {
         let category = event.target.closest(`.done-${typeS}`);
 
         if (event.target.closest(`.done-${typeS}`)) {
@@ -220,14 +221,13 @@ function addCategoryExpenses(chartExpensesPie) {
             operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
 
             categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
-            console.log(operationsByCurrentDate, categoriesByCurrentDate)
 
             addToFirestore(categories, `categories${typeXL}`);
             addToFirestore(updateOperation(categoriesByCurrentDate, operationsByCurrentDate), `categories${typeXL}ByDate`);
 
             setItemToList(objCategory, typeS);
-            chart(categoriesByCurrentDate, chartExpensesPie);
-            changeCostsOfCategories(categoriesByCurrentDate, "expenses")
+            chart(categoriesByCurrentDate, chartPie);
+            changeCostsOfCategories(categoriesByCurrentDate, typeS)
         }
     }
 
@@ -363,14 +363,16 @@ function addCategoryExpenses(chartExpensesPie) {
                 category.querySelector(".item-category__total").textContent = arr[i].cost + " BYN";
             }
         })
-        document.querySelector(".slider-categories__total-num").textContent = total;
+        document.querySelector(`.slider-categories__item_${typeS} .slider-categories__total-num`).textContent = total;
     }
 
     // создание операций
 
-    window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "expenses", popupOperationExpenses))
+    window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "expenses", popupOperationExpenses));
+    window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "income", popupOperationIncome))
 
     btnCreateopupOperationExpenses.addEventListener("click", () => createOperation(inputCostExpenses, inputDateExpenses, textarreaCommentExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie))
+    btnCreateopupOperationIncome.addEventListener("click", () => createOperation(inputCostIncome, inputDateIncome, textarreaCommentIncome, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie))
 
     function addCategoryToPopupOperation(event, typeS, popup) {
         if (event.target.closest(`.list-categories_${typeS} .list-categories__item`)) {
@@ -383,12 +385,12 @@ function addCategoryExpenses(chartExpensesPie) {
 
             addPopup(popup);
 
-            addCategoryToPopup(category, "expenses");
+            addCategoryToPopup(category, typeS);
         }
     }
 
     function createOperation(inputCost, inputDate, inputComment, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
-        let category = document.querySelector(".list-categories__item.act")
+        let category = document.querySelector(`.list-categories__item.item-category_${typeS}.act`)
 
         let cost = +inputCost.value;
         let date = inputDate.value;
@@ -409,19 +411,26 @@ function addCategoryExpenses(chartExpensesPie) {
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
 
         chart(categoriesByCurrentDate, chartPie);
-        changeCostsOfCategories(categoriesByCurrentDate, "expenses");
+        changeCostsOfCategories(categoriesByCurrentDate, typeS);
 
         addToFirestore(operations, `operations${typeXL}`);
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
 
-        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, "expenses");
+        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, typeS);
         changeChart(sortByDate(operationsByCurrentDate));
 
-        switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
+        if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
+            switchButton.querySelector(".switch-operations__input").checked = false;
+        } else {
+            switchButton.querySelector(".switch-operations__input").checked = true;
+        }
+
+        // switchButton.querySelector(".switch-operations__input").checked = !switchButton.querySelector(".switch-operations__input").checked;
     }
 
     overblock.addEventListener("click", function() {
         closePopup(popupOperationExpenses, inputCostExpenses);
+        closePopup(popupOperationIncome, inputCostIncome);
     })
 
     closeBtnPopupOperationExpenses.addEventListener("click", function() {
@@ -606,6 +615,8 @@ function addCategoryExpenses(chartExpensesPie) {
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == false) {
             changeChart(sortByDate(operationsExpensesByCurrentDate))
+        } else {
+            changeChart(sortByDate(operationsIncomeByCurrentDate))
         }
     })
 
@@ -631,9 +642,10 @@ function addCategoryExpenses(chartExpensesPie) {
 
     // больше меньше операций
 
-    moreExpenses.addEventListener("click", () => addOperations(moreExpenses, moreExpensesText));
+    moreExpenses.addEventListener("click", () => addOperations(moreExpenses, moreExpensesText, "expenses"));
+    moreIncome.addEventListener("click", () => addOperations(moreIncome, moreIncomeText, "income"));
 
-    function addOperations(more, moreText) {
+    function addOperations(more, moreText, typeS) {
 
         if (!more.classList.contains("open")) {
             moreText.textContent = "Свернуть операции";
@@ -643,57 +655,82 @@ function addCategoryExpenses(chartExpensesPie) {
             more.classList.remove("open");
         }
 
-        setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, "expenses");
+        setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, typeS);
     }
 
     // создание категории
 
-    let popupCategory = document.querySelector(".popup-category");
+    // переменные expenses
+    let popupCategoryExpenses = document.querySelector(".popup-category");
     let createBtnsExpenses = document.querySelectorAll(".create-expenses");
 
-    let objCategory = {};
-    let inpTitle = popupCategory.querySelector(".popup-category__input");
-    let inpBg = popupCategory.querySelector(".input-color__input_bg");
-    let wrapperInpBg = inpBg.parentElement;
-    let inpColor = popupCategory.querySelector(".input-color__input_color");
-    let wrapperInpColor = inpColor.parentElement;
-    let icons = popupCategory.querySelectorAll(".popup-category__icon");
-    let buttonCreate = popupCategory.querySelector(".popup-category__button");
+    let objCategoryExpenses = {};
+    let inpTitleExpenses = popupCategoryExpenses.querySelector(".popup-category__input");
+    let inpBgExpenses = popupCategoryExpenses.querySelector(".input-color__input_bg");
+    let wrapperInpBgExpenses = inpBgExpenses.parentElement;
+    let inpColorExpenses = popupCategoryExpenses.querySelector(".input-color__input_color");
+    let wrapperInpColorExpenses = inpColorExpenses.parentElement;
+    let iconsExpenses = popupCategoryExpenses.querySelectorAll(".popup-category__icon");
+    let buttonCreateExpenses = popupCategoryExpenses.querySelector(".popup-category__button");
+
+    // переменные income
+    let popupCategoryIncome = document.querySelector(".popup-category_income");
+    let createBtnsIncome = document.querySelectorAll(".create-income");
+
+    let objCategoryIncome = {};
+    let inpTitleIncome = popupCategoryIncome.querySelector(".popup-category__input");
+    let inpBgIncome = popupCategoryIncome.querySelector(".input-color__input_bg");
+    let wrapperInpBgIncome = inpBgIncome.parentElement;
+    let inpColorIncome = popupCategoryIncome.querySelector(".input-color__input_color");
+    let wrapperInpColorIncome = inpColorIncome.parentElement;
+    let iconsIncome = popupCategoryIncome.querySelectorAll(".popup-category__icon");
+    let buttonCreateIncome = popupCategoryIncome.querySelector(".popup-category__button");
 
     createBtnsExpenses.forEach(addBtn => {
         addBtn.addEventListener("click", function() {
-            popupCategory.classList.add("popup-category_open");
+            popupCategoryExpenses.classList.add("popup-category_open");
+            overblock.classList.add("overblock_open");
+        })
+    })
+    createBtnsIncome.forEach(addBtn => {
+        addBtn.addEventListener("click", function() {
+            popupCategoryIncome.classList.add("popup-category_open");
             overblock.classList.add("overblock_open");
         })
     })
     overblock.addEventListener("click", function() {
-        popupCategory.classList.remove("popup-category_open");
+        popupCategoryExpenses.classList.remove("popup-category_open");
+        popupCategoryIncome.classList.remove("popup-category_open");
         overblock.classList.remove("overblock_open");
     })
 
-    changeColor();
+    changeColor(iconsExpenses, inpBgExpenses, inpColorExpenses, wrapperInpBgExpenses, wrapperInpColorExpenses, objCategoryExpenses);
+    changeColor(iconsIncome, inpBgIncome, inpColorIncome, wrapperInpBgIncome, wrapperInpColorIncome, objCategoryIncome);
 
-    buttonCreate.addEventListener("click", function() {
-        setValueToObject(objCategory, index);
+    buttonCreateExpenses.addEventListener("click", () => createCategory(objCategoryExpenses, categoriesExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, chartExpensesPie, popupCategoryExpenses, inpTitleExpenses, inpBgExpenses, inpColorExpenses, "expenses", "Expenses"));
+    buttonCreateIncome.addEventListener("click", () => createCategory(objCategoryIncome, categoriesIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, popupCategoryIncome, inpTitleIncome, inpBgIncome, inpColorIncome, "income", "Income"));
+
+    function createCategory(objCategory, categories, categoriesByCurrentDate, operationsByCurrentDate, chartPie, popupCategory, inpTitle, inpBg, inpColor, typeS, typeXL) {
+        setValueToObject(objCategory, index, inpTitle, inpBg, inpColor);
 
         if (validation(objCategory)) {
             index++;
 
-            categoriesExpenses.push(Object.assign({}, objCategory))
-            categoriesExpensesByCurrentDate = updateOperation(categoriesExpenses, operationsExpensesByCurrentDate);
+            categories.push(Object.assign({}, objCategory))
+            categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
 
-            addToFirestore(categoriesExpenses, "categoriesExpenses");
-            addToFirestore(categoriesExpensesByCurrentDate, "categoriesExpensesByDate");
+            addToFirestore(categories, `categories${typeXL}`);
+            addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
 
-            setItemToList(objCategory);
-            chart(categoriesExpensesByCurrentDate, chartExpensesPie);
+            setItemToList(objCategory, typeS);
+            chart(categoriesByCurrentDate, chartPie);
 
             popupCategory.classList.remove("popup-category_open");
             overblock.classList.remove("overblock_open");
         }
-    })
+    }
 
-    function setValueToObject(obj, index) {
+    function setValueToObject(obj, index, inpTitle, inpBg, inpColor) {
         obj.index = index;
         obj.title = inpTitle.value;
         obj.bg = inpBg.value;
@@ -714,7 +751,7 @@ function addCategoryExpenses(chartExpensesPie) {
         return isError;
     }
 
-    function changeColor() {
+    function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, objCategory) {
 
         icons.forEach(icon => {
             icon.style.backgroundColor = inpBg.value;
@@ -858,16 +895,24 @@ function addCategoryExpenses(chartExpensesPie) {
                 }
             }
 
-            localStorage.setItem("currentDate", formattedDate); 
-            changeMainDate(operationsExpensesByCurrentDate, categoriesExpensesByCurrentDate, operationsExpenses, categoriesExpenses, chartExpensesPie, moreExpenses, "expenses", "Expenses")      
+            localStorage.setItem("currentDate", formattedDate);   
+            changeMainDate(operationsIncomeByCurrentDate, categoriesIncomeByCurrentDate, operationsIncome, categoriesIncome, chartIncomePie, moreIncome, "income", "Income");
+            changeMainDate(operationsExpensesByCurrentDate, categoriesExpensesByCurrentDate, operationsExpenses, categoriesExpenses, chartExpensesPie, moreExpenses, "expenses", "Expenses");       
         },
     }
     let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
 
 
     function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operations, categories, chartPie, more, typeS, typeXL) {
-        operationsByCurrentDate = Object.assign(operationsByCurrentDate.filter(() => false), sortArrayByCurrentDate(operations))
-        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate,updateOperation(categories, operationsByCurrentDate))
+        for (let i = 0;i < operationsByCurrentDate.length;i++) {
+            for (let k = 0;k < operationsByCurrentDate.length;k++) {
+                operationsByCurrentDate.pop()
+            }
+            operationsByCurrentDate.pop()
+        }
+    
+        operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations))
+        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate))
 
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
@@ -876,6 +921,12 @@ function addCategoryExpenses(chartExpensesPie) {
 
         setOperationToList(sortByDate(operationsByCurrentDate), more, typeS);
         changeChart(sortByDate(operationsByCurrentDate));
+
+        if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
+            switchButton.querySelector(".switch-operations__input").checked = false;
+        } else {
+            switchButton.querySelector(".switch-operations__input").checked = true;
+        }
     }
     
     function transformDate(date) {
