@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Your Budget</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <nav class="navigation">
+    <a class="navigation__logo logo">Your Budget</a>
+    <ul class="navigation__list">
+        <li class="navigation__item">
+            <a class="navigation__link" href="operations-page.html">Операции</a>
+        </li>
+        <li class="navigation__item">
+            <a class="navigation__link">Статистика</a>
+        </li>
+        <li class="navigation__item">
+            <a class="navigation__link" href="page-accounts.html">Счета</a>
+        </li>
+        <li class="navigation__item">
+            <a class="navigation__link">Настройки</a>
+        </li>
+    </ul>
+    <div class="navigation__date main-date">
+        <p class="main-date__value">Выберите дату</p>
+        <div class="main-date__input-wrapper">
+            <input class="main-date__input" id="main-picker">
+        </div>
+    </div>
+</nav>
+        </div>
+    </header>
+    <main class="page-operation">
+        <div class="container">
+            <div class="page-operation__content">
+                <div class="page-operation__operations list-all-operation">
+                    <div class="list-all-operation__item operation-list__item_all">
+
+                    </div>
+                </div>
+                <div class="page-operation__chart-wrapper">
+                    <div class="page-operation__chart">
+                        <canvas id="chartExpensesAndIncomePie"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="./../js/operationsPage.bundle.js"></script>
+</body>
+</html>

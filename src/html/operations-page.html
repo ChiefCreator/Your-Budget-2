@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Your Budget</title>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            @@include("./blocks/navigation.html")
+        </div>
+    </header>
+    <main class="page-operation">
+        <div class="container">
+            <div class="page-operation__content">
+                <div class="page-operation__operations list-all-operation">
+                    <div class="list-all-operation__item operation-list__item_all">
+
+                    </div>
+                </div>
+                <div class="page-operation__chart-wrapper">
+                    <div class="page-operation__chart">
+                        <canvas id="chartExpensesAndIncomePie"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="./../js/operationsPage.bundle.js"></script>
+</body>
+</html>

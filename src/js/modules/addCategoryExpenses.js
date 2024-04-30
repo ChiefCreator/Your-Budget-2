@@ -655,7 +655,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             more.classList.remove("open");
         }
 
-        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, typeS);
+        setOperationToList(sortByDate(operationsByCurrentDate), more, typeS);
     }
 
     // создание категории
