@@ -958,6 +958,42 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         return filterExpensesByMonth(arr, localStorage.getItem("currentDate"));
     
     }
+
+    // удаление операций
+
+    window.addEventListener("click", (event) => deleteOperation(event, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, moreExpenses, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie))
+    window.addEventListener("click", (event) => deleteOperation(event, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, moreIncome, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie))
+
+    function deleteOperation(event, typeS, typeXL, operations, operationsByCurrentDate, more, categories, categoriesByCurrentDate, chartPie) {
+        if (event.target.closest(`.item-category_${typeS} .item-category__button_delete`)) {
+            let deleteBtn = event.target.closest(`.item-category_${typeS} .item-category__button_delete`);
+            let operation = deleteBtn.closest(".item-category");
+   
+            sortOperations(operation, operations);
+            sortOperations(operation, operationsByCurrentDate);
+
+            categories = Object.assign(categories, updateOperation(categories, operations));
+            categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
+
+            addToFirestore(operations, `operations${typeXL}`);
+            addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
+            addToFirestore(categories, `operations${typeXL}`);
+            addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
+    
+            setOperationToList(operationsByCurrentDate, more, typeS);
+
+            chart(categoriesByCurrentDate, chartPie);
+            changeCostsOfCategories(categoriesByCurrentDate, typeS);
+
+            changeChart(sortByDate(operationsByCurrentDate));
+        }
+    }
+
+    function sortOperations(operation, operations) {
+        let temp = operations.filter(item => item.index != operation.dataset.index);
+        operations.forEach(item => operations.pop())
+        operations = Object.assign(operations, temp);
+    }
 }
 
 export default addCategoryExpenses;
