@@ -1,5 +1,5 @@
 function inputTextarrea() {
-    let textarreas = document.querySelectorAll(".popup-operation__textarrea");
+    let textarreas = document.querySelectorAll(".textarrea__input");
     for (let textarrea of textarreas) {
         let width = +textarrea.clientWidth;
         let charWidth = 8.8;

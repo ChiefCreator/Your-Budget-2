@@ -103,47 +103,6 @@
         pointer-events: none;
         transition: all .3s ease;
     }
-    &__textarrea-container{
-        min-height: 15px;
-        border-radius: 7px;
-        display: flex;
-        gap: 8px;
-    }
-    &__textarrea-content{
-        position: relative;
-        width: 100%;
-    }
-    &__textarrea{
-        margin-top: 10px;
-        background-color: transparent;
-        width: 100%;
-        min-height: 25px;
-        max-height: 25px;
-        resize:none;
-        transition: min-height .3s ease;
-        font-size: 15px;
-        &:focus + &-label{
-            opacity: 0;
-            left: -10px;
-        }
-        &:valid + &-label{
-            opacity: 0;
-            left: -10px;
-        }
-    }
-    &__textarrea-label{
-        font-size: 15px;
-        font-weight: 500;
-        background-color: white;
-        color: black;
-        position: absolute;
-        left: 0;
-        opacity: 1;
-        top: 50%;
-        transform: translate(0,-50%);
-        pointer-events: none;
-        transition: all .3s ease;
-    }
     &__select-wrapper{
         flex: 0 1 200px;
         min-height: 35px;
@@ -242,6 +201,14 @@
             width: 18px;
             height: 18px;
         }
+        .popup-operation-datepicker-change-expenses{
+            width: 18px;
+            height: 18px;
+        }
+        .popup-operation-datepicker-change-income{
+            width: 18px;
+            height: 18px;
+        }
     }
     &__icon-input{
         cursor: pointer;
@@ -260,5 +227,46 @@
             font-size: 18px;
             color: black;
         }
+    }
+}
+.textarrea{
+    min-height: 15px;
+    border-radius: 7px;
+    display: flex;
+    gap: 8px;
+    &__content{
+        position: relative;
+        width: 100%;
+    }
+    &__input{
+        margin-top: 10px;
+        background-color: transparent;
+        width: 100%;
+        min-height: 25px;
+        max-height: 25px;
+        resize:none;
+        transition: min-height .3s ease;
+        font-size: 15px;
+        &:focus + &-label{
+            opacity: 0;
+            left: -10px;
+        }
+        &:valid + &-label{
+            opacity: 0;
+            left: -10px;
+        }
+    }
+    &__input-label{
+        font-size: 16px;
+        font-weight: 500;
+        background-color: white;
+        color: black;
+        position: absolute;
+        left: 0;
+        opacity: 1;
+        top: 50%;
+        transform: translate(0,-50%);
+        pointer-events: none;
+        transition: all .3s ease;
     }
 }
