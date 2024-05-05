@@ -1,5 +1,5 @@
 <div class="statistics">
-    <div class="statistics__dashboard dashboard-statistics">
+    <div class="statistics__dashboard dashboard-statistics hide">
         <p class="dashboard-statistics__title">Операции</p>
         <label class="switch switch-operations">
             <input class="switch__input switch-operations__input" type="checkbox">
@@ -7,31 +7,131 @@
             <div class="switch__bg switch-operations__bg"></div>
         </label>
     </div>
-    <div class="statistics__chart">
-        <canvas id="chartBar" class="chart-expenses"></canvas>
-    </div>
-    <div class="operation-list">
-        <div class="operation-list__block">
-            <div class="operation-list__item operation-list__item_expenses">
-            
+    <div class="statistics__swiper swiper-statistics">
+        <div class="swiper-statistics__bg"></div>
+        <div class="swiper-statistics__wrapper">
+            <div class="swiper-statistics__content">
+                <p class="swiper-statistics__text">Наши инструменты</p>
+                <div class="swiper-statistics__buttons">
+                    <div class="swiper-statistics__button swiper-statistics__button_prev"></div>
+                    <div class="swiper-statistics__button swiper-statistics__button_next"></div>
+                </div>
             </div>
-            <div class="tool-operation tool-operation_mt operation-list__more operation-list__more_expenses">
+            <div class="swiper-statistics__slider-wrapper">
+                <div class="swiper swiper-statistics-slider">
+                    <div class="swiper-wrapper swiper-statistics-slider__wrapper">
+                        <div class="swiper-slide swiper-statistics-slider__slide">
+                            <div class="tool-card tool-card_operations">
+                                <header class="tool-card__header">
+                                    <span class="tool-card__num">01</span>
+                                </header>
+                                <div class="tool-card__body">
+                                    <div class="tool-card__icon"></div>
+                                    <h3 class="tool-card__title">Операции</h3>
+                                </div>
+                                <footer class="tool-card__footer">
+                                    <div class="tool-card__more more">
+                                        <p class="more__text">Подробнее</p>
+                                        <span class="more__icon"></span>
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
+                        <div class="swiper-slide swiper-statistics-slider__slide">
+                            <div class="tool-card tool-card_statistics">
+                                <header class="tool-card__header">
+                                    <span class="tool-card__num">02</span>
+                                </header>
+                                <div class="tool-card__body">
+                                    <div class="tool-card__icon"></div>
+                                    <h3 class="tool-card__title">Статистика</h3>
+                                </div>
+                                <footer class="tool-card__footer">
+                                    <div class="tool-card__more more">
+                                        <p class="more__text">Подробнее</p>
+                                        <span class="more__icon"></span>
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
+                        <div class="swiper-slide swiper-statistics-slider__slide">
+                            <div class="tool-card tool-card_assets">
+                                <header class="tool-card__header">
+                                    <span class="tool-card__num">03</span>
+                                </header>
+                                <div class="tool-card__body">
+                                    <div class="tool-card__icon"></div>
+                                    <h3 class="tool-card__title">Счета</h3>
+                                </div>
+                                <footer class="tool-card__footer">
+                                    <div class="tool-card__more more">
+                                        <p class="more__text">Подробнее</p>
+                                        <span class="more__icon"></span>
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
+                        <div class="swiper-slide swiper-statistics-slider__slide">
+                            <div class="tool-card tool-card_settings">
+                                <header class="tool-card__header">
+                                    <span class="tool-card__num">04</span>
+                                </header>
+                                <div class="tool-card__body">
+                                    <div class="tool-card__icon"></div>
+                                    <h3 class="tool-card__title">Настройки</h3>
+                                </div>
+                                <footer class="tool-card__footer">
+                                    <div class="tool-card__more more">
+                                        <p class="more__text">Подробнее</p>
+                                        <span class="more__icon"></span>
+                                    </div>
+                                </footer>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="statistics__content">
+        <div class="statistics__chart">
+            <div class="operation-chart">
+                <div id="chartdiv" style="width: 100%; height: 350px;"></div>
+            </div>
+            <canvas id="chartBar" class="chart-expenses hide"></canvas>
+        </div>
+        <div class="statistics__operation-list operation-list">
+            <header class="operation-list__header">
+                <p class="categories__title">Последнии операции</p>
+                <div class="categories__settings">
+                
+                </div>
+            </header>
+            <div class="operation-list__body">
+                <div class="operation-list__item operation-list__item_expenses">
+            
+                </div>
+            </div>
+            <footer class="operation-list__footer">
+
+            </footer>
+            <div class="tool-operation tool-operation_mt operation-list__more operation-list__more_expenses hide">
                 <div class="tool-operation__icon"></div>
                 <div class="tool-operation__item">
                     <p class="tool-operation__item-text">Все операции</p>
                     <span class="tool-operation__item-arrow"></span>
                 </div>
             </div>
-        </div>
-        <div class="operation-list__block">
-            <div class="operation-list__item operation-list__item_income">
-
-            </div>
-            <div class="tool-operation tool-operation_mt operation-list__more operation-list__more_income">
-                <div class="tool-operation__icon"></div>
-                <div class="tool-operation__item">
-                    <p class="tool-operation__item-text">Все операции</p>
-                    <span class="tool-operation__item-arrow"></span>
+            <div class="operation-list__block hide">
+                <div class="operation-list__item operation-list__item_income">
+    
+                </div>
+                <div class="tool-operation tool-operation_mt operation-list__more operation-list__more_income">
+                    <div class="tool-operation__icon"></div>
+                    <div class="tool-operation__item">
+                        <p class="tool-operation__item-text">Все операции</p>
+                        <span class="tool-operation__item-arrow"></span>
+                    </div>
                 </div>
             </div>
         </div>

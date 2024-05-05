@@ -11,35 +11,57 @@
         position: relative;
     }
     &__body{
-        height: auto;
+        background-color: white;
+        border-radius: 10px;
+        padding: 15px;
+    }
+    &__header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+        gap: 20px;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__settings{
+        display: flex;
+        min-width: 30px;
+        gap: 10px;
     }
     &__tab{
-        display: flex;
-        flex-direction: column;
-        height: 0;
+        display: grid;
+        grid-template-rows: 0fr;
         overflow: hidden;
         transform: translate(-500px);
-        transition: transform .3s ease;
-        transition-delay: .3s;
+        transition: all .5s ease;
+        transition-delay: .5s;
         pointer-events: none;
         &_active{
-            height: auto;
+            grid-template-rows: 1fr;
             transform: translateX(0);
             pointer-events:all;
         }
     }
+    &__tab-auto{
+        min-height: 0;
+    }
+    &__tab_active &__tab-auto{
+        height: auto;
+    }
 }
 .slider-categories{
     width: 100%;
-    min-height: 200px;
     &__item{
+        background-color: white;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgb(203, 203, 214);
-        padding: 20px;
+        padding: 15px;
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: 100%;
+        height: 185px;
     }
     &__head{
         display: flex;
@@ -101,15 +123,38 @@
 .tools-categories{
     margin-bottom: 10px;
     margin-top: 15px;
-    display: flex;
-    gap: 20px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    &__header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+        gap: 20px;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__settings{
+        display: flex;
+        min-width: 30px;
+        gap: 10px;
+    }
+    &__list{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
 }
 .tool-category{
     flex: 1 1 auto;
     border-radius: 10px;
-    background-color:$light-color;
-    padding: 10px;
     cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
     &:hover .tool-category__item-arrow{
         animation: anim-arrow .5s ease 2;
     }
@@ -122,7 +167,7 @@
         }
     }
     &__icon{
-        width: 35px;
+        flex: 0 0 35px;
         height: 35px;
         background-color: $main-color;
         border-radius: 7px;
@@ -147,9 +192,10 @@
         }
     }
     &__item{
-        margin-top: 5px;
-        display: inline-flex;
+        width: 100%;
+        display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 10px;
         cursor: pointer;
     }

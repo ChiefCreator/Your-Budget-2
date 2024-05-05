@@ -1,10 +1,18 @@
 .statistics{
     margin-top: 15px;
+    &__content{
+        display: flex;
+        gap: 15px;
+    }
     flex: 1 1 auto;
     &__chart{
-        width: 99.99% !important;
-        margin-bottom: 15px;
+        flex: 1 1 60%;
+        height: 350px;
     }   
+    &__operation-list{
+        flex: 1 1 40%;
+        height: 360px;
+    }
 }
 .switch-operations{
     &__input{
@@ -36,17 +44,26 @@
     }
 }
 .operation-list{
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
     display: flex;
-    gap: 30px;
-    &__block{
-        width: 100%;
-        min-height: 330px;
+    flex-direction: column;
+    &__header{
         display: flex;
-        flex-direction: column;
-        border-radius: 10px;
-        position: sticky;
-        top:0;
-        margin-bottom: auto;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+        gap: 20px;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__settings{
+        display: flex;
+        min-width: 30px;
+        gap: 10px;
     }
     &__item{
       width: 100%;
@@ -160,5 +177,206 @@
     display: none;
     &_act{
         display: block;
+    }
+}
+// 
+.operation-chart{
+    padding: 10px 10px 0 10px;
+    border-radius: 10px;
+    background-color: white;
+    .am5-layer-30{
+        display: none !important;
+    }
+}
+.swiper-statistics{
+    width: 100%;
+    height: 270px;
+    position: relative;
+    margin-bottom: 15px;
+    &__bg{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 85%;
+        height: 100%;
+        background-color: $main-color;
+        border-radius: 10px;
+        z-index: 1;
+    }
+    &__wrapper{
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+        padding: 15px 0 15px 15px;
+        display: flex;
+        gap: 20px;
+    }
+    &__content{
+        flex: 1 1 50%;
+        display: flex;
+        flex-direction: column;
+    }
+    &__text{
+        font-size: 35px;
+        font-weight: 600;
+        color: white;
+    }
+    &__buttons{
+        display: flex;
+        gap: 15px;
+        margin-top: auto;
+        margin-right: auto;
+    }
+    &__button{
+        width: 50px;
+        height: 50px;
+        background-color: #123d73;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform .5s ease, background-color .5s ease;
+        cursor: pointer;
+        &:hover{
+            background-color: #275997;
+        }
+        &:active{
+            transform: scale(0.9);
+        }
+        &::before{
+            @include font-awesome;
+            font-size: 25px;
+            color: white;
+        }
+        &_next{
+            &::before{
+                content: "\f054";
+            }
+        }
+        &_prev{
+            &::before{
+                content: "\f053";
+            }
+        }
+        
+    }
+    &__slider-wrapper{
+        flex: 1 1 50%;
+        max-width: 630px;
+    }
+}
+.swiper-statistics-slider{
+    width: 100% !important;
+    height: 100%;
+    &__wrapper{
+        height: 100%;
+    }
+    &__slide{
+        width: 200px !important; 
+        height: 100%;
+    }
+}
+.tool-card{
+    width: 200px;
+    height: 100%;
+    background-color: rgb(210, 128, 210);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    transition: transform .3s ease;
+    &_statistics{
+        background-color: rgb(214, 224, 71);
+        .tool-card__icon{
+            background-color: rgb(188, 197, 58);
+            &::before{
+                content: "\f200";
+            }
+        }
+    }
+    &_assets{
+        background-color: rgb(98, 217, 172);
+        .tool-card__icon{
+            background-color: rgb(82, 189, 148);
+            &::before{
+                content: "\f09d";
+            }
+        }
+    }
+    &_settings{
+        background-color: rgb(170, 169, 182);
+        .tool-card__icon{
+            background-color: rgb(144, 143, 150);
+            &::before{
+                content: "\f013";
+            }
+        }
+    }
+    &__num{
+        border-radius: 7px;
+        font-size: 20px;
+        font-weight: 500;
+        color: white;
+    }
+    &__body{
+        margin-top: 40px;
+    }
+    &__icon{
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        background-color: rgb(177, 96, 177);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            content: "\e528";
+            @include font-awesome;
+            font-size: 30px;
+            color: white;
+        }
+    }
+    &__title{
+        margin-top: 5px;
+        text-transform: uppercase;
+        font-size: 22px;
+        color: white;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+    &__footer{
+        margin-top: auto;
+    }
+}
+.more{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    &__text{
+        font-size: 16px;
+        color: white;
+        font-weight: 500;
+    }
+    &__icon{
+        &::before{
+            content: "\f105";
+            @include font-awesome;
+            font-size: 17px;
+            color: white;
+        }
+    }
+    &:hover &__icon{
+        animation: anim-arrow .5s ease 2;
+    }
+    @keyframes anim-arrow {
+        0%, 100%{
+            transform: translateX(0);
+        }
+        50%{
+            transform: translateX(8px);
+        }
     }
 }
