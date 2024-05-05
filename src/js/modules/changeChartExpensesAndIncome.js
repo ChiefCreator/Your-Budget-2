@@ -33,83 +33,32 @@ const chartExpensesAndIncome = new Chart(ctxExpensesAndIncome, {
     },
 });
 
-function changeChart(arr) {
+function changeChart(arr, chart, series, xAxis) {
 
-    operationToChart(arr)
+    operationToChart(arr, chart, series, xAxis)
 
-    function operationToChart(arr) {
-        let objDateKey = createObjDateKey(arr.reverse())
-        
-        let titles = [];
-        for (let date in objDateKey) {
-            objDateKey[date].forEach(item => {
-                if (!titles.includes(item.title)) {
-                    titles.push(item.title);
+    function operationToChart(arr, chart, series, xAxis) {
+        let uniteArr = arr.reduce((acc, obj) => {
+            const key = obj.date;
+            if (!acc[key]) acc[key] = {date: key, cost: 0};
+            acc[key].cost += obj.cost;
+            return acc;
+        }, {})
+
+        const resultArray = Object.values(uniteArr);
+
+        for (let obj of resultArray.reverse()) {
+            for (let key of Object.keys(obj)) {
+                if (obj[key] != obj.cost && obj[key] != obj.date) {
+                    delete obj[key]
                 }
-            });
+            }
         }
+      
+        xAxis.data.setAll(resultArray);
+        series.data.setAll(resultArray);
         
-        let costArray = {};
-        titles.forEach(title => {
-            costArray[title] = [];
-            
-            for (let key in objDateKey) {
-                let totalCost = objDateKey[key].reduce((acc, curr) => curr.title === title ? acc + curr.cost : acc, 0);
-
-                costArray[title].push(totalCost);
-            }
-        });
-
-        let OperationSumCosts = []
-        for (let value of Object.values(costArray)) {
-            OperationSumCosts.push(value)
-        }
-
-        let bgArray = [];
-        for (let date in objDateKey) {
-            objDateKey[date].forEach(item => {
-                if (!bgArray.includes(item.bg)) {
-                    bgArray.push(item.bg);
-                }
-            })
-        }
-
-        let arrDate = []
-        for (let key of Object.keys(objDateKey)) {
-            arrDate.push(key);
-        }
-
-        chartExpensesAndIncome.data.datasets= []
-        chartExpensesAndIncome.update();
-
-        chartExpensesAndIncome.data.labels = arrDate
-        for (let i = 0;i < OperationSumCosts.length;i++) {
-            if (!chartExpensesAndIncome.data.datasets[i]) {
-                chartExpensesAndIncome.data.datasets.push({type: 'bar',
-                label: 'Dataset 1',
-                backgroundColor: [],
-                data: [],})
-            }
-
-            chartExpensesAndIncome.data.datasets[i].data = OperationSumCosts[i];
-            chartExpensesAndIncome.data.datasets[i].backgroundColor = bgArray[i];
-        }
-        chartExpensesAndIncome.update();
-
-        // console.log(titles, costArray, OperationSumCosts, bgArray, arrDate)
-    }
-
-    function createObjDateKey(arr) {
-        let newObjDate = {};
-        arr.forEach(item => {
-            if (!newObjDate[item.date]) {
-                newObjDate[item.date] = [item];
-            } else {
-                newObjDate[item.date].push(item);
-            }
-        });
-
-        return newObjDate;
+        series.appear(1000);
     }
 }
 

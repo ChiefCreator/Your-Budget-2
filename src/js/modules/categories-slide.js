@@ -6,6 +6,8 @@ function categoriesSlide() {
     let sliderCategory = document.querySelector(".slider-categories");
     let expensesTab = document.querySelector(".categories__tab_expenses");
     let incomeTab = document.querySelector(".categories__tab_income");
+    let expensesTools = document.querySelector(".tools-categories_expenses");
+    let incomeTools = document.querySelector(".tools-categories_income");
 
     const swiper = new Swiper('.slider-categories', {
         speed: 600,
@@ -36,6 +38,8 @@ function categoriesSlide() {
         sliderCategory.classList.toggle("slider-categories_active");
         expensesTab.classList.toggle("categories__tab_active");
         incomeTab.classList.toggle("categories__tab_active");
+        expensesTools.classList.toggle("tools-categories_active");
+        incomeTools.classList.toggle("tools-categories_active");
     }
 }
 

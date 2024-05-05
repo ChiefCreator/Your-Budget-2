@@ -5,7 +5,7 @@ import changeChart from "./changeChartExpensesAndIncome";
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 
-function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
+function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xAxis) {
     // expenses переменные
     let categoryExpenses = {};
     let categoriesExpenses = [];
@@ -61,143 +61,38 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
     let switchButton = document.querySelector(".switch-operations");
     let userEmail = localStorage.getItem("email").replace(".", "*");
 
-    getData();
-    function getData() {
-        // expenses
-        getDataFromFirestore("operationsExpenses")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                operationsExpenses = data;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("categoriesExpensesByDate")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                categoriesExpensesByCurrentDate = data;
+    let allOperationsByCurrentDate = [];
+    let allCategoriesByCurrentDate = [];
 
-                setItemToListFromDatabase(categoriesExpensesByCurrentDate, "expenses");
-                chart(categoriesExpensesByCurrentDate, chartExpensesPie);
-                changeCostsOfCategories(categoriesExpensesByCurrentDate, "expenses")
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("operationsExpensesByDate")
+    Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
+            return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
         })
         .then(data => {
-            if (Object.keys(data).length != 0) {
-                operationsExpensesByCurrentDate = data;
-                setOperationToList(sortByDate(operationsExpensesByCurrentDate), moreExpenses, "expenses");
-                changeChart(operationsExpensesByCurrentDate);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("categoriesExpenses")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                categoriesExpenses = data;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
+            categoriesExpenses = (data[0] != null) ? data[0] : [];
+            categoriesExpensesByCurrentDate = (data[1] != null) ? data[1] : [];
+            categoriesIncome = (data[2] != null) ? data[2] : [];
+            categoriesIncomeByCurrentDate = (data[3] != null) ? data[3] : [];
 
-        // income
-        getDataFromFirestore("operationsIncome")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                operationsIncome = data;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("categoriesIncomeByDate")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                categoriesIncomeByCurrentDate = data;
+            operationsExpenses = (data[4] != null) ? data[4] : [];
+            operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
+            operationsIncome = (data[6] != null) ? data[6] : [];
+            operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
+            
+            allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+            allCategoriesByCurrentDate = categoriesExpensesByCurrentDate.concat(categoriesIncomeByCurrentDate);
 
-                setItemToListFromDatabase(categoriesIncomeByCurrentDate, "income");
-                chart(categoriesIncomeByCurrentDate, chartIncomePie);
-                changeCostsOfCategories(categoriesIncomeByCurrentDate, "income")
-            }
+            setItemToListFromDatabase(categoriesExpensesByCurrentDate, "expenses");
+            chart(categoriesExpensesByCurrentDate, chartExpensesPie);
+            changeCostsOfCategories(categoriesExpensesByCurrentDate, "expenses");
+
+            setItemToListFromDatabase(categoriesIncomeByCurrentDate, "income");
+            chart(categoriesIncomeByCurrentDate, chartIncomePie);
+            changeCostsOfCategories(categoriesIncomeByCurrentDate, "income");
+
+            setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, "expenses");
+            changeChart(allOperationsByCurrentDate, chart, series, xAxis);
         })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("operationsIncomeByDate")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                operationsIncomeByCurrentDate = data;
-                setOperationToList(sortByDate(operationsIncomeByCurrentDate), moreIncome, "income");
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    getDataFromFirestore("categoriesIncome")
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch data from Firestore');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (Object.keys(data).length != 0) {
-                categoriesIncome = data;
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching data from Firestore:', error);
-        });
-    }
 
     togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
     togglePopup(btnAddDoneCategoriesIncome, popupDoneCategoriesIncome);
@@ -245,7 +140,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         objCategory.cost = JSON.parse(category.dataset.categoryDone).cost
         objCategory.bg = JSON.parse(category.dataset.categoryDone).bg
         objCategory.color = JSON.parse(category.dataset.categoryDone).color
+        objCategory.type = type
         objCategory.index = setIndex(indexName)
+
     }
     
     function setItemToList(objCategory, typeS) {
@@ -409,6 +306,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         categories = Object.assign(categories, updateOperation(categories, operations));
         categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
 
+        allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
         addToFirestore(categories, `categories${typeXL}`);
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
 
@@ -418,8 +317,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         addToFirestore(operations, `operations${typeXL}`);
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
 
-        setOperationToList(sortByDate(operationsByCurrentDate), moreExpenses, typeS);
-        changeChart(sortByDate(operationsByCurrentDate));
+        setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, typeS);
+        changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
 
         if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
             switchButton.querySelector(".switch-operations__input").checked = false;
@@ -511,25 +410,26 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             date: date,
             comment: comment,
             index: index,
+            type: obj.type,
         }
     }
 
     function setOperationToList(arr, more, typeS) {
-        let blockToPaste = document.querySelector(`.operation-list__item_${typeS}`);
+        let blockToPaste = document.querySelector(`.operation-list__item`);
 
         blockToPaste.querySelectorAll(".operation-list__wrapper").forEach(block => {
             block.remove()
         })
 
         for (let i = 0;i < arr.length;i++) {
-            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="${typeS}${arr[i].date}">
+            let block = `<div class="operation-list__wrapper wrapper-operation" data-dat-wrapper="all${arr[i].date}">
             <p class="wrapper-operation__date">${arr[i].date}</p>
-            <div class="wrapper-operation__wrapper-content" data-dat="${typeS}${arr[i].date}"></div>
+            <div class="wrapper-operation__wrapper-content" data-dat="all${arr[i].date}"></div>
             </div>`;
 
             let itemCategory = "";
             if (arr[i].comment) {
-                itemCategory = `<div class="list-category__item item-category item-category_${typeS} expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_${arr[i].type} expand-operation" data-index="${arr[i].index}">
             <div class="item-category__head">
                 <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                 <div class="item-category__info">
@@ -551,7 +451,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             </div>
                 </div>`;
             } else {
-                itemCategory = `<div class="list-category__item item-category item-category_${typeS} expand-operation" data-index="${arr[i].index}">
+                itemCategory = `<div class="list-category__item item-category item-category_${arr[i].type} expand-operation" data-index="${arr[i].index}">
                 <div class="item-category__head">
                     <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
                     <div class="item-category__info">
@@ -583,26 +483,23 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
                 return item;
             }
 
-            if (more.classList.contains("open")) {
-                pasteAllOperations();
-            } else {
-                pasteThreeOperations();
-            }
+            pasteThreeOperations();
+         
 
             function pasteThreeOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="${typeS}${arr[i].date}"]`).prepend(parser(itemCategory));
+                document.querySelector(`[data-dat="all${arr[i].date}"]`).prepend(parser(itemCategory));
 
-                if (document.querySelectorAll(`[data-dat="${typeS}${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`).length - 1].remove()
+                if (document.querySelectorAll(`[data-dat="all${arr[i].date}"]`).length > 1) {
+                    document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`).length - 1].remove()
                 }
 
-                if (arr.length < 4) {
+                if (arr.length < 5) {
                     more.classList.remove("operation-list__more_act")
                 } 
                 else {
                     blockToPaste.querySelectorAll(".item-category").forEach((operation, index) => {
-                        if (index > 2) operation.remove()
+                        if (index > 3) operation.remove()
                     })
                     blockToPaste.querySelectorAll(".wrapper-operation").forEach((block) => {
                         if (block.querySelector(".wrapper-operation__wrapper-content").children.length == 0) {
@@ -611,14 +508,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
                     })
 
                     more.classList.add("operation-list__more_act")
-                }
-            }
-            function pasteAllOperations() {
-                blockToPaste.append(parserBlockToPaste(block));
-                document.querySelector(`[data-dat="${typeS}${arr[i].date}"]`).prepend(parser(itemCategory));
-
-                if (document.querySelectorAll(`[data-dat="${typeS}${arr[i].date}"]`).length > 1) {
-                    document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="${typeS}${arr[i].date}"]`).length - 1].remove()
                 }
             }
         }
@@ -723,7 +612,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
     buttonCreateIncome.addEventListener("click", () => createCategory(objCategoryIncome, categoriesIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, popupCategoryIncome, inpTitleIncome, inpBgIncome, inpColorIncome, "income", "Income"));
 
     function createCategory(objCategory, categories, categoriesByCurrentDate, operationsByCurrentDate, chartPie, popupCategory, inpTitle, inpBg, inpColor, typeS, typeXL) {
-        setValueToObject(objCategory, index, inpTitle, inpBg, inpColor);
+        setValueToObject(objCategory, index, inpTitle, inpBg, inpColor, typeS);
 
         if (validation(objCategory)) {
             index++;
@@ -742,12 +631,13 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         }
     }
 
-    function setValueToObject(obj, index, inpTitle, inpBg, inpColor) {
+    function setValueToObject(obj, index, inpTitle, inpBg, inpColor, typeS) {
         obj.index = index;
         obj.title = inpTitle.value;
         obj.bg = inpBg.value;
         obj.color = inpColor.value;
         obj.cost = 0;
+        obj.type = typeS;
         return obj;
     }
 
@@ -926,13 +816,15 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
         operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations))
         categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate))
 
+        allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
         chart(categoriesByCurrentDate, chartPie);
         changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
-        setOperationToList(sortByDate(operationsByCurrentDate), more, typeS);
-        changeChart(sortByDate(operationsByCurrentDate));
+        setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS);
+        changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
 
         if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
             switchButton.querySelector(".switch-operations__input").checked = false;
@@ -987,17 +879,19 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             categories = Object.assign(categories, updateOperation(categories, operations));
             categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
 
+            allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
             addToFirestore(operations, `operations${typeXL}`);
             addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
             addToFirestore(categories, `operations${typeXL}`);
             addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
     
-            setOperationToList(operationsByCurrentDate, more, typeS);
+            setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS);
 
             chart(categoriesByCurrentDate, chartPie);
             changeCostsOfCategories(categoriesByCurrentDate, typeS);
 
-            changeChart(sortByDate(operationsByCurrentDate));
+            changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
         }
     }
 
@@ -1011,8 +905,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
     let popupChangeOperationExpenses = document.querySelector(".popup-change-operation_expenses");
     let popupChangeOperationIncome = document.querySelector(".popup-change-operation_income");
 
-    window.addEventListener("click", (event) => changeOperations(event, popupChangeOperationExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie, moreExpenses));
-    window.addEventListener("click", (event) => changeOperations(event, popupChangeOperationIncome, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie, moreIncome));
+    window.addEventListener("click", (event) => changeOperations(event, popupChangeOperationExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie, moreExpenses))
+    window.addEventListener("click", (event) => changeOperations(event, popupChangeOperationIncome, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie, moreIncome))
+  
 
     overblock.addEventListener("click", function() {
         popupChangeOperationExpenses.classList.remove("popup-change-operation_open");
@@ -1031,6 +926,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
             setDataFromInput(findObjOperation, typeS);
             addCategoryToPopup(findObjOperation, typeS, `popup-change-operation`);
+
+            console.log(operation, operationsByCurrentDate)
            
             popupChangeOperation.classList.add("popup-change-operation_open");
             overblock.classList.add("overblock_open");
@@ -1065,6 +962,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
             categories = Object.assign(categories, updateOperation(categories, operations));
             categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
 
+            allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
             addToFirestore(operations, `operations${typeXL}`)
             addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
             addToFirestore(categories, `categories${typeXL}`)
@@ -1072,8 +971,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie) {
 
             chart(categoriesByCurrentDate, chartPie)
             changeCostsOfCategories(categoriesByCurrentDate, typeS)
-            setOperationToList(operationsByCurrentDate, more, typeS)
-            changeChart(sortByDate(operationsByCurrentDate));
+            setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS)
+            changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
 
             operation.classList.remove("expand-operation_act");
 

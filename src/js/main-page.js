@@ -43,15 +43,13 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
     },
 });
 
-var chart;
-am5.ready(function() {
     var root = am5.Root.new("chartdiv");
     
     root.setThemes([
       am5themes_Animated.new(root)
     ]);
     
-    chart = root.container.children.push(am5xy.XYChart.new(root, {
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
       panX: true,
       panY: true,
       wheelX: "panX",
@@ -91,7 +89,7 @@ am5.ready(function() {
         name: "Series",
         xAxis: xAxis,
         yAxis: yAxis,
-        valueYField: "value",
+        valueYField: "cost",
         categoryXField: "date",
         tooltip: am5.Tooltip.new(root, {
             labelText: "{valueX} {valueY}"
@@ -114,25 +112,15 @@ am5.ready(function() {
         });
     });
     
-    let data = [
-        {date: "ewff", value: 96},
-        {date: "vwevwe", value: 105},
-        {date: "Fwe", value: 91},
-        {date: "ynu", value: 125},
-    ]
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
-    
-    series.appear(1000);
     chart.appear(1000, 100);
-});
 
 categoriesSlide();
-addCategoryExpenses(chartExpensesPie, chartIncomePie);
+addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xAxis);
 airDatepicker();
 expandOperation();
 inputTextarrea();
 sliders();
+
 
 // statistics slider
 import Swiper from 'swiper/bundle';

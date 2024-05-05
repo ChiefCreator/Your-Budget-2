@@ -126,6 +126,10 @@
     padding: 15px;
     background-color: white;
     border-radius: 10px;
+    display: none;
+    &_active{
+        display: block;
+    }
     &__header{
         display: flex;
         justify-content: space-between;

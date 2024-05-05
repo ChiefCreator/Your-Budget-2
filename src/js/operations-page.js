@@ -35,9 +35,7 @@ const chartExpensesAndIncomePie = new Chart(document.getElementById('chartExpens
 });
 
 let userEmail = localStorage.getItem("email").replace(".", "*");
-getData();
-function getData() {
-    Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
+Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
         .then(response => {
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
         })
@@ -58,7 +56,6 @@ function getData() {
             setOperationsToList(allOperationsByCurrentDate);
             chart(allCategoriesByCurrentDate, chartExpensesAndIncomePie);
         })
-}
 
 function getDataFromFirestore(collection) {
     const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
