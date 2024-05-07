@@ -2,28 +2,253 @@
     &__content{
         margin-top: 15px;
         display: flex;
-        gap: 60px;
+        gap: 15px;
         width: 100%;
     }
     &__operations{
-        flex: 0 1 40%;
+        flex: 0 1 400px;
     }
-    &__chart-wrapper{
+    &__sorting{
+        flex: 0 1 350px;
+    }
+    &__chart{
+        flex: 1 1 auto;
+    }
+}
+.list-all-operations{
+    width: 100%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .item-category:last-child {
+        margin-bottom: 0;
+    }
+    .item-category{
+        margin-bottom: 10px;
+    }
+}
+.operations-sorting{
+    height: 100%;
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    &__header{
+        margin-bottom: 7px;
+        padding: 15px;
+        border-bottom: 2px solid #edecf5;
+    }
+    &__title{
+        font-size: 22px;
+        font-weight: 500;
+    }
+    &__body{
+        display: flex;
+        flex-direction: column;
+    }
+    &__block{
+
+    }
+    &__block-header{
+        padding: 15px;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        border-bottom: 2px solid #edecf5;
+    }
+    &__block-title{
+        font-size: 16px;
+        font-weight: 500;
+    }
+    &__icon{
+        &::before{
+            content: "\f107";
+            @include font-awesome;
+            color: black;
+        }
+    }
+    &__content{
+        padding: 0 15px;
+    }
+    &__footer{
+        margin-top: auto;
+        padding: 15px;
+    }
+}
+.cost-sorting{
+    width: 100%;
+    &__input-list{
+        width: 100%;
+        height: 40px;
+        display: flex;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+    &__input-wrapper{
+        flex: 1 1 auto;
+        height: 100%;
+        background-color: #edecf5;
+        border-radius: 7px;
+        position: relative;
+        overflow: hidden;
+    }
+    &__input{
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        &:focus + &-label, &:valid + &-label{
+            left: -100%;
+            opacity: 0;
+        }
+    }
+    &__input-label{
+        pointer-events: none;
+        position: absolute;
+        left: 3px;
+        top:50%;
+        transform: translateY(-50%);
+        opacity: 1;
+        transition: all .3s ease;
+    }
+}
+.date-sorting{
+    width: 100%;
+    &__input-list{
+        width: 100%;
+        height: 40px;
+        display: flex;
+        gap: 15px;
+        margin-bottom: 10px;
+    }
+    &__input-wrapper{
+        flex: 1 1 auto;
+        height: 100%;
+        background-color: #edecf5;
+        border-radius: 7px;
+        position: relative;
+        overflow: hidden;
+    }
+    &__input{
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        &:focus + &-label, &:valid + &-label{
+            left: -100%;
+            opacity: 0;
+        }
+    }
+    &__input-label{
+        pointer-events: none;
+        position: absolute;
+        left: 3px;
+        top:50%;
+        transform: translateY(-50%);
+        opacity: 1;
+        transition: all .3s ease;
+    }
+}
+.spoller{
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s ease, padding .3s ease;
+    overflow: hidden;
+    &_active{
+        padding: 15px;
+        grid-template-rows: 1fr;
+        .spoller-height-auto{
+            height: auto;
+        }
+    }
+    &-height-auto{
+        min-height: 0;
+    }
+}
+.range{
+    .irs-line{
+        background-color: #edecf5 !important;
+        height: 2px !important;
+    }
+    .irs-bar{
+        background-color:  $main-color !important;
+        height: 2px !important;
+    }
+    .irs-handle{
+        top:50% !important;
+        transform: translateY(10%);
+        width: 10px !important;
+        height: 10px !important;
+        background-color: $main-color !important;
+        border-radius: 50% !important;
+        border: 2px solid $main-color !important;
+        i{
+            display: none !important;
+        }
+    }
+    .irs-from, .irs-to, .irs-single{
+        transform: translateY(35px) !important;
+        background-color: transparent !important;
+        color: $main-color !important;
+        &::before{
+            display: none !important;
+        }
+    }
+    .irs-max, .irs-min{
+        display: none !important;
+    }
+    &__input{
+        
+    }
+}
+.category-sorting{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.input-check{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    &__wrapper-inp{
+        flex: 0 0 22px;
+        height: 22px;
+        border-radius: 4px;
+        background-color: #edecf5;
+        position: relative;
+    }
+    &__inp{
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        &:checked + .input-check__wrapper-inp-bg{
+            opacity: 1;
+        }
+    }
+    &__wrapper-inp-bg{
+        pointer-events: none;
+        position: absolute;
+        left: 0;
+        top:0;
+        width: 100%;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        flex: 1 1 auto;
-        height: 600px;
-        position: sticky;
-        top:15px;
-        left: 0;
-    }
-    &__chart{
-        flex: 0 1 600px;
-        height: 100%;
-        #chartExpensesAndIncomePie{
-            width: 100% !important;
-            height: 100% !important;
+        opacity: 0;
+        transition: opacity .3s ease;
+        &::before{
+            content: "\f00c";
+            @include font-awesome;
+            color: $main-color;
+            font-size: 16px;
         }
+    }
+    &__label{
+        cursor: pointer;
     }
 }

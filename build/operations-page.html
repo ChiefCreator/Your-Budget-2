@@ -38,19 +38,106 @@
     <main class="page-operation">
         <div class="container">
             <div class="page-operation__content">
-                <div class="page-operation__operations list-all-operation">
-                    <div class="list-all-operation__item operation-list__item_all">
+                <div class="page-operation__operations">
+                    <div class="list-all-operations">
 
                     </div>
                 </div>
-                <div class="page-operation__chart-wrapper">
-                    <div class="page-operation__chart">
-                        <canvas id="chartExpensesAndIncomePie"></canvas>
+                <div class="page-operation__chart operations-chart">
+                    <canvas id="chartExpensesAndIncomePie" class="hide"></canvas>
+                </div>
+                <div class="page-operation__sorting operations-sorting">
+                    <header class="operations-sorting__header">
+                        <p class="operations-sorting__title">Фильтр операций</p>
+                    </header>
+                    <div class="operations-sorting__body">
+                        <div class="operations-sorting__block">
+                            <header class="operations-sorting__block-header button-spoller">
+                                <p class="operations-sorting__block-title">Цена</p>
+                                <span class="operations-sorting__icon"></span>
+                            </header>
+                            <div class="operations-sorting__content spoller spoller_active">
+                                <div class="operations-sorting__height-auto spoller-height-auto">
+                                    <div class="operations-sorting__cost cost-sorting">
+                                        <div class="cost-sorting__input-list">
+                                            <div class="cost-sorting__input-wrapper">
+                                                <input class="cost-sorting__input" required data-range="price-from">
+                                                <label class="cost-sorting__input-label">От</label>
+                                            </div>
+                                            <div class="cost-sorting__input-wrapper">
+                                                <input class="cost-sorting__input" required data-range="price-to">
+                                                <label class="cost-sorting__input-label">До</label>
+                                            </div>
+                                        </div>
+                                        <div class="range">
+                                            <input type="text" class="range__input range__input_cost js-range-slider" name="my_range" value=""/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="operations-sorting__block">
+                            <header class="operations-sorting__block-header button-spoller">
+                                <p class="operations-sorting__block-title">Дата</p>
+                                <span class="operations-sorting__icon"></span>
+                            </header>
+                            <div class="operations-sorting__content spoller spoller_active">
+                                <div class="operations-sorting__height-auto spoller-height-auto">
+                                    <div class="operations-sorting__date date-sorting">
+                                        <div class="date-sorting__input-list">
+                                            <div class="date-sorting__input-wrapper">
+                                                <input class="date-sorting__input" required data-range="date-from">
+                                                <label class="date-sorting__input-label">От</label>
+                                            </div>
+                                            <div class="date-sorting__input-wrapper">
+                                                <input class="date-sorting__input" required data-range="date-to">
+                                                <label class="date-sorting__input-label">До</label>
+                                            </div>
+                                        </div>
+                                        <div class="range">
+                                            <input type="text" class="range__input range__input_date js-range-slider" name="my_range" value=""/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="operations-sorting__block">
+                            <header class="operations-sorting__block-header button-spoller">
+                                <p class="operations-sorting__block-title">Категории</p>
+                                <span class="operations-sorting__icon"></span>
+                            </header>
+                            <div class="operations-sorting__content spoller spoller_active">
+                                <div class="operations-sorting__height-auto spoller-height-auto">
+                                    <div class="operations-sorting__category category-sorting">
+                                        <div class="input-check">
+                                            <div class="input-check__wrapper-inp">
+                                                <input class="input-check__inp" type="checkbox" id="input-check__inp1">
+                                                <span class="input-check__wrapper-inp-bg"></span>
+                                            </div>
+                                            <label class="input-check__label" for="input-check__inp1">Кафе и рестораны</label>
+                                        </div>
+                                        <div class="input-check">
+                                            <div class="input-check__wrapper-inp">
+                                                <input class="input-check__inp" type="checkbox" id="input-check__inp2">
+                                                <span class="input-check__wrapper-inp-bg"></span>
+                                            </div>
+                                            <label class="input-check__label" for="input-check__inp2">Кафе и рестораны</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
                     </div>
+                    <footer class="operations-sorting__footer">
+                        <button class="button apply-filter">Применить фильтр</button>
+                    </footer>
                 </div>
             </div>
         </div>
     </main>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
     <script src="./../js/operationsPage.bundle.js"></script>
 </body>
 </html>

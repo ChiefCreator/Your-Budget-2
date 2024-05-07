@@ -55,6 +55,8 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
 
             setOperationsToList(allOperationsByCurrentDate);
             chart(allCategoriesByCurrentDate, chartExpensesAndIncomePie);
+            console.log(allOperationsByCurrentDate)
+            setCategoriesToFilter(allOperationsByCurrentDate)
         })
 
 function getDataFromFirestore(collection) {
@@ -64,7 +66,7 @@ function getDataFromFirestore(collection) {
 }
 
 function setOperationsToList(arr) {
-    let blockToPaste = document.querySelector(`.list-all-operation`);
+    let blockToPaste = document.querySelector(`.list-all-operations`);
 
     blockToPaste.querySelectorAll(".list-all-operation__wrapper").forEach(block => {
         block.remove()
@@ -318,4 +320,156 @@ function chart(arr, chart) {
     chart.data.datasets[0].data = costArr;
     chart.data.datasets[0].backgroundColor = bgArr;
     chart.update();
+}
+
+// фильтр
+
+import toggleFilter from './modules/toggle-filter';
+toggleFilter();
+
+let inputFromCost = document.querySelector("[data-range='price-from']");
+let inputToCost = document.querySelector("[data-range='price-to']");
+
+let inputFromDate = document.querySelector("[data-range='date-from']");
+let inputToDate = document.querySelector("[data-range='date-to']");
+
+$(".range__input_cost").ionRangeSlider({
+    type: "double",
+    min: 0,
+    max: 20000,
+    from: 0,
+    to: 5000,
+    drag_interval: true,
+    onChange: function (data) {
+        let dataFrom = data.from;
+        let dataTo = data.to;
+
+        inputFromCost.value = dataFrom;
+        inputToCost.value = dataTo;
+    },
+});
+$(".range__input_date").ionRangeSlider({
+    type: "double",
+    values: getDatesFromCurrentMounth(),
+    from: 0,
+    to: 15,
+    drag_interval: true,
+    onChange: function (data) {
+        let dataFrom = data.from_value;
+        let dataTo = data.to_value;
+
+        inputFromDate.value = dataFrom;
+        inputToDate.value = dataTo;
+    },
+});
+function rangeValue(inputFrom, inputTo, rangeTeg){
+    var instance = $(rangeTeg).data("ionRangeSlider");
+    inputFrom.addEventListener("input", function() {
+        var valFrom = inputFrom.value
+        instance.update({from: valFrom});
+    })
+    inputTo.addEventListener("input", function() {
+        var valTo = inputTo.value
+        instance.update({to: valTo});
+    })
+}
+rangeValue(inputFromCost,inputToCost,".range__input_cost");
+rangeValue(inputFromDate,inputToDate,".range__input_date");
+
+function getDatesFromCurrentMounth() {
+    const now = new Date();
+
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 2);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    const dates = [];
+
+    for (let i = firstDay; i <= lastDay; i.setDate(i.getDate() + 1)) {
+      const formattedDate = i.toISOString().slice(0, 10);
+      dates.push(formattedDate);
+    }
+
+    return dates;
+}
+
+// получение данных фильтра
+
+let applyFilter = document.querySelector(".apply-filter");
+applyFilter.addEventListener("click", function() {
+    let inputFromCostValue = inputFromCost.value;
+    let inputToCostValue = inputToCost.value;
+    let inputFromDateValue = inputFromDate.value;
+    let inputToDateValue = inputToDate.value;
+
+    let arrTitlesOfCheckboxes = [];
+    let checkboxes = document.querySelectorAll(".input-check__inp");
+    checkboxes.forEach(checkbox => { if (checkbox.checked) arrTitlesOfCheckboxes.push(checkbox.dataset.title)})
+
+    // все три фильтра включены
+    if (inputFromCostValue != "" && inputToCostValue != "" && inputFromDateValue != "" && inputToDateValue != "" && isChecked(checkboxes) > 0) {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue) && arrTitlesOfCheckboxes.includes(item.title));
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    // два определенных фильтра включены
+    else if (inputFromCostValue != "" && inputToCostValue != "" && inputFromDateValue != "" && inputToDateValue != "") {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue));
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    else if (inputFromCostValue != "" && inputToCostValue != "" && isChecked(checkboxes) > 0) {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    else if (inputFromDateValue != "" && inputToDateValue != "" && isChecked(checkboxes) > 0) {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.date >= inputFromDateValue && item.date <= inputToDateValue) && arrTitlesOfCheckboxes.includes(item.title));
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    // фильтры включены по-отдельности
+    else if (inputFromCostValue != "" && inputToCostValue != "") {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => item.cost >= inputFromCostValue && item.cost <= inputToCostValue);
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    else if (inputFromDateValue != "" && inputToDateValue != "") {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue);
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+    else if (isChecked(checkboxes) > 0) {
+        let filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => arrTitlesOfCheckboxes.includes(item.title));
+        setOperationsToList(filteredAllOperationsByCurrentDate)
+    }
+
+    function isChecked(checkboxes) {
+        let amount = 0;
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) amount++;
+        })
+        return amount;
+    }
+})
+
+// загрузка категорий в фильтр
+
+function setCategoriesToFilter(arr) {
+    let blockToPaste = document.querySelector(`.category-sorting`);
+
+    blockToPaste.querySelectorAll(".input-check").forEach(block => {
+        block.remove()
+    })
+
+    for (let i = 0;i < arr.length;i++) {
+        let itemCategory = `<div class="input-check">
+        <div class="input-check__wrapper-inp">
+            <input class="input-check__inp" type="checkbox" id="input-check__${arr[i].title}" data-title="${arr[i].title}">
+            <span class="input-check__wrapper-inp-bg"></span>
+        </div>
+        <label class="input-check__label" for="input-check__${arr[i].title}">${arr[i].title}</label>
+        </div>`;
+                    
+        function parser(itemCategory) {
+            var parser = new DOMParser();
+            let teg = parser.parseFromString(itemCategory, 'text/html');
+            let item = teg.querySelector(".input-check");
+            return item;
+        }
+        blockToPaste.append(parser(itemCategory))
+    }
 }
