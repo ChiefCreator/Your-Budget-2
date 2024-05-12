@@ -34,6 +34,12 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             clickable: true,
         },
     })
+    const swiperAcoounts = new Swiper('.swiper-accounts-operations-expenses', {
+        speed: 600,
+        spaceBetween: 15,
+        slidesPerView: 1,
+        loop: true,
+    })
 
     // income переменные 
     let categoryIncome = {};
@@ -63,10 +69,12 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     let allOperationsByCurrentDate = [];
     let allCategoriesByCurrentDate = [];
+    let accountArr = [];
+    let chartsArr = [];
 
-    Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
+    Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate"), getDataFromFirestore("accounts")])
         .then(response => {
-            return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
+            return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json(), response[8].json()]);
         })
         .then(data => {
             categoriesExpenses = (data[0] != null) ? data[0] : [];
@@ -78,6 +86,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
             operationsIncome = (data[6] != null) ? data[6] : [];
             operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
+            accountArr = (data[8] != null) ? data[8] : [];
             
             allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
             allCategoriesByCurrentDate = categoriesExpensesByCurrentDate.concat(categoriesIncomeByCurrentDate);
@@ -92,6 +101,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
             setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, "expenses");
             changeChart(allOperationsByCurrentDate, chart, series, xAxis);
+
+            setAccountsToList(accountArr, "swiper-accounts-operations-expenses")
+            console.log(accountArr)
         })
 
     togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
@@ -267,8 +279,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "expenses", popupOperationExpenses, categoriesExpensesByCurrentDate));
     window.addEventListener("click", (event) => addCategoryToPopupOperation(event, "income", popupOperationIncome, categoriesIncomeByCurrentDate))
 
-    btnCreateopupOperationExpenses.addEventListener("click", () => createOperation(inputCostExpenses, inputDateExpenses, textarreaCommentExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie))
-    btnCreateopupOperationIncome.addEventListener("click", () => createOperation(inputCostIncome, inputDateIncome, textarreaCommentIncome, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie))
+    btnCreateopupOperationExpenses.addEventListener("click", () => createOperation(inputCostExpenses, inputDateExpenses, textarreaCommentExpenses, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie, accountArr))
+    btnCreateopupOperationIncome.addEventListener("click", () => createOperation(inputCostIncome, inputDateIncome, textarreaCommentIncome, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie, accountArr))
 
     function addCategoryToPopupOperation(event, typeS, popup, operationsByCurrentDate) {
         if (event.target.closest(`.list-categories_${typeS} .list-categories__item`)) {
@@ -287,15 +299,29 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         }
     }
 
-    function createOperation(inputCost, inputDate, inputComment, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
-        let category = document.querySelector(`.list-categories__item.item-category_${typeS}.act`)
+    window.addEventListener("click", (event) => chooseAccount(event))
+    function chooseAccount(event) {
+        if (event.target.closest(".swiper-accounts-operations-expenses .account-choose")) {
+            let account = event.target.closest(".swiper-accounts-operations-expenses .account-choose");
+            let actAccount = document.querySelector(`.account-choose_act`);
+            if (actAccount && actAccount != account) {
+                actAccount.classList.remove(`account-choose_act`);
+            }
+            account.classList.toggle("account-choose_act")
+        }
+    }
+
+    function createOperation(inputCost, inputDate, inputComment, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie, accountArr) {
+        let category = document.querySelector(`.list-categories__item.item-category_${typeS}.act`);
+        let account = document.querySelector(`.account-choose_act`);
 
         let cost = +inputCost.value;
         let date = inputDate.value;
         let comment = inputComment.value;
         let index = setIndex(typeS);
         let findObjOperation = findObjectByHtmlIndex(category, categoriesByCurrentDate);
-        let obj = objOperation(cost, date, comment, index, findObjOperation);
+        let findObjAccount = findObjectByHtmlIndex(account, accountArr);
+        let obj = objOperation(cost, date, comment, index, findObjOperation, findObjAccount);
 
         operations.push(Object.assign({}, obj));
         for (let obj of operationsByCurrentDate) {
@@ -319,6 +345,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
         setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, typeS);
         changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
+
+        addToFirestore(setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr), `accounts`);
 
         if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
             switchButton.querySelector(".switch-operations__input").checked = false;
@@ -400,17 +428,18 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         return modifiedObj;
     }
 
-    function objOperation(cost, date, comment, index, obj) {
+    function objOperation(cost, date, comment, index, objCategory, objAccount) {
         return {
-            title: obj.title,
-            icon: obj.icon,
-            bg: obj.bg,
-            color: obj.color,
+            title: objCategory.title,
+            icon: objCategory.icon,
+            bg: objCategory.bg,
+            color: objCategory.color,
             cost: cost,
             date: date,
             comment: comment,
             index: index,
-            type: obj.type,
+            type: objCategory.type,
+            account: objAccount.title,
         }
     }
 
@@ -539,6 +568,162 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     function sortByDate(arr) {
         return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    function setAccountsToList(arr, blockToPasteClassName) {
+        let blockToPaste = document.querySelector(`.${blockToPasteClassName} .swiper-wrapper`);
+    
+        blockToPaste.querySelectorAll(".swiper-slide").forEach(block => {
+            block.remove()
+        })
+    
+        for (let i = 0; i < arr.length; i++) {
+            let itemCategory = `<div class="swiper-slide">
+            <div class="account account-choose" style="background-color: ${arr[i].bg};" data-index="${arr[i].index}">
+                <header class="account__header">
+                    <span class="account__icon account__${arr[i].icon}" style="background-color: ${arr[i].iconBg};"></span>
+                    <div class="account__names">
+                        <h3 class="account__title">${arr[i].title}</h3>
+                        <p class="account__type">${arr[i].type}</p>
+                    </div>
+                </header>
+                <div class="account__body">
+                    <div class="account__content">
+                        <p class="account__total"><span class="account__num">${arr[i].cost}</span> <span class="account__currency">BYN</span></p>
+                    </div>
+                    <div class="account__chart">
+                        <div class="account__chart-item" id="${arr[i].chartId}"></div>
+                    </div>
+                </div>
+                </div>
+            </div>`;
+    
+            function parser(itemCategory) {
+                var parser = new DOMParser();
+                let teg = parser.parseFromString(itemCategory, 'text/html');
+                let item = teg.querySelector(".swiper-slide");
+                return item;
+            }
+            blockToPaste.append(parser(itemCategory))
+            initChart(arr[i].chartId)
+        }
+    }
+    
+    function initChart(chartId) {
+    var root = am5.Root.new(chartId);   
+    root.setThemes([
+      am5themes_Animated.new(root)
+    ]);
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+      paddingLeft: 0
+    }));
+      chart.get("colors").set("colors", [
+        am5.color(15723498),
+    ]);
+    var xRenderer = am5xy.AxisRendererX.new(root, {
+        minGridDistance: 30,
+        minorGridEnabled: true,
+    });
+    var yRenderer = am5xy.AxisRendererY.new(root, {
+        minGridDistance: 30,
+        minorGridEnabled: true,
+    });
+    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 1,
+        categoryField: "date",
+        renderer: xRenderer,
+        visible: false,
+    }));
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        maxDeviation: 1,
+        renderer: yRenderer,
+        visible: false,
+    }));
+    xRenderer.grid.template.setAll({
+        visible: false
+    })
+    yRenderer.grid.template.setAll({
+        visible: false
+    })
+    var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
+        name: "Series",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "cost",
+        categoryXField: "date",
+        tooltip: am5.Tooltip.new(root, {
+            labelText: "{valueX} {valueY}"
+        }),
+        stroke: "white",
+    }));
+    series.fills.template.setAll({
+        visible: true,
+        fillOpacity: 0.2,
+        fill: "#FFFFFF"
+    });
+    series.bullets.push(function () {
+        return am5.Bullet.new(root, {
+            locationY: 0,
+            sprite: am5.Circle.new(root, {
+                radius: 2,
+                fill: "white"
+            })
+        });
+    });
+    let data = [{
+        date: "1",
+        cost: 1,
+      }, {
+        date: "2",
+        cost: 4,
+      }, {
+        date: "3",
+        cost: 3,
+    }, {
+        date: "4",
+        cost: 7,
+    }, {
+        date: "5",
+        cost: 2,
+    }, {
+        date: "6",
+        cost: 9,
+    }, {
+        date: "7",
+        cost: 14,
+    }, {
+        date: "8",
+        cost: 10,
+    }, {
+        date: "9",
+        cost: 17,
+    }, {
+        date: "10",
+        cost: 13,
+    }];
+    xAxis.data.setAll(data);
+    series.data.setAll(data);
+    series.appear(1000);
+    chart.appear(1000, 100);
+
+    chartsArr.push({root, xRenderer, yRenderer, xAxis, yAxis, series, data})
+    }
+
+    function setOperationsToAccounts(operationsAll, accounts) {
+        for (let account of accounts) {
+            let filterOperationsAll = operationsAll.filter(obj => obj.account == account.title)
+            account.operations = filterOperationsAll;
+            account.cost = sumCosts(filterOperationsAll)
+        }
+        return accounts;
+    }
+
+    function sumCosts(arr) {
+        let sum = 0;
+        for  (let obj of arr) {
+            sum += obj.cost;
+        }
+        return sum;
     }
 
     // больше меньше операций
