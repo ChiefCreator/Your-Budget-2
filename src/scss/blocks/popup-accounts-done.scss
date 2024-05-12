@@ -1,0 +1,188 @@
+.popup-accounts-done{
+    position: fixed;
+    left: calc(100% + 490px);
+    top:15px;
+    width: 490px;
+    height: calc(100vh - 30px);
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 4;
+    transition: left .3s ease;
+    overflow-y: auto;
+    &_open{
+        left: calc(100% - 500px);
+    }
+    &__head{
+        border-bottom: 2px solid #eef0f4;
+    }
+    &__head-content{
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &__title{
+        font-size: 23px;
+        font-weight: 600;
+        color: black;
+    }
+    &__close{
+        flex: 0 0 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &::before{
+            content: "\f00d";
+            @include font-awesome;
+            font-size: 28px;
+            color: black;
+        }
+    }
+    &__body{
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
+    }
+    &__block-title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__block-wrapper{
+        border-bottom: 2px solid #eef0f4;
+        &_button{
+            margin-top: auto;
+        }
+        &_without-border{
+            border-bottom: none;
+        }
+    }
+    &__block{
+        padding: 15px;
+        &_no-padding{
+            padding: 0;
+        }
+        &_button{
+            margin-top: auto;
+        }
+    }
+    &__block-title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__input-container{
+        flex: 0 1 200px;
+        height: 35px;
+        display: flex;
+        gap: 8px;
+    }
+    &__input-icon{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            font-size: 18px;
+            color: black;
+            @include font-awesome;
+        }
+        &_name{
+            &::before{
+                content: "\f5b7";
+            }
+        }
+    }
+    &__input-content{
+        position: relative;
+    }
+    &__input{
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        color: black;
+        &:focus + &-label{
+            left: 10px;
+            top:0;
+            font-size: 12px;
+        }
+        &:valid + &-label{
+            left: 10px;
+            top:0;
+            font-size: 12px;
+        }
+        &_date{
+            width: auto;
+        }
+    }
+    &__input-label{
+        font-size: 14px;
+        font-weight: 500;
+        background-color: white;
+        color: black;
+        position: absolute;
+        left: 3px;
+        top:50%;
+        transform: translate(0,-50%);
+        pointer-events: none;
+        transition: all .3s ease;
+    }
+    &__icon-list-wrapper{
+        padding: 15px;
+    }   
+    &__icon-list-title{
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    &__icon-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    &__icon{
+        flex: 0 0 50px;
+        height: 50px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: transform .3s ease;
+        &::before{
+            content: "\f00d";
+            @include font-awesome;
+            color: inherit;
+            font-size: 30px;
+        }
+    }
+    &__color-wrapper{
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .act{
+        transform: translateY(-7px);
+    }
+    &__button{
+        margin-top: auto;
+        margin-right: auto;
+    }
+}
+.done-accounts{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.done-accounts{
+    &_act{
+        background-color: #eef0f4;
+    }
+}
+.done-accounts{
+    &_act{
+        background-color: #eef0f4;
+    }
+}

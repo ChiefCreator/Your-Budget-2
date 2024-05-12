@@ -130,7 +130,7 @@ const swiper = new Swiper('.swiper-statistics-slider', {
     slidesPerView:3,
     loop: true,
     navigation: {
-        nextEl: '.swiper-statistics__button_next',
-        prevEl: '.swiper-statistics__button_prev',
-      },
+        nextEl: '.swiper-buttons-statistics .swiper-buttons__button_next',
+        prevEl: '.swiper-buttons-statistics .swiper-buttons__button_prev',
+    },
 })

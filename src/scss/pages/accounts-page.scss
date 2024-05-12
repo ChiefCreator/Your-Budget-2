@@ -1,0 +1,1019 @@
+.page-accounts{
+    margin-top: 15px;
+    margin-bottom: 15px;
+    &__content{
+        width: 100%;
+    }
+    &__accounts{
+        width: 100%;
+        display: flex;
+        gap: 15px;
+    }
+}
+.balance{
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 450px;
+    height: 185px;
+    &__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+    &__title{
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 20px;
+        letter-spacing: 3px;
+    }
+    &__body{
+        margin-top: auto;
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+    }
+    &__total{
+        font-size: 20px;
+        font-weight: 600;
+    }
+    &__total-num{
+        font-size: 35px;
+    }
+    &__total-currency{
+        color: black;
+    }
+}
+.accounts{
+    flex: 1 1 auto;
+    height: auto;
+    background-color: $main-color;
+    border-radius: 10px;
+    padding: 15px;
+    overflow: hidden;
+    display: flex;
+    gap: 30px;
+    &__title{
+        font-size: 22px;
+        font-weight: 600;
+        color: white;
+    }
+    &__content{
+        flex: 0 0 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    &__body{
+        display: block;
+        flex: 1 1 50%;
+        max-width: 815px;
+        height: 100%;   
+        position: relative;
+    }
+}
+.account{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgb(229, 151, 78);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    &__header{
+        display: flex;
+        gap: 7px;
+        margin-bottom: -20px;
+    }
+    &__icon{
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        background-color: rgb(205, 129, 59);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            content: "\e528";
+            @include font-awesome;
+            font-size: 30px;
+            color: white;
+        }
+        &_food1::before{
+            content: "\f805";
+        }
+        &_food2::before{
+            content: "\f818";
+        }
+        &_food3::before{
+            content: "\f564";
+        }
+        &_food4::before{
+            content: "\e4c6";
+        }
+        &_food5::before{
+            content: "\f0f4";
+        }
+        &_food6::before{
+            content: "\f7b6";
+        }
+        &_food7::before{
+            content: "\f72f";
+        }
+        &_food8::before{
+            content: "\f4e3";
+        }
+        &_food9::before{
+            content: "\f810";
+        }
+        &_food10::before{
+            content: "\f80f";
+        }
+        &_food11::before{
+            content: "\f1fd";
+        }
+        &_food12::before{
+            content: "\f5d1";
+        }
+        &_food13::before{
+            content: "\f816";
+        }
+        &_food14::before{
+            content: "\e2eb";
+        }
+        &_food15::before{
+            content: "\f7ec";
+        }
+        &_food16::before{
+            content: "\f7ef";
+        }
+        &_food17::before{
+            content: "\f7ec";
+        }
+        &_food18::before{
+            content: "\e448";
+        }
+        &_food19::before{
+            content: "\f561";
+        }
+        &_food20::before{
+            content: "\f79f";
+        }
+        &_food21::before{
+            content: "\f0fc";
+        }
+        &_home1::before{
+            content: "\f015";
+        }
+        &_home2::before{
+            content: "\f4b8";
+        }
+        &_home3::before{
+            content: "\f6c0";
+        }
+        &_home4::before{
+            content: "\f236";
+        }
+        &_home5::before{
+            content: "\e006";
+        }
+        &_home6::before{
+            content: "\f2cd";
+        }
+        &_home7::before{
+            content: "\f2cc";
+        }
+        &_home8::before{
+            content: "\f7d8";
+        }
+        &_home9::before{
+            content: "\e06e";
+        }
+        &_home10::before{
+            content: "\f0eb";
+        }
+        &_home11::before{
+            content: "\f26c";
+        }
+        &_home12::before{
+            content: "\e06d";
+        }
+        &_home13::before{
+            content: "\f494";
+        }
+        &_building1::before{
+            content: "\f1ad";
+        }
+        &_building2::before{
+            content: "\f19c";
+        }
+        &_building3::before{
+            content: "\f64f";
+        }
+        &_building4::before{
+            content: "\f54f";
+        }
+        &_building5::before{
+            content: "\f66f";
+        }
+        &_building6::before{
+            content: "\f54e";
+        }
+        &_building7::before{
+            content: "\f549";
+        }
+        &_building8::before{
+            content: "\f594";
+        }
+        &_building9::before{
+            content: "\f0f8";
+        }
+        &_building10::before{
+            content: "\f51d";
+        }
+        &_building11::before{
+            content: "\f6a7";
+        }
+        &_building12::before{
+            content: "\e587";
+        }
+        &_building13::before{
+            content: "\f678";
+        }
+        &_building14::before{
+            content: "\f752";
+        }
+        &_building15::before{
+            content: "\e586";
+        }
+        &_building16::before{
+            content: "\e57d";
+        }
+        &_building17::before{
+            content: "\e532";
+        }
+        &_building18::before{
+            content: "\e52e";
+        }   
+
+        &_statistics1::before{
+            content: "\e473";
+        }
+        &_statistics2::before{
+            content: "\f200";
+        }
+        &_statistics3::before{
+            content: "\f542";
+        }
+        &_statistics4::before{
+            content: "\f201";
+        }
+        &_statistics5::before{
+            content: "\e0e4";
+        }
+        &_statistics6::before{
+            content: "\e0e3";
+        }
+        &_statistics7::before{
+            content: "\f080";
+        }
+        &_statistics8::before{
+            content: "\f1fe";
+        }
+        &_statistics9::before{
+            content: "\f080";
+        }
+        &_statistics10::before{
+            content: "\2b";
+        }
+        &_statistics11::before{
+            content: "\f068";
+        }
+        &_statistics12::before{
+            content: "\f1ec";
+        }
+        &_statistics13::before{
+            content: "\f534";
+        }
+        &_statistics14::before{
+            content: "\25";
+        }
+
+        &_health1::before{
+            content: "\f21e";
+        }
+        &_health2::before{
+            content: "\f004";
+        }
+        &_health3::before{
+            content: "\e076";
+        }
+        &_health4::before{
+            content: "\e059";
+        }
+        &_health5::before{
+            content: "\f0c3";
+        }
+        &_health6::before{
+            content: "\f0f1";
+        }
+        &_health7::before{
+            content: "\f493";
+        }
+        &_health8::before{
+            content: "\f5c9";
+        }
+        &_health9::before{
+            content: "\f62e";
+        }
+        &_health10::before{
+            content: "\f48e";
+        }
+        &_health11::before{
+            content: "\f484";
+        }
+        &_health12::before{
+            content: "\e1d7";
+        }
+        &_health13::before{
+            content: "\f5d7";
+        }
+        &_health14::before{
+            content: "\f368";
+        }
+        &_health15::before{
+            content: "\f82f";
+        }
+        &_health16::before{
+            content: "\f0f0";
+        }
+        &_health17::before{
+            content: "\f0fa";
+        }
+        &_health18::before{
+            content: "\f462";
+        }
+        &_health19::before{
+            content: "\f0f9";
+        }
+
+        &_hobby1::before{
+            content: "\f45f";
+        }
+        &_hobby2::before{
+            content: "\f453";
+        }
+        &_hobby3::before{
+            content: "\f433";
+        }
+        &_hobby4::before{
+            content: "\f1e3";
+        }
+        &_hobby5::before{
+            content: "\f44e";
+        }
+        &_hobby6::before{
+            content: "\f434";
+        }
+        &_hobby7::before{
+            content: "\f436";
+        }
+        &_hobby8::before{
+            content: "\f450";
+        }
+        &_hobby9::before{
+            content: "\f206";
+        }
+        &_hobby10::before{
+            content: "\f44b";
+        }
+        &_hobby11::before{
+            content: "\f45d";
+        }
+        &_hobby12::before{
+            content: "\f70c";
+        }
+        &_hobby13::before{
+            content: "\f5c4";
+        }
+        &_hobby14::before{
+            content: "\f7ce";
+        }
+        &_hobby15::before{
+            content: "\f7c9";
+        }
+        &_hobby16::before{
+            content: "\f7c5";
+        }
+        &_hobby17::before{
+            content: "\f6ec";
+        }
+        &_hobby18::before{
+            content: "\f432";
+        }
+        &_hobby19::before{
+            content: "\f453";
+        }
+
+        &_education1::before{
+            content: "\f19d";
+        }
+        &_education2::before{
+            content: "\f501";
+        }
+        &_education3::before{
+            content: "\f518";
+        }
+        &_education4::before{
+            content: "\f5fc";
+        }
+        &_education5::before{
+            content: "\f51b";
+        }
+        &_education6::before{
+            content: "\f304";
+        }
+        &_education7::before{
+            content: "\f303";
+        }
+        &_education8::before{
+            content: "\f52d";
+        }
+        &_education9::before{
+            content: "\f02d";
+        }
+        &_education10::before{
+            content: "\f02e";
+        }
+        &_education11::before{
+            content: "\f08d";
+        }
+        &_education12::before{
+            content: "\f1ea";
+        }
+        &_education13::before{
+            content: "\e0bb";
+        }
+
+        &_technologies1::before{
+            content: "\e4e5";
+        }
+        &_technologies2::before{
+            content: "\f390";
+        }
+        &_technologies3::before{
+            content: "\f109";
+        }
+        &_technologies4::before{
+            content: "\e163";
+        }
+        &_technologies5::before{
+            content: "\f26c";
+        }
+        &_technologies6::before{
+            content: "\f8cc";
+        }
+        &_technologies7::before{
+            content: "\f11c";
+        }
+        &_technologies8::before{
+            content: "\f02f";
+        }
+        &_technologies9::before{
+            content: "\f51e";
+        }
+        &_technologies10::before{
+            content: "\f095";
+        }
+        &_technologies11::before{
+            content: "\f2a0";
+        }
+        &_technologies12::before{
+            content: "\f3ce";
+        }
+        &_technologies13::before{
+            content: "\f58f";
+        }
+        &_technologies14::before{
+            content: "\f130";
+        }
+        &_technologies15::before{
+            content: "\f011";
+        }
+        &_technologies16::before{
+            content: "\f233";
+        }
+        &_technologies17::before{
+            content: "\f6ff";
+        }
+        &_technologies18::before{
+            content: "\f1c0";
+        }
+        &_technologies19::before{
+            content: "\f2db";
+        }
+        &_technologies20::before{
+            content: "\f7c4";
+        }
+        &_technologies21::before{
+            content: "\f1eb";
+        }
+
+        &_money1::before{
+            content: "\f0d6";
+        }
+        &_money2::before{
+            content: "\f53c";
+        }
+        &_money3::before{
+            content: "\f53a";
+        }
+        &_money4::before{
+            content: "\e529";
+        }
+        &_money5::before{
+            content: "\e528";
+        }
+        &_money6::before{
+            content: "\f09d";
+        }
+        &_money7::before{
+            content: "\f555";
+        }
+        &_money8::before{
+            content: "\f653";
+        }
+        &_money9::before{
+            content: "\f51e";
+        }
+        &_money10::before{
+            content: "\f81d";
+        }
+        &_money11::before{
+            content: "\f4c0";
+        }
+        &_money12::before{
+            content: "\f4d3";
+        }
+        &_money13::before{
+            content: "\24";
+        }
+        &_money14::before{
+            content: "\f153";
+        }
+        &_money15::before{
+            content: "\f158";
+        }
+        &_money16::before{
+            content: "\f688";
+        }
+        &_money17::before{
+            content: "\f662";
+        }
+        &_money18::before{
+            content: "\f379";
+        }
+        &_money19::before{
+            content: "\f42e";
+        }
+
+        &_people1::before{
+            content: "\f183";
+        }
+        &_people2::before{
+            content: "\f182";
+        }
+        &_people3::before{
+            content: "\f007";
+        }
+        &_people4::before{
+            content: "\f0c0";
+        }
+        &_people5::before{
+            content: "\f500";
+        }
+        &_people6::before{
+            content: "\f508";
+        }
+        &_people7::before{
+            content: "\e4e1";
+        }
+        &_people8::before{
+            content: "\e59d";
+        }
+        &_people9::before{
+            content: "\f21b";
+        }
+        &_people10::before{
+            content: "\f77c";
+        }
+        &_people11::before{
+            content: "\f118";
+        }
+        &_people12::before{
+            content: "\f11a";
+        }
+        &_people13::before{
+            content: "\f119";
+        }
+        &_people14::before{
+            content: "\f222";
+        }
+        &_people15::before{
+            content: "\f221";
+        }
+        &_people16::before{
+            content: "\f77d";
+        }
+
+        &_shop1::before{
+            content: "\f291";
+        }
+        &_shop2::before{
+            content: "\f07a";
+        }
+        &_shop3::before{
+            content: "\f290";
+        }
+        &_shop4::before{
+            content: "\f06b";
+        }
+        &_shop5::before{
+            content: "\f553";
+        }
+        &_shop6::before{
+            content: "\f8c0";
+        }
+        &_shop7::before{
+            content: "\f696";
+        }
+        &_shop8::before{
+            content: "\f7b5";
+        }
+        &_shop9::before{
+            content: "\f530";
+        }
+        &_shop10::before{
+            content: "\f70b";
+        }
+        &_shop11::before{
+            content: "\f3a5";
+        }
+        &_shop12::before{
+            content: "\f0ca";
+        }
+        &_shop13::before{
+            content: "\f0ae";
+        }
+
+        &_transport1::before{
+            content: "\f5e4";
+        }
+        &_transport2::before{
+            content: "\f21c";
+        }
+        &_transport3::before{
+            content: "\f5b6";
+        }
+        &_transport4::before{
+            content: "\f63c";
+        }
+        &_transport5::before{
+            content: "\f722";
+        }
+        &_transport6::before{
+            content: "\f7d2";
+        }
+        &_transport7::before{
+            content: "\e445";
+        }
+        &_transport8::before{
+            content: "\f533";
+        }
+        &_transport9::before{
+            content: "\e22d";
+        }
+        &_transport10::before{
+            content: "\f135";
+        }
+        &_transport11::before{
+            content: "\f1ba";
+        }
+        &_transport12::before{
+            content: "\f207";
+        }
+        &_transport13::before{
+            content: "\f239";
+        }
+        &_transport14::before{
+            content: "\f21a";
+        }
+        &_transport15::before{
+            content: "\f63b";
+        }
+        &_transport16::before{
+            content: "\f018";
+        }
+        &_transport17::before{
+            content: "\f0ac";
+        }
+        &_transport18::before{
+            content: "\f57d";
+        }
+        &_transport19::before{
+            content: "\f279";
+        }
+        &_transport20::before{
+            content: "\f773";
+        }
+        &_transport21::before{
+            content: "\e52f";
+        }
+
+        
+        &_nature1::before{
+            content: "\f1bb";
+        }
+        &_nature2::before{
+            content: "\f06c";
+        }
+        &_nature3::before{
+            content: "\f18c";
+        }
+        &_nature4::before{
+            content: "\f740";
+        }
+        &_nature5::before{
+            content: "\f770";
+        }
+        &_nature6::before{
+            content: "\f75b";
+        }
+        &_nature7::before{
+            content: "\f753";
+        }
+        &_nature8::before{
+            content: "\f72e";
+        }
+        &_nature9::before{
+            content: "\f7ad";
+        }
+        &_nature10::before{
+            content: "\f6c4";
+        }
+        &_nature11::before{
+            content: "\f2ca";
+        }
+        &_nature12::before{
+            content: "\e040";
+        }
+        &_nature13::before{
+            content: "\e03f";
+        }
+        &_nature14::before{
+            content: "\e139";
+        }
+        &_nature15::before{
+            content: "\e52d";
+        }
+        &_nature16::before{
+            content: "\f0c2";
+        }
+        &_nature17::before{
+            content: "\f0e7";
+        }
+        &_nature18::before{
+            content: "\f185";
+        }
+        &_nature19::before{
+            content: "\f2dc";
+        }
+        &_nature20::before{
+            content: "\f0e9";
+        }
+        &_nature21::before{
+            content: "\f186";
+        }
+        
+        &_delivery1::before{
+            content: "\f0d1";
+        }
+        &_delivery2::before{
+            content: "\f4de";
+        }
+        &_delivery3::before{
+            content: "\f474";
+        }
+        &_delivery4::before{
+            content: "\f4ce";
+        }
+        &_delivery5::before{
+            content: "\f468";
+        }
+        &_delivery6::before{
+            content: "\f466";
+        }
+        &_delivery7::before{
+            content: "\f49e";
+        }
+        &_delivery8::before{
+            content: "\f4cd";
+        }
+        &_delivery9::before{
+            content: "\e4c7";
+        }
+        &_delivery10::before{
+            content: "\f187";
+        }
+
+        &_subscriptions1::before{
+            content: "\f16d";
+        }
+        &_subscriptions2::before{
+            content: "\f167";
+        }
+        &_subscriptions3::before{
+            content: "\f2c6";
+        }
+        &_subscriptions4::before{
+            content: "\f09a";
+        }
+        &_subscriptions5::before{
+            content: "\f099";
+        }
+        &_subscriptions6::before{
+            content: "\f0e0";
+        }
+        &_subscriptions7::before{
+            content: "\f27a";
+        }
+        &_subscriptions8::before{
+            content: "\f03e";
+        }
+        &_subscriptions9::before{
+            content: "\f1e0";
+        }
+        &_subscriptions10::before{
+            content: "\f064";
+        }
+    }
+    &__title{
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: -1px;
+    }
+    &__body{
+        margin-top: auto;
+        display: flex;
+        align-items: end;
+    }
+    &__content{
+        flex: 0 1 auto;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+    &__chart{
+        flex: 1 1 auto;
+        height: 100%;
+        &-item{
+            margin-left: auto;
+            margin-top: auto;
+            width: 100% !important;
+            height: 130px !important;
+            transform: translate(35px, 15px);
+        }
+        .am5-layer-30{
+            display: none !important;
+        }
+    }
+    &__type{
+        font-size: 14px;
+    }
+    &__total{
+        font-weight: 500;
+    }
+    &__num{
+        font-size: 45px;
+    }
+    &__currency{
+        font-size: 20px;
+    }
+}
+.done-account{
+    transition: box-shadow .3s ease;
+    &_act{
+        box-shadow: 0 0 10px rgb(147, 147, 147);
+    }
+}
+.swiper-accounts{
+    width: 100% !important;
+    height: 100%;
+    .swiper-wrapper{
+        height: 100%;
+    }
+    .swiper-slide{
+        width: 400px !important;
+        height: 100%;
+    }
+}
+.tools-accounts{
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    &__header{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+        gap: 20px;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__settings{
+        display: flex;
+        min-width: 30px;
+        gap: 10px;
+    }
+    &__list{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+.tool-accounts{
+    flex: 1 1 auto;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    &:hover .tool-accounts__item-arrow{
+        animation: anim-arrow .5s ease 2;
+    }
+    @keyframes anim-arrow {
+        0%, 100%{
+            transform: translateX(0);
+        }
+        50%{
+            transform: translateX(8px);
+        }
+    }
+    &__icon{
+        flex: 0 0 35px;
+        height: 35px;
+        background-color: $main-color;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
+            content: "\2b";
+            @include font-awesome;
+            color: rgb(255, 255, 255);
+            font-size: 18px;
+        }
+        &_add{
+            &::before{
+                content: "\f0ca";
+            }
+        }
+        &_create{
+            &::before{
+                content: "\2b";
+            }
+        }
+    }
+    &__item{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+    }
+    &__item-text{
+        font-size: 16px;
+        font-weight: 500;
+    }
+    &__item-arrow{
+        &::before{
+            content: "\f105";
+            @include font-awesome;
+            font-size: 15px;
+        }
+    }
+}

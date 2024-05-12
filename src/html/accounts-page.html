@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Your Budget</title>
+</head>
+<body>
+    <div class="overblock"></div>
+    @@include("./blocks/accountsDone.html")
+    <header class="header">
+        <div class="container">
+            @@include("./blocks/navigation.html")
+        </div>
+    </header>
+    <main class="page-accounts">
+        <div class="container">
+            <div class="page-accounts__content">
+                <div class="page-accounts__accounts">
+                    <div class="page-accounts__balance balance">
+                        <header class="balance__header">
+                            <p class="balance__title">Баланс</p>
+                        </header>
+                        <div class="balance__body">
+                            <p class="balance__total"><span class="balance__total-num">0</span> <span class="balance__total-currency">BYN</span></p>
+                            <div class="balance__chart"></div>
+                        </div>
+                    </div>
+                    <div class="accounts">
+                        <div class="accounts__content">
+                            <p class="accounts__title">Карты и счета</p>
+                            <div class="swiper-buttons swiper-buttons-accounts">
+                                <div class="swiper-buttons__button swiper-buttons__button_prev"></div>
+                                <div class="swiper-buttons__button swiper-buttons__button_next"></div>
+                            </div>
+                        </div>
+                        <div class="accounts__body">
+                            <div class="swiper swiper-accounts">
+                                <div class="swiper-wrapper">
+                                    <div class="swiper-slide">
+                                        <div class="account" style="background-color:rgb(229, 151, 78)">
+                                            <header class="account__header">
+                                                <span class="account__icon account__icon_money7" style="background-color:rgb(205, 129, 59)"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Наличные</h3>
+                                                    <p class="account__type">Обычный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCash"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="account" style="background-color:#73b813">
+                                            <header class="account__header">
+                                                <span class="account__icon account__icon_money6" style="background-color:#5f9c09"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Карта</h3>
+                                                    <p class="account__type">Обычный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCard"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="account" style="background-color:#d13b16">
+                                            <header class="account__header">
+                                                <span class="account__icon account__icon_money5" style="background-color:#b13111"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Кредит</h3>
+                                                    <p class="account__type">Кредитный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCredit"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="swiper-slide">
+                                        <div class="account" style="background-color:#c923d4">
+                                            <header class="account__header">
+                                                <span class="account__icon account__icon_money12" style="background-color:#a617b0"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Сбережения</h3>
+                                                    <p class="account__type">Сберегательный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartdiv"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="swiper-slide">
+                                        <div class="account" style="background-color:#08c9ac">
+                                            <header class="account__header">
+                                                <span class="account__icon account__icon_money11" style="background-color:#05a78f"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Долг</h3>
+                                                    <p class="account__type">Долговый счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartdiv"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+                                </div>
+                                <div class="pagination-accounts"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tools-accounts">
+                    <header class="tools-accounts__header">
+                        <p class="tools-accounts__title">Действия</p>
+                        <div class="tools-accounts__settings">
+                    
+                        </div>
+                    </header>
+                    <div class="tools-accounts__list">
+                        <div class="tool-accounts add-accounts">
+                            <div class="tool-accounts__icon tool-accounts__icon_add"></div>
+                            <div class="tool-accounts__item">
+                                <p class="tool-accounts__item-text">Добавить счет</p>
+                                <span class="tool-accounts__item-arrow"></span>
+                            </div>
+                        </div>
+                        <div class=" tool-accounts create-accounts">
+                            <div class="tool-accounts__icon tool-accounts__icon_create"></div>
+                            <div class="tool-accounts__item">
+                                <p class="tool-accounts__item-text">Создать счет</p>
+                                <span class="tool-accounts__item-arrow"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="https://cdn.amcharts.com/lib/5/plugins/json.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <script src="./../js/accountsPage.bundle.js"></script>
+</body>
+</html>
