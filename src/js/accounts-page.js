@@ -1,7 +1,6 @@
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
-import changeChart from "./modules/changeChartExpensesAndIncome";
-import { object } from '@amcharts/amcharts5';
+import Chart from 'chart.js/auto';
 
 // добавление нового счета
 
@@ -13,6 +12,24 @@ let btnAddAccount = document.querySelector(".add-accounts");
 let popupAddAccount = document.querySelector(".popup-accounts-done");
 let overblock = document.querySelector(".overblock");
 
+const chartBalance = new Chart(document.getElementById('balance-chart'), {
+    type: 'doughnut',
+    data: {
+        labels: [],
+        datasets: [{
+            data: [],
+            backgroundColor: [],
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false
+            },
+        }
+    },
+});
 const swiperAcoounts = new Swiper('.swiper-accounts', {
     speed: 600,
     spaceBetween: 15,
@@ -41,7 +58,9 @@ Promise.all([getDataFromFirestore("accounts")])
         })
         .then(data => {
             accountArr = (data[0] != null) ? data[0] : [];
-            setAccountsToList(accountArr)
+            setAccountsToList(accountArr);
+            chart(accountArr, chartBalance);
+            changeBalance(accountArr);
         })
 
 // инициализация готовых счетов
@@ -173,6 +192,8 @@ function addAccount(event, accountObject, accountArr) {
         swiperAcoounts.update();
 
         addToFirestore(accountArr, "accounts");
+
+        chart(accountArr, chartBalance);
     }
 }
 
@@ -302,4 +323,32 @@ function getDataFromFirestore(collection) {
     const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
 
     return fetch(firestoreUrl)
+}
+
+function chart(arr, chart) {
+    let titles = [];
+    let bgArr = [];
+    let costArr = [];
+
+    arr.forEach(item => {
+        titles.push(item.title);
+        bgArr.push(item.bg);
+
+        if (item.cost == 0) {
+            costArr.push(1);
+        } else {
+            costArr.push(item.cost);
+        }
+    })
+
+    chart.data.labels = titles;
+    chart.data.datasets[0].data = costArr;
+    chart.data.datasets[0].backgroundColor = bgArr;
+    chart.update();
+}
+
+function changeBalance(arr) {
+    let balance = document.querySelector(".balance__total-num");
+    let cost = arr.reduce((acc, obj) => {return  acc + obj.cost}, 0)
+    balance.textContent = cost;
 }

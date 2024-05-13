@@ -18,16 +18,44 @@
     <main class="page-accounts">
         <div class="container">
             <div class="page-accounts__content">
-                <div class="page-accounts__accounts">
-                    <div class="page-accounts__balance balance">
+                <div class="page-accounts__balance">
+                    <div class="balance">
                         <header class="balance__header">
                             <p class="balance__title">Баланс</p>
                         </header>
                         <div class="balance__body">
-                            <p class="balance__total"><span class="balance__total-num">0</span> <span class="balance__total-currency">BYN</span></p>
-                            <div class="balance__chart"></div>
+                            <div class="balance__chart-wrapper">
+                                <p class="balance__total"><span class="balance__total-num">0</span> <span class="balance__total-currency">BYN</span></p>
+                                <canvas class="balance__chart" id="balance-chart"></canvas>
+                            </div>        
                         </div>
                     </div>
+                    <div class="tools-accounts">
+                        <header class="tools-accounts__header">
+                            <p class="tools-accounts__title">Действия</p>
+                            <div class="tools-accounts__settings">
+                        
+                            </div>
+                        </header>
+                        <div class="tools-accounts__list">
+                            <div class="tool-accounts add-accounts">
+                                <div class="tool-accounts__icon tool-accounts__icon_add"></div>
+                                <div class="tool-accounts__item">
+                                    <p class="tool-accounts__item-text">Добавить счет</p>
+                                    <span class="tool-accounts__item-arrow"></span>
+                                </div>
+                            </div>
+                            <div class=" tool-accounts create-accounts">
+                                <div class="tool-accounts__icon tool-accounts__icon_create"></div>
+                                <div class="tool-accounts__item">
+                                    <p class="tool-accounts__item-text">Создать счет</p>
+                                    <span class="tool-accounts__item-arrow"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-accounts__accounts">
                     <div class="accounts">
                         <div class="accounts__content">
                             <p class="accounts__title">Карты и счета</p>
@@ -136,30 +164,6 @@
                                     </div> -->
                                 </div>
                                 <div class="pagination-accounts"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tools-accounts">
-                    <header class="tools-accounts__header">
-                        <p class="tools-accounts__title">Действия</p>
-                        <div class="tools-accounts__settings">
-                    
-                        </div>
-                    </header>
-                    <div class="tools-accounts__list">
-                        <div class="tool-accounts add-accounts">
-                            <div class="tool-accounts__icon tool-accounts__icon_add"></div>
-                            <div class="tool-accounts__item">
-                                <p class="tool-accounts__item-text">Добавить счет</p>
-                                <span class="tool-accounts__item-arrow"></span>
-                            </div>
-                        </div>
-                        <div class=" tool-accounts create-accounts">
-                            <div class="tool-accounts__icon tool-accounts__icon_create"></div>
-                            <div class="tool-accounts__item">
-                                <p class="tool-accounts__item-text">Создать счет</p>
-                                <span class="tool-accounts__item-arrow"></span>
                             </div>
                         </div>
                     </div>
