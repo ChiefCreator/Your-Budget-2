@@ -58,7 +58,7 @@
         font-weight: 600;
     }
     &__total-num{
-        font-size: 45px;
+        font-size: 40px;
     }
     &__total-currency{
         margin-left: -5px;
@@ -68,12 +68,12 @@
 .accounts{
     flex: 1 1 auto;
     height: auto;
-    background-color: $main-color;
     border-radius: 10px;
     padding: 15px;
     overflow: hidden;
     display: flex;
     gap: 30px;
+    position: relative;
     &__title{
         font-size: 22px;
         font-weight: 600;
@@ -85,6 +85,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        z-index: 2;
     }
     &__body{
         display: block;
@@ -92,6 +93,16 @@
         max-width: 815px;
         height: 100%;   
         position: relative;
+    }
+    &__bg{
+        z-index: 1;
+        position: absolute;
+        left: 0;
+        top:0;
+        width: 90%;
+        height: 100%;
+        background-color: $main-color;
+        border-radius: 10px;
     }
 }
 .account{
@@ -1032,6 +1043,21 @@
             content: "\f105";
             @include font-awesome;
             font-size: 15px;
+        }
+    }
+}
+.accounts-general-chart{
+    margin-top: 15px;
+    width: 100%;
+    height: 395px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    &__chart{
+        width: 100% !important;
+        height: 100% !important;
+        .am5-layer-30{
+            display: none !important;
         }
     }
 }

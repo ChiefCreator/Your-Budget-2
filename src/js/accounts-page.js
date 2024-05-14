@@ -61,6 +61,8 @@ Promise.all([getDataFromFirestore("accounts")])
             setAccountsToList(accountArr);
             chart(accountArr, chartBalance);
             changeBalance(accountArr);
+            console.log(accountArr)
+            initXYChartWithManyLines();
         })
 
 // инициализация готовых счетов
@@ -140,7 +142,7 @@ function initChart(chartId, data) {
         });
     });
 
-    operationToChart(data, chart, series, xAxis)
+    operationToChart(sortByDate(data, "increase"), chart, series, xAxis)
     chart.appear(1000, 100);
     chartsArr.push({root, xRenderer, yRenderer, xAxis, yAxis, series, data, chart});
 
@@ -154,7 +156,7 @@ function initChart(chartId, data) {
 
         const resultArray = Object.values(uniteArr);
 
-        for (let obj of resultArray.reverse()) {
+        for (let obj of resultArray) {
             for (let key of Object.keys(obj)) {
                 if (obj[key] != obj.cost && obj[key] != obj.date) {
                     delete obj[key]
@@ -165,6 +167,115 @@ function initChart(chartId, data) {
         series.data.setAll(resultArray);
         
         series.appear(1000);
+    }
+}
+
+function initXYChartWithManyLines() {
+    var root = am5.Root.new("accounts-general-chart");
+    root.setThemes([am5themes_Animated.new(root)]);
+
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX:true
+    }));
+    chart.get("colors").set("step", 3);
+
+    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 1,
+        categoryField: "date",
+        renderer: am5xy.AxisRendererX.new(root, {
+            minGridDistance: 80,
+            minorGridEnabled: true,
+            pan: "zoom"
+          }),
+        tooltip: am5.Tooltip.new(root, {})
+    }));
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        maxDeviation: 1,
+        renderer: am5xy.AxisRendererY.new(root, {
+            pan: "zoom"
+        })
+    }));
+
+    var data = [];
+    for (let i = 0; i < accountArr.length; i++) {
+        if (!accountArr[i].operations) continue;
+        var dataPart = transformAllOperationsToObjectsForXYChart(sortByDate(accountArr[i].operations, "increase"));
+        data = data.concat(dataPart)
+    }   
+    for (let i = 0; i < accountArr.length; i++) {
+        if (!accountArr[i].operations) continue;
+        makeSeries(sortByDate(data, "increase"), accountArr[i].title, accountArr[i].title, accountArr[i].bg, accountArr[i].iconBg, root, xAxis, yAxis, chart)
+    }  
+    chart.appear(1000, 100);
+}
+function makeSeries(data, name, fieldName, bg, iconBg, root, xAxis, yAxis, chart) {
+    var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
+      name: name,
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: fieldName,
+      categoryXField: "date",
+      fill: bg,
+      stroke: bg,
+    }));
+
+    series.fills.template.setAll({
+        visible: true,
+        fillOpacity: 0.2,
+    });
+
+    series.strokes.template.setAll({
+        strokeWidth: 3,
+      });
+
+    series.set("fill", am5.color(bg));
+    
+    series.bullets.push(function () {
+        return am5.Bullet.new(root, {
+            locationY: 0,
+            sprite: am5.Circle.new(root, {
+                radius: 3,
+                fill: iconBg
+            })
+        });
+    });
+  
+    xAxis.data.setAll(data);
+    series.data.setAll(data);
+    series.appear();
+}
+function transformAllOperationsToObjectsForXYChart(arr) {
+    const mergedExpenses = {};
+
+  for (const expense of arr) {
+    const date = expense.date;
+    const cost = expense.cost;
+
+    if (mergedExpenses[date]) {
+      mergedExpenses[date] += cost;
+    } else {
+      mergedExpenses[date] = cost;
+    }
+  }
+
+  return Object.keys(mergedExpenses).map(date => {
+    return {
+      date,
+      [arr[0].account]: mergedExpenses[date]
+    };
+  });
+}
+
+function sortByDate(arr, typeOfSorting) {
+    if (typeOfSorting == "decrease") {
+        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } 
+    else if (typeOfSorting == "increase") {
+        return arr.sort((a, b) => new Date(a.date) - new Date(b.date));
     }
 }
 
