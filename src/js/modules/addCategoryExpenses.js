@@ -99,7 +99,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             chart(categoriesIncomeByCurrentDate, chartIncomePie);
             changeCostsOfCategories(categoriesIncomeByCurrentDate, "income");
 
-            setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, "expenses");
+            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), moreExpenses, "expenses");
             changeChart(allOperationsByCurrentDate, chart, series, xAxis);
 
             setAccountsToList(accountArr, "swiper-accounts-operations-expenses")
@@ -343,10 +343,13 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         addToFirestore(operations, `operations${typeXL}`);
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
 
-        setOperationToList(sortByDate(allOperationsByCurrentDate), moreExpenses, typeS);
-        changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), moreExpenses, typeS);
+        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
 
-        addToFirestore(setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr), `accounts`);
+        accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
+        setAccountsToList(accountArr, "swiper-accounts-operations-expenses")
+        swiperAcoounts.update()
+        addToFirestore(accountArr, `accounts`);
 
         if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
             switchButton.querySelector(".switch-operations__input").checked = false;
@@ -544,9 +547,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     switchButton.addEventListener("click", function() {
         if (switchButton.querySelector(".switch-operations__input").checked == false) {
-            changeChart(sortByDate(operationsExpensesByCurrentDate))
+            changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"))
         } else {
-            changeChart(sortByDate(operationsIncomeByCurrentDate))
+            changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"))
         }
     })
 
@@ -566,8 +569,13 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         return categories
     }
 
-    function sortByDate(arr) {
-        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+    function sortByDate(arr, typeOfSorting) {
+        if (typeOfSorting == "decrease") {
+            return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
+        } 
+        else if (typeOfSorting == "increase") {
+            return arr.sort((a, b) => new Date(a.date) - new Date(b.date));
+        }
     }
 
     function setAccountsToList(arr, blockToPasteClassName) {
@@ -605,11 +613,12 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
                 return item;
             }
             blockToPaste.append(parser(itemCategory))
-            initChart(arr[i].chartId)
+            initChart(arr[i].chartId, transformAllOperationsToObjectsForXYChart(sortByDate(arr[i].operations, "increase")))
         }
     }
     
-    function initChart(chartId) {
+    function initChart(chartId, data) {
+        if (!data || data.length <= 1) data = [{  date: "1",  cost: 1,}, {  date: "2",  cost: 4,}, {  date: "3",  cost: 3,}, {    date: "4",    cost: 7,}, {    date: "5",    cost: 2,}, {    date: "6",    cost: 9,}, {    date: "7",    cost: 14,}, {    date: "8",    cost: 10,}, {    date: "9",    cost: 17,}, {    date: "10",    cost: 13,}];
     var root = am5.Root.new(chartId);   
     root.setThemes([
       am5themes_Animated.new(root)
@@ -670,37 +679,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             })
         });
     });
-    let data = [{
-        date: "1",
-        cost: 1,
-      }, {
-        date: "2",
-        cost: 4,
-      }, {
-        date: "3",
-        cost: 3,
-    }, {
-        date: "4",
-        cost: 7,
-    }, {
-        date: "5",
-        cost: 2,
-    }, {
-        date: "6",
-        cost: 9,
-    }, {
-        date: "7",
-        cost: 14,
-    }, {
-        date: "8",
-        cost: 10,
-    }, {
-        date: "9",
-        cost: 17,
-    }, {
-        date: "10",
-        cost: 13,
-    }];
     xAxis.data.setAll(data);
     series.data.setAll(data);
     series.appear(1000);
@@ -716,6 +694,28 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             account.cost = sumCosts(filterOperationsAll)
         }
         return accounts;
+    }
+
+    function transformAllOperationsToObjectsForXYChart(arr) {
+        const mergedExpenses = {};
+    
+      for (const expense of arr) {
+        const date = expense.date;
+        const cost = expense.cost;
+    
+        if (mergedExpenses[date]) {
+          mergedExpenses[date] += cost;
+        } else {
+          mergedExpenses[date] = cost;
+        }
+      }
+    
+      return Object.keys(mergedExpenses).map(date => {
+        return {
+          date,
+          cost: mergedExpenses[date]
+        };
+      });
     }
 
     function sumCosts(arr) {
@@ -741,7 +741,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             more.classList.remove("open");
         }
 
-        setOperationToList(sortByDate(operationsByCurrentDate), more, typeS);
+        setOperationToList(sortByDate(operationsByCurrentDate, "decrease"), more, typeS);
     }
 
     // создание категории
@@ -1008,8 +1008,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         chart(categoriesByCurrentDate, chartPie);
         changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
-        setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS);
-        changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), more, typeS);
+        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
 
         if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
             switchButton.querySelector(".switch-operations__input").checked = false;
@@ -1071,12 +1071,17 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             addToFirestore(categories, `operations${typeXL}`);
             addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
     
-            setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS);
+            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), more, typeS);
 
             chart(categoriesByCurrentDate, chartPie);
             changeCostsOfCategories(categoriesByCurrentDate, typeS);
 
-            changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
+            changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
+
+            accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
+            setAccountsToList(accountArr, "swiper-accounts-operations-expenses")
+            swiperAcoounts.update()
+            addToFirestore(accountArr, `accounts`);
         }
     }
 
@@ -1156,8 +1161,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
             chart(categoriesByCurrentDate, chartPie)
             changeCostsOfCategories(categoriesByCurrentDate, typeS)
-            setOperationToList(sortByDate(allOperationsByCurrentDate), more, typeS)
-            changeChart(sortByDate(allOperationsByCurrentDate), chart, series, xAxis);
+            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), more, typeS)
+            changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
 
             operation.classList.remove("expand-operation_act");
 
