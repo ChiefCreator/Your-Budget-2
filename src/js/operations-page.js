@@ -1,4 +1,5 @@
 import functionalOnOperationsPage from "./modules/functionalOnOperationsPage";
+import expandOperation from "./modules/expand-operation";
 import toggleFilter from './modules/toggle-filter';
 
 // инициализация графика
@@ -35,3 +36,4 @@ var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
 
 // функции
 functionalOnOperationsPage(chart, root, xAxis, yAxis);
+expandOperation();

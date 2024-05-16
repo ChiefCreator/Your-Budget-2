@@ -3,6 +3,7 @@
     &__content{
         display: flex;
         gap: 15px;
+        margin-bottom: 15px;
     }
     flex: 1 1 auto;
     &__chart{
@@ -85,6 +86,12 @@
     }
 }
 .wrapper-operation{
+    .operation{
+        margin-bottom: 10px;
+        &:last-child{
+            margin-bottom: 0;
+        }
+    }
     .item-category{
         margin-bottom: 10px;
         &:last-child{

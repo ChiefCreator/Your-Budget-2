@@ -63,53 +63,29 @@ function setOperationsToList(arr) {
         <div class="list-all-operation__wrapper-content" data-dat="all${arr[i].date}"></div>
         </div>`;
 
-        let itemCategory = "";
-        if (arr[i].comment) {
-            itemCategory = `<div class="list-category__item item-category expand-operation" data-index="${arr[i].index}">
-        <div class="item-category__head">
-            <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
-            <div class="item-category__info">
-                <p class="item-category__name">${arr[i].title}</p>
-            </div>
-            <div class="item-category__total">${arr[i].cost} BYN</div>
-        </div>
-        <div class="item-category__footer">
-            <div class="item-category__footer-content">
-                <div class="item-category__comment-wrapper">
-                    <div class="item-category__comment-icon"></div>
-                    <p class="item-category__comment">${arr[i].comment}</p>
+        let itemCategory = `<div class="operation operation_${arr[i].type} expand-operation expand-operation_${arr[i].type}" data-index="${arr[i].index}">
+            <header class="operation__head">
+                <div class="operation__icon ${arr[i].icon}" style="background-color: ${arr[i].bg}"></div>
+                <div class="operation__name">
+                    <h4 class="operation__title">${arr[i].title}</h4>
                 </div>
-                <div class="item-category__buttons">
-                    <button class="item-category__button item-category__button_change">Изменить</button>
-                    <button class="item-category__button item-category__button_delete">Удалить</button>
-                </div>
-            </div>
-        </div>
-            </div>`;
-        } else {
-            itemCategory = `<div class="list-category__item item-category expand-operation" data-index="${arr[i].index}">
-            <div class="item-category__head">
-                <div class="item-category__icon ${arr[i].icon}" style="background-color:${arr[i].bg}"></div>
-                <div class="item-category__info">
-                    <p class="item-category__name">${arr[i].title}</p>
-                </div>
-                <div class="item-category__total">${arr[i].cost} BYN</div>
-            </div>
-            <div class="item-category__footer">
-                <div class="item-category__footer-content">
-                    <div class="item-category__buttons">
-                        <button class="item-category__button item-category__button_change">Изменить</button>
-                        <button class="item-category__button item-category__button_delete">Удалить</button>
+                <div class="operation__info">
+                    <div class="operation__cost operation__cost_${arr[i].type}">
+                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${arr[i].cost}</span> <span class="operation__totla-currency">BYN</span></p>
+                        <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
+                    </div>
+                    <div class="operation__button-list">
+                        <button class="operation__button operation__button_change"></button>
+                        <button class="operation__button operation__button_delete"></button>
                     </div>
                 </div>
-            </div>
-                </div>`;
-        }
+            </header>
+        </div>`
                     
         function parser(itemCategory) {
             var parser = new DOMParser();
             let teg = parser.parseFromString(itemCategory, 'text/html');
-            let item = teg.querySelector(".item-category");
+            let item = teg.querySelector(".expand-operation");
             return item;
         }
         function parserBlockToPaste(block) {
