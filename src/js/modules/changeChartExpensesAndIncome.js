@@ -1,38 +1,3 @@
-import Chart from 'chart.js/auto';
-const ctxExpensesAndIncome = document.getElementById('chartBar');
-const chartExpensesAndIncome = new Chart(ctxExpensesAndIncome, {
-    type: 'bar',
-    data: {
-        labels: [],
-        datasets: [
-            {
-                type: 'bar',
-                label: 'Dataset 1',
-                backgroundColor: [],
-                data: [],
-            },
-        ]
-    },
-    options: {
-      plugins: {
-        title: {
-          text: 'Chart.js Combo Time Scale',
-          display: false
-        },
-        legend: {
-            display: false
-        },
-      },
-      scales: {
-        x: {
-            ticks: {
-                stepSize: 2
-            }
-        },
-    },
-    },
-});
-
 function changeChart(arr, chart, series, xAxis) {
 
     operationToChart(arr, chart, series, xAxis)
