@@ -188,6 +188,7 @@
 }
 // 
 .operation-chart{
+    height: 100%;
     padding: 10px 10px 0 10px;
     border-radius: 10px;
     background-color: white;
@@ -219,7 +220,7 @@
     }
     #chartdiv{
         width: 100% !important;
-        height: 375px !important;
+        height: calc(100% - 23px) !important;
     }
 }
 .swiper-statistics{

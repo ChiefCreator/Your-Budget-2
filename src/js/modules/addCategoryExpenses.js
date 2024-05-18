@@ -446,6 +446,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             index: index,
             type: objCategory.type,
             account: objAccount.title,
+            accountIndex: objAccount.index,
         }
     }
 
@@ -1065,11 +1066,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
   
     window.addEventListener("click", function(event) {
         if (event.target.closest(`.popup-operation__button_change-expenses`)) {
-            console.log("exp")
             changeOperations(event, popupOperation, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie)
         }
         if (event.target.closest(`.popup-operation__button_change-income`)) {
-            console.log("inc")
             changeOperations(event, popupOperation, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie)
         }
     })
@@ -1079,6 +1078,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-expenses")
         document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-income")
         overblock.classList.remove("overblock_open");
+
+        let account = document.querySelector(`.account-choose_act`);
+        account.classList.remove("account-choose_act");
     })
 
     function addOperationToPopupChangeOperation(event, typeS, popup, operationsByCurrentDate) {
@@ -1090,6 +1092,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
             setDataFromInput(findObjOperation);
             addCategoryToPopup(findObjOperation, typeS, `popup-operation`);
+
+            let activeAccount = document.querySelector(`[data-index="${findObjOperation.accountIndex}"]`);
+            activeAccount.classList.add("account-choose_act")
            
             popup.classList.add("popup-operation_open");
             overblock.classList.add("overblock_open");
@@ -1100,60 +1105,66 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     function changeOperations(event, popup, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
 
-            let operation = document.querySelector(".expand-operation_act");
-            let account = document.querySelector(`.account-choose_act`);
+        let operation = document.querySelector(".expand-operation_act");
+        let account = document.querySelector(`.account-choose_act`);
             
-            let findObjAccount = findObjectByHtmlIndex(account, accountArr);
-            let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
-            let inpCost = document.querySelector(`.popup-operation .input-cost__input`);
-            let inpComm = document.querySelector(`.popup-operation .textarrea__input`);
-            let inpDate = document.querySelector(`.popup-operation .input-date__input`);
-            findObjOperation.cost = +inpCost.value;
-            findObjOperation.comment = inpComm.value;
-            findObjOperation.date = inpDate.value;
-            findObjOperation.account = findObjAccount.title;
-            console.log(findObjOperation)
+        let findObjAccount = findObjectByHtmlIndex(account, accountArr);
+        let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+        let inpCost = document.querySelector(`.popup-operation .input-cost__input`);
+        let inpComm = document.querySelector(`.popup-operation .textarrea__input`);
+        let inpDate = document.querySelector(`.popup-operation .input-date__input`);
+        findObjOperation.cost = +inpCost.value;
+        findObjOperation.comment = inpComm.value;
+        findObjOperation.date = inpDate.value;
+        findObjOperation.account = findObjAccount.title;
+        findObjOperation.accountIndex = findObjAccount.index;
 
-            for (let obj of operationsByCurrentDate) {
-                if (findObjOperation.index == obj.index) {
-                    obj.cost = findObjOperation.cost;
-                    obj.comment = findObjOperation.comment;
-                    obj.date = findObjOperation.date;
-                    obj.account = findObjOperation.account;
-                }
+        for (let obj of operationsByCurrentDate) {
+            if (findObjOperation.index == obj.index) {
+                obj.cost = findObjOperation.cost;
+                obj.comment = findObjOperation.comment;
+                obj.date = findObjOperation.date;
+                obj.account = findObjOperation.account;
+                obj.accountIndex = findObjOperation.accountIndex;
             }
-            for (let obj of operations) {
-                if (findObjOperation.index == obj.index) {
-                    obj.cost = findObjOperation.cost;
-                    obj.comment = findObjOperation.comment;
-                    obj.date = findObjOperation.date;
-                    obj.account = findObjOperation.account
-                }
+        }
+        for (let obj of operations) {
+            if (findObjOperation.index == obj.index) {
+                obj.cost = findObjOperation.cost;
+                obj.comment = findObjOperation.comment;
+                obj.date = findObjOperation.date;
+                obj.account = findObjOperation.account;
+                obj.accountIndex = findObjOperation.accountIndex;
             }
+        }
     
-            categories = Object.assign(categories, updateOperation(categories, operations));
-            categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
+        categories = Object.assign(categories, updateOperation(categories, operations));
+        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categoriesByCurrentDate, operationsByCurrentDate));
 
-            allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+        allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
 
-            addToFirestore(operations, `operations${typeXL}`)
-            addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
-            addToFirestore(categories, `categories${typeXL}`)
-            addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
+        addToFirestore(operations, `operations${typeXL}`)
+        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
+        addToFirestore(categories, `categories${typeXL}`)
+        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
 
-            chart(categoriesByCurrentDate, chartPie)
-            changeCostsOfCategories(categoriesByCurrentDate, typeS)
-            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), typeS)
-            changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
+        chart(categoriesByCurrentDate, chartPie)
+        changeCostsOfCategories(categoriesByCurrentDate, typeS)
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), typeS)
+        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
 
-            accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
-            console.log(accountArr, operationsExpenses.concat(operationsIncome))
+        accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
 
-            setAccountsToList(accountArr, "swiper-accounts-operations")
-            swiperAcoounts.update()
-            addToFirestore(accountArr, `accounts`);
+        setAccountsToList(accountArr, "swiper-accounts-operations")
+        swiperAcoounts.update()
+        addToFirestore(accountArr, `accounts`);
 
-            operation.classList.remove("expand-operation_act");
+        operation.classList.remove("expand-operation_act");
+        account.classList.remove("account-choose_act");
+        popupOperation.classList.remove("popup-operation_open");
+        document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-expenses")
+        document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-income")
+        overblock.classList.remove("overblock_open");
     }
 
     function setDataFromInput(modifiedObj) {

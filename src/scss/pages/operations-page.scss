@@ -289,6 +289,8 @@
     padding: 10px 10px 0 10px;
     border-radius: 10px;
     background-color: white;
+    position: relative;
+    overflow: hidden;
     &__hide-logo{
         position: absolute;
         bottom: 0;
