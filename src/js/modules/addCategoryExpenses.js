@@ -50,6 +50,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let popupDoneCategoriesIncome = document.querySelector(".popup-category-done_income");
     
     // общие 
+    let switchChart = document.querySelector(".switch-chart");
+    let titleChart = document.querySelector(".operation-chart__title");
     let indexCategory = 0;
     let index = 0;
     let overblock = document.querySelector(".overblock");
@@ -89,7 +91,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             changeCostsOfCategories(categoriesIncomeByCurrentDate, "income");
 
             setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "expenses");
-            changeChart(allOperationsByCurrentDate, chart, series, xAxis);
+            changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), chart, series, xAxis);
 
             setAccountsToList(accountArr, "swiper-accounts-operations")
         })
@@ -254,9 +256,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
         document.querySelectorAll(`.list-categories_${typeS} .list-categories__item`).forEach((category, i) => {
             if (arr[i]) {
-                total += arr[i].cost;
+                total += Math.abs(arr[i].cost);
 
-                category.querySelector(".item-category__total").textContent = arr[i].cost + " BYN";
+                category.querySelector(".item-category__total").textContent = Math.abs(arr[i].cost) + " BYN";
             }
         })
         document.querySelector(`.slider-categories__item_${typeS} .slider-categories__total-num`).textContent = total;
@@ -315,10 +317,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         let date = inputDate.value;
         let comment = inputComment.value;
         let index = setIndex(typeS);
-        console.log(category, account)
         let findObjOperation = findObjectByHtmlIndex(category, categoriesByCurrentDate);
         let findObjAccount = findObjectByHtmlIndex(account, accountArr);
-        let obj = objOperation(cost, date, comment, index, findObjOperation, findObjAccount);
+        let obj = objOperation(cost, date, comment, index, findObjOperation, findObjAccount, typeS);
 
         operations.push(Object.assign({}, obj));
         for (let obj of operationsByCurrentDate) {
@@ -341,12 +342,22 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`);
 
         setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), typeS);
-        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
+        changeChart(sortByDate(operationsByCurrentDate, "decrease"), chart, series, xAxis);
 
         accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
         setAccountsToList(accountArr, "swiper-accounts-operations")
         swiperAcoounts.update()
         addToFirestore(accountArr, `accounts`);
+
+        if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
+            switchChart.classList.add("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = true;
+            titleChart.textContent = "График доходов";
+        } else {
+            switchChart.classList.remove("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = false;
+            titleChart.textContent = "График расходов";
+        }
     }
 
     overblock.addEventListener("click", function() {
@@ -423,13 +434,13 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         return modifiedObj;
     }
 
-    function objOperation(cost, date, comment, index, objCategory, objAccount) {
+    function objOperation(cost, date, comment, index, objCategory, objAccount, typeS) {
         return {
             title: objCategory.title,
             icon: objCategory.icon,
             bg: objCategory.bg,
             color: objCategory.color,
-            cost: cost,
+            cost: (typeS == "expenses") ? -cost : cost,
             date: date,
             comment: comment,
             index: index,
@@ -459,7 +470,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
                 </div>
                 <div class="operation__info">
                     <div class="operation__cost operation__cost_${arr[i].type}">
-                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${arr[i].cost}</span> <span class="operation__totla-currency">BYN</span></p>
+                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${Math.abs(arr[i].cost)}</span> <span class="operation__totla-currency">BYN</span></p>
                         <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
                     </div>
                     <div class="operation__button-list">
@@ -484,8 +495,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             }
 
             pasteThreeOperations();
-         
-
             function pasteThreeOperations() {
                 blockToPaste.append(parserBlockToPaste(block));
                 document.querySelector(`[data-dat="all${arr[i].date}"]`).prepend(parser(itemCategory));
@@ -494,12 +503,12 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
                     document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`).length - 1].remove()
                 }
 
-                if (arr.length < 5) {
+                if (arr.length < 6) {
                     return
                 } 
                 else {
                     blockToPaste.querySelectorAll(".operation").forEach((operation, index) => {
-                        if (index > 3) operation.remove()
+                        if (index > 4) operation.remove()
                     })
                     blockToPaste.querySelectorAll(".wrapper-operation").forEach((block) => {
                         if (block.querySelector(".wrapper-operation__wrapper-content").children.length == 0) {
@@ -962,12 +971,16 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
         setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), typeS);
-        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), chart, series, xAxis);
+        changeChart(sortByDate(operationsByCurrentDate, "decrease"), chart, series, xAxis);
 
-        if (operationsByCurrentDate == operationsExpensesByCurrentDate) {
-            switchButton.querySelector(".switch-operations__input").checked = false;
+        if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
+            switchChart.classList.add("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = true;
+            titleChart.textContent = "График доходов";
         } else {
-            switchButton.querySelector(".switch-operations__input").checked = true;
+            switchChart.classList.remove("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = false;
+            titleChart.textContent = "График расходов";
         }
     }
     
@@ -1152,6 +1165,20 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         inpComm.value = modifiedObj.comment;
         inpDate.value = modifiedObj.date;
     }
+
+    // изменение графика
+
+    switchChart.addEventListener("click", () => {
+        if (switchChart.classList.contains("switch-chart_act")) {
+            switchChart.classList.remove("switch-chart_act");
+            changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), chart, series, xAxis);
+            titleChart.textContent = "График расходов";
+        } else {
+            switchChart.classList.add("switch-chart_act");
+            changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"), chart, series, xAxis);
+            titleChart.textContent = "График доходов";
+        }
+    })
 }
 
 export default addCategoryExpenses;

@@ -191,8 +191,39 @@
     padding: 10px 10px 0 10px;
     border-radius: 10px;
     background-color: white;
-    .am5-layer-30{
-        display: none !important;
+    position: relative;
+    overflow: hidden;
+    &__header{
+        margin-bottom: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+    &__title{
+        flex: 0 0 auto;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__tools{
+        flex: 0 0 60px;
+    }
+    &__hide-logo{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 70px;
+        height: 20px;
+        background-color: white;
+        z-index: 1;
+    }
+    .am5-tooltip-container{
+        position: relative !important;
+        z-index:3 !important;
+    }
+    div[role='tooltip']{
+        position: relative !important;
+        z-index:3 !important;
     }
     #chartdiv{
         width: 100% !important;
@@ -389,5 +420,20 @@
             }
         }
         
+    }
+}
+.switch-chart{
+    &__input{
+        &:checked + .switch-chart__element{
+            &::before{
+                content: "\f176";
+            }
+        }
+    }
+    &__element{
+        pointer-events: none;
+        &::before{
+            content: "\f175";
+        }
     }
 }

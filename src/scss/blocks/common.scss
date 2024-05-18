@@ -20,13 +20,10 @@
     cursor: pointer;
     transition: all .3s ease;
     &:hover{
-        background-color:rgb(242, 243, 247);
+        background-color:$second-light-color;
     }
     &:hover &__name{
         margin-left: 5px;
-    }
-    &:hover &__info{
-        margin-right: 5px;
     }
     &__head{
         display: flex;
@@ -157,7 +154,6 @@
             }  
         }
     }
-    
 }
 .expand-operation{
     margin-bottom: 10px;
@@ -177,13 +173,10 @@
     border-radius: 10px;
     transition: all .3s ease;
     &:hover{
-        background-color:rgb(242, 243, 247);
+        background-color:$second-light-color;
     }
     &:hover &__name{
         margin-left: 5px;
-    }
-    &:hover &__total{
-        margin-right: 5px;
     }
     cursor: pointer;
     &__head{
