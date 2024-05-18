@@ -87,14 +87,14 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
         getFillFromSprite: false,
       });
       
-      tooltip.get("background").setAll({
-        fill: am5.color("#133054"),
-        fillOpacity: 1,
-        stroke: am5.color("#133054"),
-        strokeOpacity: 0
-      });
+    tooltip.get("background").setAll({
+      fill: am5.color("#133054"),
+      fillOpacity: 1,
+      stroke: am5.color("#133054"),
+      strokeOpacity: 0
+    });
 
-      chart.zoomOutButton.set("forceHidden", true);
+    chart.zoomOutButton.set("forceHidden", true);
     
     var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
         name: "Series",

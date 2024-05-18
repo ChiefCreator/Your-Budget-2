@@ -194,7 +194,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             if (item.cost == 0) {
                 costArr.push(1);
             } else {
-                costArr.push(item.cost);
+                costArr.push(Math.abs(item.cost));
             }
         })
 
@@ -279,6 +279,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             category.classList.add("act");
 
             let findObjOperation = findObjectByHtmlIndex(category, operationsByCurrentDate);
+            findObjOperation.cost = Math.abs(findObjOperation.cost)
 
             addPopup(popup);
             addCategoryToPopup(findObjOperation, typeS, "popup-operation");
@@ -305,7 +306,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
                 actAccount.classList.remove(`account-choose_act`);
             }
             account.classList.toggle("account-choose_act")
-            console.log("ok", account)
         }
     }
 

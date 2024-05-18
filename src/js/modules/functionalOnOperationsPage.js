@@ -17,6 +17,18 @@ let categoriesIncome = [];
 let allOperationsByCurrentDate = [];
 let allCategoriesByCurrentDate = [];
 
+let inputFromCost = document.querySelector("[data-range='price-from']");
+let inputToCost = document.querySelector("[data-range='price-to']");
+let inputFromDate = document.querySelector("[data-range='date-from']");
+let inputToDate = document.querySelector("[data-range='date-to']");
+
+let dateText = document.querySelector(".main-date__value");
+let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
+if (!localStorage.getItem("currentDate")) {
+    localStorage.setItem("currentDate", currentDate); 
+}
+dateText.textContent = transformDate(localStorage.getItem("currentDate"))
+
 let userEmail = localStorage.getItem("email").replace(".", "*");
 Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
         .then(response => {
@@ -42,6 +54,38 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
             createSeries(allCategoriesByCurrentDate, data)
             chart.appear(1000, 100);
+
+            $(".range__input_cost").ionRangeSlider({
+                type: "double",
+                min: 0,
+                max: getMaxCost(allOperationsByCurrentDate),
+                from: 0,
+                to: getMaxCost(allOperationsByCurrentDate) / 2,
+                drag_interval: true,
+                onChange: function (data) {
+                    let dataFrom = data.from;
+                    let dataTo = data.to;
+            
+                    inputFromCost.value = dataFrom;
+                    inputToCost.value = dataTo;
+                },
+            });
+            $(".range__input_date").ionRangeSlider({
+                type: "double",
+                values: getDaysOfMonth(localStorage.getItem("currentDate").slice(0,4), localStorage.getItem("currentDate").slice(5, 7)),
+                from: 0,
+                to: 15,
+                drag_interval: true,
+                onChange: function (data) {
+                    let dataFrom = data.from_value;
+                    let dataTo = data.to_value;
+            
+                    inputFromDate.value = dataFrom;
+                    inputToDate.value = dataTo;
+                },
+            });
+            rangeValue(inputFromCost,inputToCost,".range__input_cost", 0);
+            rangeValue(inputFromDate,inputToDate,".range__input_date", 1);
         })
 
 function getDataFromFirestore(collection) {
@@ -71,7 +115,7 @@ function setOperationsToList(arr) {
                 </div>
                 <div class="operation__info">
                     <div class="operation__cost operation__cost_${arr[i].type}">
-                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${arr[i].cost}</span> <span class="operation__totla-currency">BYN</span></p>
+                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${Math.abs(arr[i].cost)}</span> <span class="operation__totla-currency">BYN</span></p>
                         <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
                     </div>
                     <div class="operation__button-list">
@@ -116,19 +160,19 @@ function sortByDate(arr, typeOfSorting) {
 
 function makeSeries(data, name, fieldName, bg, root, xAxis, yAxis) {
     var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-      name: name,
-      xAxis: xAxis,
-      yAxis: yAxis,
-      valueYField: fieldName,
-      categoryXField: "date",
-      fill: bg
+        name: name,
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: fieldName,
+        categoryXField: "date",
+        fill: bg
     }));
   
     series.columns.template.setAll({
-      tooltipText: "{name}, {categoryX}:{valueY}",
-      width: am5.percent(90),
-      tooltipY: 0,
-      strokeOpacity: 0
+        tooltipText: "{name}, {categoryX}: {valueY}",
+        width: am5.percent(90),
+        tooltipY: 0,
+        strokeOpacity: 0,
     });
   
     xAxis.data.setAll(data);
@@ -159,14 +203,6 @@ function createSeries(arr, data) {
 }
 
 // календарь
-
-let dateText = document.querySelector(".main-date__value");
-let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
-
-if (!localStorage.getItem("currentDate")) {
-    localStorage.setItem("currentDate", currentDate); 
-}
-dateText.textContent = transformDate(localStorage.getItem("currentDate"))
 
 let buttonYear = {
     content: 'Выбрать год',
@@ -223,6 +259,8 @@ let mainDatePickerSettings = {
 
         localStorage.setItem("currentDate", formattedDate); 
         changeMainDate()
+
+        resetFilter()
     },
 }
 let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
@@ -318,70 +356,77 @@ function addToFirestore(arr, collection) {
 // фильтр
 toggleFilter();
 
-let inputFromCost = document.querySelector("[data-range='price-from']");
-let inputToCost = document.querySelector("[data-range='price-to']");
-
-let inputFromDate = document.querySelector("[data-range='date-from']");
-let inputToDate = document.querySelector("[data-range='date-to']");
-
-$(".range__input_cost").ionRangeSlider({
-    type: "double",
-    min: 0,
-    max: 20000,
-    from: 0,
-    to: 5000,
-    drag_interval: true,
-    onChange: function (data) {
-        let dataFrom = data.from;
-        let dataTo = data.to;
-
-        inputFromCost.value = dataFrom;
-        inputToCost.value = dataTo;
-    },
-});
-$(".range__input_date").ionRangeSlider({
-    type: "double",
-    values: getDatesFromCurrentMounth(),
-    from: 0,
-    to: 15,
-    drag_interval: true,
-    onChange: function (data) {
-        let dataFrom = data.from_value;
-        let dataTo = data.to_value;
-
-        inputFromDate.value = dataFrom;
-        inputToDate.value = dataTo;
-    },
-});
-function rangeValue(inputFrom, inputTo, rangeTeg){
+function rangeValue(inputFrom, inputTo, rangeTeg, num){
     var instance = $(rangeTeg).data("ionRangeSlider");
     inputFrom.addEventListener("input", function() {
         var valFrom = inputFrom.value
-        instance.update({from: valFrom});
+        instance.update({from: valFrom - num});
     })
     inputTo.addEventListener("input", function() {
         var valTo = inputTo.value
-        instance.update({to: valTo});
+        instance.update({to: valTo - num});
     })
 }
-rangeValue(inputFromCost,inputToCost,".range__input_cost");
-rangeValue(inputFromDate,inputToDate,".range__input_date");
 
-function getDatesFromCurrentMounth() {
-    const now = new Date();
-
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 2);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
+function getDaysOfMonth(year, month) {
+    const daysInMonth = new Date(year, month, 0).getDate();
     const dates = [];
-
-    for (let i = firstDay; i <= lastDay; i.setDate(i.getDate() + 1)) {
-      const formattedDate = i.toISOString().slice(0, 10);
-      dates.push(formattedDate);
+    for (let i = 1; i <= daysInMonth; i++) {
+      const day = i.toString().padStart(2, '0');
+      const formattedMonth = (month).toString().padStart(2, '0');
+  
+      dates.push(`${year}-${formattedMonth}-${day}`);
     }
-
+  
     return dates;
 }
+
+function getMaxCost(arr) {
+    return Math.max(...arr.reduce((acc, obj) => {
+        acc.push(Math.abs(obj.cost))
+        return acc;
+    }, []))
+}
+
+// отчистка данных фильтра
+
+function resetFilter() {
+    resetInput(inputFromCost);
+    resetInput(inputToCost);
+    resetInput(inputFromDate);
+    resetInput(inputToDate);
+
+    $(".range__input_cost").data("ionRangeSlider").update({
+        max: getMaxCost(allOperationsByCurrentDate),
+        from: 0,
+        to: getMaxCost(allOperationsByCurrentDate) / 2,
+        min: 0,
+    });
+    $(".range__input_date").data("ionRangeSlider").update({
+        from: 0,
+        to: 15,
+        values: getDaysOfMonth(localStorage.getItem("currentDate").slice(0,4), localStorage.getItem("currentDate").slice(5, 7))
+    })
+
+    let checkboxes = document.querySelectorAll(".input-check__inp");
+    checkboxes.forEach(checkbox => { if (checkbox.checked) checkbox.checked = false});
+
+    setOperationsToList(sortByDate(allOperationsByCurrentDate, "decrease"));
+
+    chart.series.clear();
+    var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
+    createSeries(allCategoriesByCurrentDate, data);
+    chart.appear(1000, 100);
+
+    function resetInput(input) {
+        return input.value = "";
+    }
+}
+
+const resetButton = document.querySelector(".reset-filter");
+resetButton.addEventListener("click", function() {
+    resetFilter()
+})
 
 // получение данных фильтра
 
@@ -401,17 +446,17 @@ applyFilter.addEventListener("click", function() {
 
     // все три фильтра включены
     if (inputFromCostValue != "" && inputToCostValue != "" && inputFromDateValue != "" && inputToDateValue != "" && isChecked(checkboxes) > 0) {
-        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue) && arrTitlesOfCheckboxes.includes(item.title));
-        filteredAllCategoriesByCurrentDate = updateOperation(allCategoriesByCurrentDate, allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue)).filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
+        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue) && arrTitlesOfCheckboxes.includes(item.title));
+        filteredAllCategoriesByCurrentDate = updateOperation(allCategoriesByCurrentDate, allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue)).filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
     }
     // два определенных фильтра включены
     else if (inputFromCostValue != "" && inputToCostValue != "" && inputFromDateValue != "" && inputToDateValue != "") {
-        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue));
-        filteredAllCategoriesByCurrentDate = updateOperation(allCategoriesByCurrentDate, allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue)).filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue));
+        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue) && (item.date >= inputFromDateValue && item.date <= inputToDateValue));
+        filteredAllCategoriesByCurrentDate = updateOperation(allCategoriesByCurrentDate, allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue)).filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue));
     }
     else if (inputFromCostValue != "" && inputToCostValue != "" && isChecked(checkboxes) > 0) {
-        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
-        filteredAllCategoriesByCurrentDate = allCategoriesByCurrentDate.filter(item => (item.cost >= inputFromCostValue && item.cost <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
+        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
+        filteredAllCategoriesByCurrentDate = allCategoriesByCurrentDate.filter(item => (Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue) && arrTitlesOfCheckboxes.includes(item.title));
     }
     else if (inputFromDateValue != "" && inputToDateValue != "" && isChecked(checkboxes) > 0) {
         filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => (item.date >= inputFromDateValue && item.date <= inputToDateValue) && arrTitlesOfCheckboxes.includes(item.title));
@@ -419,8 +464,8 @@ applyFilter.addEventListener("click", function() {
     }
     // фильтры включены по-отдельности
     else if (inputFromCostValue != "" && inputToCostValue != "") {
-        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => item.cost >= inputFromCostValue && item.cost <= inputToCostValue);
-        filteredAllCategoriesByCurrentDate = allCategoriesByCurrentDate.filter(item => item.cost >= inputFromCostValue && item.cost <= inputToCostValue);
+        filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue);
+        filteredAllCategoriesByCurrentDate = allCategoriesByCurrentDate.filter(item => Math.abs(item.cost) >= inputFromCostValue && Math.abs(item.cost) <= inputToCostValue);
     }
     else if (inputFromDateValue != "" && inputToDateValue != "") {
         filteredAllOperationsByCurrentDate = allOperationsByCurrentDate.filter(item => item.date >= inputFromDateValue && item.date <= inputToDateValue);

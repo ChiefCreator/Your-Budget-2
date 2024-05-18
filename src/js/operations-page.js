@@ -8,22 +8,27 @@ root.setThemes([
   am5themes_Animated.new(root)
 ]);
 var chart = root.container.children.push(am5xy.XYChart.new(root, {
-  panX: false,
-  panY: false,
-  paddingLeft: 0,
+  panX: true,
   wheelX: "panX",
   wheelY: "zoomX",
+  pinchZoomX: true,
+  paddingLeft: 0,
   layout: root.verticalLayout
 }));
+var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+  behavior: "none"
+}));
+cursor.lineY.set("visible", false);
+chart.zoomOutButton.set("forceHidden", true);
 var xRenderer = am5xy.AxisRendererX.new(root, {
   cellStartLocation: 0.1,
   cellEndLocation: 0.9,
-  minorGridEnabled: true
+  minorGridEnabled: true,
+  pan: "zoom"
 })
 var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
   categoryField: "date",
   renderer: xRenderer,
-  tooltip: am5.Tooltip.new(root, {})
 }));
 xRenderer.grid.template.setAll({
   location: 1

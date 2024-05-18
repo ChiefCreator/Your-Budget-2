@@ -46,6 +46,7 @@
                 </div>
                 <div class="page-operation__chart operations-chart">
                     <div class="operations-chart-bar">
+                        <div class="operations-chart-bar__hide-logo"></div>
                         <div id="chartExpensesAndIncomeBar"></div>
                     </div>
                 </div>
@@ -72,7 +73,7 @@
                                                 <label class="cost-sorting__input-label">До</label>
                                             </div>
                                         </div>
-                                        <div class="range">
+                                        <div class="range range_cost">
                                             <input type="text" class="range__input range__input_cost js-range-slider" name="my_range" value=""/>
                                         </div>
                                     </div>
@@ -97,7 +98,7 @@
                                                 <label class="date-sorting__input-label">До</label>
                                             </div>
                                         </div>
-                                        <div class="range">
+                                        <div class="range range_date">
                                             <input type="text" class="range__input range__input_date js-range-slider" name="my_range" value=""/>
                                         </div>
                                     </div>
@@ -133,6 +134,7 @@
                     </div>
                     <footer class="operations-sorting__footer">
                         <button class="button apply-filter">Применить фильтр</button>
+                        <button class="button reset-filter"></button>
                     </footer>
                 </div>
             </div>
