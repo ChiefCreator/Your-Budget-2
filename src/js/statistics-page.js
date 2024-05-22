@@ -1,3 +1,5 @@
+import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
+
 let operationsExpenses = [];
 let categoriesExpensesByCurrentDate = [];
 let operationsExpensesByCurrentDate = [];
@@ -12,6 +14,8 @@ let allOperationsByCurrentDate = [];
 let allCategoriesByCurrentDate = [];
 let allOperations = [];
 let allCategories = [];
+
+let trendArr = []
 
 let dateText = document.querySelector(".main-date__value");
 let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
@@ -78,13 +82,16 @@ series.columns.template.setAll({
     tooltipY: 0,
     strokeOpacity: 0,
 });
+series.columns.template.setAll({
+    templateField: "bg"
+});
 series.bullets.push(function () {
     return am5.Bullet.new(root, {
       locationY: 1,
       sprite: am5.Label.new(root, {
         text: "{valueY}",
+        templateField: "bulletLocation",
         fill: "black",
-        centerY: 30,
         centerX: am5.percent(50),
         populateText: true
       })
@@ -109,64 +116,18 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             allOperations = operationsExpenses.concat(operationsIncome);
             allCategories = categoriesExpenses.concat(categoriesIncome);
 
-            var data = transformAllOperationsToObjectsForChartBar(transformOperationsSortedByMounth(sortByDate(absCostInArr(operationsExpenses), "increase")));
-            console.log(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data))
-            xAxis.data.setAll(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
-            series.data.setAll(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
-            series.appear();
-            chart.appear(1000, 100);
+            updateChart(absCostInArr(operationsExpenses), xAxis, series, chart);
+            changeTrend();
         })
 
-select()
-function select() {
-    document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
+function updateChart(arr, xAxis, series, chart) {
+    var data = transformAllOperationsToObjectsForChartBar(transformOperationsSortedByMounth(sortByDate(arr, "increase")));
+    trendArr = setBg(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
+    xAxis.data.setAll(trendArr);
+    series.data.setAll(trendArr);
 
-        const dropdownButtom = dropdownWrapper.querySelector(".select__button")
-        const dropdown = dropdownWrapper.querySelector(".select__dropdown")
-        const dropdownList = dropdownWrapper.querySelector(".select__dropdown-list")
-        const dropdownListItems =  dropdownWrapper.querySelectorAll(".select__dropdown-item")
-        const dropdownInput = dropdownWrapper.querySelector(".select__input-hidden")
-                
-        dropdownButtom.addEventListener("click", function() {
-            dropdownList.classList.toggle("select__dropdown-list_visible");
-            dropdown.classList.toggle("select__dropdown_visible");
-            this.classList.add("select__button_active");
-        })
-                
-        dropdownListItems.forEach(item => {
-            item.addEventListener("click", function (e) {
-                e.stopPropagation()
-                dropdownButtom.querySelector(".select__button-title").textContent = this.textContent;
-                dropdownInput.value = this.dataset.value
-                        
-                if (dropdownInput.value == "expenses") {
-                    updateChart(absCostInArr(operationsExpenses), xAxis, series, chart)
-                } else if (dropdownInput.value == "income") {
-                    updateChart(operationsIncome, xAxis, series, chart)
-                } else if (dropdownInput.value == "netIncome") {
-                    updateChart(allOperations, xAxis, series, chart)
-                }
-        
-                dropdownList.classList.remove("select__dropdown-list_visible");
-                dropdown.classList.remove("select__dropdown_visible");
-            })
-        })
-                
-        document.addEventListener("click", function(e) {
-            if (e.target != dropdownButtom) {
-                dropdownList.classList.remove("select__dropdown-list_visible");
-                dropdown.classList.remove("select__dropdown_visible");
-            }
-        })
-
-        function updateChart(arr, xAxis, series, chart) {
-            var data = transformAllOperationsToObjectsForChartBar(transformOperationsSortedByMounth(sortByDate(arr, "increase")));
-            xAxis.data.setAll(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
-            series.data.setAll(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
-            series.appear();
-            chart.appear(1000, 100);
-        }
-    })
+    series.appear();
+    chart.appear(1000, 100);
 }
 
 function getDataFromFirestore(collection) {
@@ -293,4 +254,111 @@ function absCostInArr(arr) {
     }
 
     return newArr;
+}
+
+function setBg(arr) {
+    let newArr = []
+    for (let obj of arr) {
+        if (obj.cost >= 0) {
+            newArr.push({...obj, bg: {fill: "#31a51f"}, bulletLocation: {centerY: am5.p100}})
+        } else {
+            newArr.push({...obj, bg: {fill: "red"}, bulletLocation: {centerY: am5.p0}})
+        }
+    }
+
+    return newArr;
+}
+
+// select
+
+document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
+
+    const dropdownButtom = dropdownWrapper.querySelector(".select__button")
+    const dropdown = dropdownWrapper.querySelector(".select__dropdown")
+    const dropdownList = dropdownWrapper.querySelector(".select__dropdown-list")
+    const dropdownListItems =  dropdownWrapper.querySelectorAll(".select__dropdown-item")
+    const dropdownInput = dropdownWrapper.querySelector(".select__input-hidden")
+            
+    dropdownButtom.addEventListener("click", function() {
+        dropdownList.classList.toggle("select__dropdown-list_visible");
+        dropdown.classList.toggle("select__dropdown_visible");
+        this.classList.add("select__button_active");
+    })
+                
+    dropdownListItems.forEach(item => {
+        item.addEventListener("click", function (e) {
+            e.stopPropagation()
+            dropdownButtom.querySelector(".select__button-title").textContent = this.textContent;
+            dropdownInput.value = this.dataset.value
+
+            dropdownList.classList.remove("select__dropdown-list_visible");
+            dropdown.classList.remove("select__dropdown_visible");
+
+            if (item.closest(".select-trend")) {
+                if (dropdownInput.value == "expenses") {
+                    updateChart(absCostInArr(operationsExpenses), xAxis, series, chart)
+                } else if (dropdownInput.value == "income") {
+                    updateChart(operationsIncome, xAxis, series, chart)
+                } else if (dropdownInput.value == "netIncome") {
+                    updateChart(allOperations, xAxis, series, chart)
+                }
+            }
+
+            changeTrend()
+        })
+    })
+                
+    document.addEventListener("click", function(e) {
+        if (e.target != dropdownButtom) {
+            dropdownList.classList.remove("select__dropdown-list_visible");
+            dropdown.classList.remove("select__dropdown_visible");
+        }
+    })
+})
+
+function changeTrend() {
+    let amountMonth = document.querySelector(".select-time").querySelector(".select__input-hidden").value
+    let sortedTrendArr = trendArr.slice(trendArr.length - +amountMonth)
+
+    let averageCost = getAverageCost(sortedTrendArr)
+    let wholePercentDifference = getPercentDifference(sortedTrendArr)
+    let monthPercentDifference = getAveragePercentDifference(sortedTrendArr)
+
+    let averageTeg = document.querySelector(".trend-card__value_average");
+    let wholePercentDifferenceTeg = document.querySelector(".trend-card__value_whole-difference");
+    let monthPercentDifferenceTeg = document.querySelector(".trend-card__value_month-difference");
+
+    setValueToHtml(averageCost, averageTeg)
+    setValueToHtml(wholePercentDifference, wholePercentDifferenceTeg)
+    setValueToHtml(monthPercentDifference, monthPercentDifferenceTeg)
+
+    function getAverageCost(arr) {
+        let sum = arr.reduce((sum, obj) => sum + obj.cost, 0);
+        return `${Math.floor(sum / arr.length)}`;
+    }
+    function getPercentDifference(arr) {
+        if (arr[0].cost < 0) {
+            return Math.abs(Math.floor(((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100)) + "%";
+        }
+        return Math.floor(((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100) + "%";
+    }
+    function getAveragePercentDifference(arr) {
+        if (arr[0].cost < 0) {
+            let difference = ((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100;
+            return Math.abs(Math.floor(difference / arr.length)) + "%";
+        }
+        let difference = ((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100;
+        return Math.floor(difference / arr.length) + "%";
+    }
+
+    function setValueToHtml(value, teg) {
+        if (value == "Infinity%" || value == "-Infinity%") {
+            teg.textContent = "Н/д";
+            teg.style.color = "black";
+        } else {
+            if (value.includes("-")) teg.style.color = "red"
+            if (!value.includes("-")) teg.style.color = "#31a51f"
+            teg.textContent = value
+        }
+    }
 }

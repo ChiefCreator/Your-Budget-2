@@ -40,15 +40,15 @@
         font-weight: 500;
         margin-right: 5px;
     }
-    // &__hide-logo{
-    //     position: absolute;
-    //     bottom: 0;
-    //     left: 0;
-    //     width: 30px;
-    //     height: 20px;
-    //     background-color: white;
-    //     z-index: 1;
-    // }
+    &__hide-logo{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 18px;
+        background-color: white;
+        z-index: 1;
+    }
     #trend-chart{
         width: 100%;
         height: 400px;
@@ -69,7 +69,6 @@
         text-align: center;
         font-size: 45px;
         font-weight: 600;
-        color: green;
     }
     &__name{
         text-align: center;
