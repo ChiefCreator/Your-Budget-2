@@ -1,0 +1,66 @@
+.select{
+    display: inline-block;
+    min-width: 150px;
+    height: 100%;
+    position: relative;
+    &__button{
+        width: 100%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 60px;
+        border-bottom: 2px solid rgb(195, 195, 208);
+        &-title{
+            margin-bottom: 3px;
+            pointer-events: none;
+            font-weight: 500;
+        }
+        &-arrow{
+            pointer-events: none;
+            &::before{
+                content: "\f0d7";
+                @include font-awesome;
+                color: rgb(195, 195, 208);
+                font-size: 16px;
+            }
+        }
+    }
+    &__dropdown{
+        position: absolute;
+        left: 0;
+        top: calc(100% + 3px);
+        width: 100%;
+        z-index: 2;
+        margin-top: -5px;
+        display: grid;
+        grid-template-rows: 0fr;
+        overflow: hidden;
+        transition: all .3s ease;
+        &_visible{
+            grid-template-rows: 1fr;
+        }
+    }
+    &__dropdown-list{
+        min-height: 0;
+        overflow: hidden;
+        &_visible{
+            height: auto;
+        }
+    }
+    &__dropdown-item{
+        font-size: 15px;
+        font-weight: 500;
+        padding: 3px 7px;
+        background-color: rgb(195, 195, 208);
+        transition: background-color .3s ease;
+        cursor: pointer;
+        &:hover{
+            background-color:rgb(219, 219, 227);
+        }
+    }
+    &__input-hidden{
+        display: none;
+    }
+}

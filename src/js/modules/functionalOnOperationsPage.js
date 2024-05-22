@@ -175,6 +175,7 @@ function makeSeries(data, name, fieldName, bg, root, xAxis, yAxis) {
         strokeOpacity: 0,
     });
   
+    console.log(data)
     xAxis.data.setAll(data);
     series.data.setAll(data);
     series.appear();
