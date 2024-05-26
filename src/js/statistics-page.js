@@ -15,7 +15,8 @@ let allCategoriesByCurrentDate = [];
 let allOperations = [];
 let allCategories = [];
 
-let trendArr = []
+let trendArr = [];
+let balanceArr = [];
 
 let dateText = document.querySelector(".main-date__value");
 let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
@@ -74,7 +75,7 @@ var series = chart.series.push(am5xy.ColumnSeries.new(root, {
     yAxis: yAxis,
     valueYField: "cost",
     categoryXField: "date",
-    fill: "green"
+    fill: "rgb(0,128,0)"
 }));
 series.columns.template.setAll({
     tooltipText: "{categoryX}: {valueY}",
@@ -98,6 +99,136 @@ series.bullets.push(function () {
     });
 });
 
+let balanceChartObj = {}
+balanceChart();
+function balanceChart() {
+    var root = am5.Root.new("balance-dynamics-chart");
+    root.setThemes([am5themes_Animated.new(root)]);
+
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        panY: false,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        paddingLeft: 0
+    }));
+
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {behavior: "none"}));
+    cursor.lineY.set("visible", false);
+    chart.zoomOutButton.set("forceHidden", true);
+
+    var xRenderer = am5xy.AxisRendererX.new(root, {
+        minGridDistance: 250,  
+    });
+    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+        baseInterval: {
+            timeUnit: "day",
+            count: 1
+        },
+        renderer: xRenderer,
+    }));
+
+    var yRenderer = am5xy.AxisRendererY.new(root, {});
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: yRenderer
+    }));
+
+    var series = chart.series.push(am5xy.LineSeries.new(root, {
+        name: "Series",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "cost",
+        valueXField: "date",
+        tooltip: am5.Tooltip.new(root, {
+            labelText: "{valueY}"
+          }),
+        stroke: "rgb(0,128,0)",
+    }));
+    series.fills.template.setAll({
+        visible: true,
+        fillOpacity: 0.3,
+    });
+    series.set("fill", "rgba(0,128,0, 0.3)");
+
+    var range0DataItem = yAxis.makeDataItem({
+        value: 0,
+        endValue: -10000000
+    });
+    yAxis.createAxisRange(range0DataItem);
+
+    var seriesRangeDataItem = yAxis.makeDataItem({ value: 0, endValue: -100000 });
+    var seriesRange = series.createAxisRange(seriesRangeDataItem);
+    seriesRange.fills.template.setAll({
+        visible: true,
+        opacity: 0.3
+    });
+    seriesRange.fills.template.set("fill", "rgba(255, 0, 0, 0.6)");
+    seriesRange.strokes.template.set("stroke", "rgba(255, 0, 0, 1)");
+
+    var rangeDate = new Date();
+    am5.time.add(rangeDate, "day", Math.round(series.dataItems.length / 2));
+    var rangeTime1 = rangeDate.getTime()
+    
+    var range1 = xAxis.createAxisRange(xAxis.makeDataItem({}));
+    range1.set("value", rangeTime1);
+    range1.get("grid").setAll({
+      strokeOpacity: 1,
+      stroke: "black"
+    });
+
+    var resizeButton1 = am5.Button.new(root, {
+        height: 12,
+        width: 12,
+        themeTags: ["resize", "horizontal"],
+    });
+    resizeButton1.get("background").setAll({
+        cornerRadiusTL: am5.p100,
+        cornerRadiusTR: am5.p100,
+        cornerRadiusBR: am5.p100,
+        cornerRadiusBL: am5.p100,
+        fill: "black",
+        fillOpacity: 1,
+        stroke: "black",
+    });
+    resizeButton1.get("background").states.create("down", {}).setAll({
+        fill: "black",
+        fillOpacity: 1
+    });
+    resizeButton1.adapters.add("y", function () {
+      return 0;
+    });
+    resizeButton1.adapters.add("x", function (x) {
+      return Math.max(0, Math.min(chart.plotContainer.width(), x));
+    });
+
+    resizeButton1.events.on("dragged", function () {
+        var x = resizeButton1.x();
+        var position = xAxis.toAxisPosition(x / chart.plotContainer.width());
+        var value = xAxis.positionToValue(position);
+
+        range1.set("value", value);
+
+        let currentDate = new Date(value).toLocaleString("ru", {year: 'numeric', month: 'numeric', day: 'numeric'}).split(".").reverse().join("-");
+        let currentCost = fillEmptyObj(allOperations, getPreviousDays(12)).find(obj => obj.date == currentDate).cost;
+        let startCost = sortByDate(fillEmptyObj(allOperations, getPreviousDays(12)), "increase")[0].cost;
+        let startDate = sortByDate(fillEmptyObj(allOperations, getPreviousDays(12)), "increase")[0].date;
+        let dateDifference = Math.floor((new Date(currentDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+        
+        document.querySelector(".balance-dynamics-chart__total-num").textContent = currentCost;
+        document.querySelector(".balance-dynamics-chart__percent").textContent = getPercentDifferenceBetweenNums(startCost, currentCost);
+        document.querySelector(".balance-dynamics-chart__percent-name").textContent = matchNumWithWord(dateDifference)
+    });
+
+    range1.set("bullet", am5xy.AxisBullet.new(root, {location:0, sprite: resizeButton1}));
+
+    balanceChartObj.chart = chart;
+    balanceChartObj.series = series;
+    balanceChartObj.xAxis = xAxis;
+    balanceChartObj.yAxis = yAxis;
+    balanceChartObj.resizeButton1 = resizeButton1;
+    balanceChartObj.range1 = range1
+}
+
 Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate")])
         .then(response => {
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
@@ -118,6 +249,22 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
 
             updateChart(absCostInArr(operationsExpenses), xAxis, series, chart);
             changeTrend();
+
+            balanceArr = fillEmptyObj(allOperations, getPreviousDays(12));
+            let currentDate = sortByDate(balanceArr, "decrease")[0].date;
+            let currentCost = balanceArr.find(obj => obj.date == currentDate).cost;
+            let startCost = sortByDate(balanceArr, "increase")[0].cost;
+            let startDate = sortByDate(balanceArr, "increase")[0].date;
+            let dateDifference = Math.floor((new Date(currentDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+            
+            document.querySelector(".balance-dynamics-chart__total-num").textContent = currentCost;
+            document.querySelector(".balance-dynamics-chart__percent").textContent = getPercentDifferenceBetweenNums(startCost, currentCost);
+            document.querySelector(".balance-dynamics-chart__percent-name").textContent = matchNumWithWord(dateDifference)
+            
+            balanceChartObj.xAxis.data.setAll(changeDate(fillEmptyObj(allOperations, getPreviousDays(12))));
+            balanceChartObj.series.data.setAll(changeDate(fillEmptyObj(allOperations, getPreviousDays(12))));
+            balanceChartObj.series.appear(1000);
+            balanceChartObj.chart.appear(1000, 100);
         })
 
 function updateChart(arr, xAxis, series, chart) {
@@ -305,6 +452,42 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
             }
 
             changeTrend()
+
+            if (item.closest(".select-time-balance")) {
+                let currentDate = sortByDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)), "decrease")[0].date;
+                let currentCost = fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)).find(obj => obj.date == currentDate).cost;
+                let startCost = sortByDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)), "increase")[0].cost;
+                let startDate = sortByDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)), "increase")[0].date;
+                let dateDifference = Math.floor((new Date(currentDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+                
+                document.querySelector(".balance-dynamics-chart__total-num").textContent = currentCost;
+                document.querySelector(".balance-dynamics-chart__percent").textContent = getPercentDifferenceBetweenNums(startCost, currentCost);
+                document.querySelector(".balance-dynamics-chart__percent-name").textContent = matchNumWithWord(dateDifference)
+
+                balanceChartObj.resizeButton1.events.on("dragged", function () {
+                    var x = balanceChartObj.resizeButton1.x();
+                    var position = balanceChartObj.xAxis.toAxisPosition(x / balanceChartObj.chart.plotContainer.width());
+                    var value = balanceChartObj.xAxis.positionToValue(position);
+            
+                    balanceChartObj.range1.set("value", value);
+            
+                    let currentDate = new Date(value).toLocaleString("ru", {year: 'numeric', month: 'numeric', day: 'numeric'}).split(".").reverse().join("-");
+                    let currentCost = fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)).find(obj => obj.date == currentDate).cost;
+                    let startCost = sortByDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)), "increase")[0].cost;
+                    let startDate = sortByDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value)), "increase")[0].date;
+                    let dateDifference = Math.floor((new Date(currentDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+                    
+                    document.querySelector(".balance-dynamics-chart__total-num").textContent = currentCost;
+                    document.querySelector(".balance-dynamics-chart__percent").textContent = getPercentDifferenceBetweenNums(startCost, currentCost);
+                    document.querySelector(".balance-dynamics-chart__percent-name").textContent = matchNumWithWord(dateDifference)
+                });
+
+                balanceChartObj.xAxis.data.setAll(changeDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value))));
+                balanceChartObj.series.data.setAll(changeDate(fillEmptyObj(allOperations, getPreviousDays(+dropdownInput.value))));
+                balanceChartObj.range1.set("value", new Date().getTime());
+                balanceChartObj.series.appear(1000);
+                balanceChartObj.chart.appear(1000, 100);
+            }
         })
     })
                 
@@ -321,8 +504,8 @@ function changeTrend() {
     let sortedTrendArr = trendArr.slice(trendArr.length - +amountMonth)
 
     let averageCost = getAverageCost(sortedTrendArr)
-    let wholePercentDifference = getPercentDifference(sortedTrendArr)
-    let monthPercentDifference = getAveragePercentDifference(sortedTrendArr)
+    let wholePercentDifference = getPercentDifference(sortedTrendArr[0].cost, sortedTrendArr[sortedTrendArr.length - 1].cost)
+    let monthPercentDifference = getAveragePercentDifference(sortedTrendArr[0].cost, sortedTrendArr[sortedTrendArr.length - 1].cost, sortedTrendArr)
 
     let averageTeg = document.querySelector(".trend-card__value_average");
     let wholePercentDifferenceTeg = document.querySelector(".trend-card__value_whole-difference");
@@ -336,19 +519,17 @@ function changeTrend() {
         let sum = arr.reduce((sum, obj) => sum + obj.cost, 0);
         return `${Math.floor(sum / arr.length)}`;
     }
-    function getPercentDifference(arr) {
-        if (arr[0].cost < 0) {
-            return Math.abs(Math.floor(((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100)) + "%";
-        }
-        return Math.floor(((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100) + "%";
+    function getPercentDifference(num1, num2) {
+        if (num1 >= num2) return Math.floor(num1 / num2 * 100 - 100) + "%";
+        if (num1 < num2) return Math.abs(Math.floor(num2 / num1 * 100 - 100)) + "%";
     }
-    function getAveragePercentDifference(arr) {
-        if (arr[0].cost < 0) {
-            let difference = ((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100;
-            return Math.abs(Math.floor(difference / arr.length)) + "%";
+    function getAveragePercentDifference(num1, num2, arr) {
+        if (num1 >= num2) {
+            return Math.floor((num1 / num2 * 100 - 100) / arr.length) + "%";
         }
-        let difference = ((arr[arr.length - 1].cost - arr[0].cost) / arr[0].cost) * 100;
-        return Math.floor(difference / arr.length) + "%";
+        if (num1 < num2) {
+            return Math.abs(Math.floor((num2 / num1 * 100 - 100) / arr.length)) + "%";
+        }
     }
 
     function setValueToHtml(value, teg) {
@@ -361,4 +542,70 @@ function changeTrend() {
             teg.textContent = value
         }
     }
+}
+
+// balance dynamics
+
+function getPreviousDays(months) {
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < months; i++) {
+        const newDate = new Date(today.getTime());
+        newDate.setMonth(today.getMonth() - i);
+        const daysInMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+        for (let j = 0; j < daysInMonth; j++) {
+            const day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+
+            const dayName = new Date(day).toLocaleString('ru', { month: 'numeric', day: 'numeric', year: 'numeric'});
+            dates.push(dayName.split(".").reverse().join("-"));
+        }
+    }
+    return sortByDate(dates.map((date) => { return { cost: 0, date: date }}), "decrease");
+}
+function fillEmptyObj(operations, days) {
+    let newArr = days.map(item => {
+        for (let obj of operations) {
+            if (obj.date == item.date) {
+                item.cost += obj.cost
+            }
+        }
+        return item
+    })
+
+    function fillEmptyCosts(costs) {
+        let nextNonZeroCost = null;
+      
+        for (let i = costs.length - 1; i >= 0; i--) {
+          if (costs[i].cost === 0) {
+            if (nextNonZeroCost !== null) {
+              costs[i].cost = nextNonZeroCost;
+            }
+          } else {
+            nextNonZeroCost = costs[i].cost;
+          }
+        }
+      
+        return costs;
+      }
+
+    return fillEmptyCosts(newArr)
+}
+
+function changeDate(arr) {
+    for (let obj of arr) {
+        obj.date = Date.parse(obj.date)
+    }
+    return arr;
+}
+
+function getPercentDifferenceBetweenNums(num1, num2) {
+    if (num1 == 0 || num2 == 0) return "Н/д";
+    if (num1 >= num2) return Math.floor(num2 / num1 * 100 - 100) + "%";
+    if (num1 < num2) return Math.abs(Math.floor(num2 / num1 * 100 - 100)) + "%";
+}
+
+function matchNumWithWord(num) {
+    if (num == 1 || (num - 11) % 10 == 0 && num != 11) return `за ${num} день`;
+    if (num == 2 || num == 3 || num == 4) return `за ${num} дня`;
+    return `за ${num} дней`;
 }
