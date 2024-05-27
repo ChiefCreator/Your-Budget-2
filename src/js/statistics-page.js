@@ -209,11 +209,11 @@ function balanceChart() {
         range1.set("value", value);
 
         let currentDate = new Date(value).toLocaleString("ru", {year: 'numeric', month: 'numeric', day: 'numeric'}).split(".").reverse().join("-");
-        let currentCost = fillEmptyObj(allOperations).find(obj => obj.date == currentDate).cost;
+        let currentCost = getPreviousDateArr(fillEmptyObj(allOperations), 12).find(obj => obj.date == currentDate).cost;
         let startCost = sortByDate(getPreviousDateArr(fillEmptyObj(allOperations), 12), "increase")[0].cost;
-        let startDate = sortByDate(fillEmptyObj(allOperations), "increase")[0].date;
+        let startDate = sortByDate(getPreviousDateArr(fillEmptyObj(allOperations), 12), "increase")[0].date;
         let dateDifference = Math.floor((new Date(currentDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
-        
+        console.log(startDate, currentDate)
         document.querySelector(".balance-dynamics-chart__total-num").textContent = currentCost;
         document.querySelector(".balance-dynamics-chart__percent").textContent = getPercentDifferenceBetweenNums(startCost, currentCost);
         document.querySelector(".balance-dynamics-chart__percent-name").textContent = matchNumWithWord(dateDifference);
@@ -559,7 +559,7 @@ function changeTrend() {
 // balance dynamics
 
 function fillEmptyObj(operations) {
-    let newArr = getPreviousDays(24).map(item => {
+    let newArr = getPreviousDays(12).map(item => {
         for (let obj of operations) {
             if (obj.date == item.date) {
                 item.cost += obj.cost
@@ -568,17 +568,19 @@ function fillEmptyObj(operations) {
         return item
     })
 
+    let data = [...newArr].reverse();
+
     function fillEmptyCosts(costs) {
-        let nextNonZeroCost = null;
+        let nextNonZeroCost = 0;
       
-        for (let i = costs.length - 1; i >= 0; i--) {
-          if (costs[i].cost === 0) {
-            if (nextNonZeroCost !== null) {
-              costs[i].cost = nextNonZeroCost;
+        for (let i = 0; i < costs.length; i++) {
+            if (costs[i].cost === 0) {
+                costs[i].cost = nextNonZeroCost;
+            } 
+            else {
+                if (costs[i - 1]) costs[i].cost = data[i - 1].cost + costs[i].cost
+                nextNonZeroCost = costs[i].cost;
             }
-          } else {
-            nextNonZeroCost = costs[i].cost;
-          }
         }
       
         return costs;
@@ -607,7 +609,7 @@ function fillEmptyObj(operations) {
         return sortByDate(dates.map((date) => { return { cost: 0, date: date }}), "decrease");
     }
 
-    return fillEmptyCosts(newArr)
+    return fillEmptyCosts(data)
 }
 
 function changeDate(arr) {
@@ -631,8 +633,8 @@ function matchNumWithWord(num) {
 }
 
 function getPreviousDateArr(arr, months) {
-    const month = new Date(arr[0].date).getMonth() - months
-    const date = new Date(new Date(arr[0].date).getFullYear(), month, new Date(arr[0].date).getDate()).toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
+    const month = new Date(arr[arr.length - 1].date).getMonth() - months
+    const date = new Date(new Date(arr[arr.length - 1].date).getFullYear(), month, new Date(arr[arr.length - 1].date).getDate()).toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
 
     return arr.filter(obj => new Date(obj.date) >= new Date(date));
 }
