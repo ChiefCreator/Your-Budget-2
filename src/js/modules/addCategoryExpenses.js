@@ -1236,7 +1236,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             progressBarBg.style.width = `${generalPercent}%`;
             progressBarBgLastOperation.style.width = 0;
             progressBarPercent.textContent = `${generalPercent}%`;
-            progressBarPercent.style.left = `calc(${generalPercent - lastCostPercent}% - ${progressBarPercent.offsetWidth + 5}px)`;
+            progressBarPercent.style.left = `calc(${generalPercent}% - ${progressBarPercent.offsetWidth + 5}px)`;
             progressBarPercent.style.color = "white"
             if (parseInt(progressBarBg.style.width) * 0.01 * +progressBar.offsetWidth < 35) {
                 progressBarPercent.style.color = "black"
