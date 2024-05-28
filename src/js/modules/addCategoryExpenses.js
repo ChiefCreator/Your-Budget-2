@@ -63,6 +63,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let accountArr = [];
     let chartsArr = [];
 
+    let progressBarExpenses = document.querySelector(".progress-bar_expenses");
+    let progressBarIncome = document.querySelector(".progress-bar_income");
+
     Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate"), getDataFromFirestore("accounts")])
         .then(response => {
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json(), response[8].json()]);
@@ -94,6 +97,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), chart, series, xAxis);
 
             setAccountsToList(accountArr, "swiper-accounts-operations")
+
+            setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
+            setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
         })
 
     togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
@@ -348,6 +354,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         setAccountsToList(accountArr, "swiper-accounts-operations")
         swiperAcoounts.update()
         addToFirestore(accountArr, `accounts`);
+
+        setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
+        setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
 
         if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
             switchChart.classList.add("switch-chart_act");
@@ -974,6 +983,10 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), typeS);
         changeChart(sortByDate(operationsByCurrentDate, "decrease"), chart, series, xAxis);
 
+        console.log(operationsExpensesByCurrentDate, allOperationsByCurrentDate)
+        setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
+        setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
+
         if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
             switchChart.classList.add("switch-chart_act");
             switchChart.querySelector(".switch-chart__input").checked = true;
@@ -1025,7 +1038,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             let deleteBtn = event.target.closest(`.expand-operation_${typeS} .operation__button_delete`);
             let operation = deleteBtn.closest(".expand-operation");
    
-            console.log(deleteBtn,operation)
             sortOperations(operation, operations);
             sortOperations(operation, operationsByCurrentDate);
 
@@ -1050,6 +1062,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             setAccountsToList(accountArr, "swiper-accounts-operations")
             swiperAcoounts.update()
             addToFirestore(accountArr, `accounts`);
+
+            setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
+            setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
         }
     }
 
@@ -1159,6 +1174,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         swiperAcoounts.update()
         addToFirestore(accountArr, `accounts`);
 
+        setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
+        setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
+
         operation.classList.remove("expand-operation_act");
         account.classList.remove("account-choose_act");
         popupOperation.classList.remove("popup-operation_open");
@@ -1190,6 +1208,53 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             titleChart.textContent = "График доходов";
         }
     })
+
+    // прогрессбар
+
+    function setDataToProgressBar(progressBar, operations, allOperations) {
+        let progressBarBg = progressBar.querySelector(".progress-bar__bg");
+        let progressBarPercent = progressBar.querySelector(".progress-bar__total");
+        let progressBarBgLastOperation = progressBar.querySelector(".progress-bar__bg-last-operation");
+
+        if (operations.length == 0) {
+            progressBarBg.style.width = 0;
+            progressBarBgLastOperation.style.width = 0;
+            progressBarPercent.textContent = `0%`;
+            progressBarPercent.style.color = "black"
+            progressBarPercent.style.left = `calc(100% - ${progressBarPercent.offsetWidth + 5}px)`
+            return;
+        }
+
+        let totalSum = allOperations.reduce((sum, obj) => sum + Math.abs(obj.cost), 0);
+        let sum = operations.reduce((sum, obj) => sum + Math.abs(obj.cost), 0);
+        let lastCost = Math.abs(sortByDate(operations, "decrease")[0].cost);
+
+        let generalPercent = Math.round(sum * 100 / totalSum);
+        let lastCostPercent = Math.round(lastCost * 100 / totalSum);
+
+        if (operations.length == 1) {
+            progressBarBg.style.width = `${generalPercent}%`;
+            progressBarBgLastOperation.style.width = 0;
+            progressBarPercent.textContent = `${generalPercent}%`;
+            progressBarPercent.style.left = `calc(${generalPercent - lastCostPercent}% - ${progressBarPercent.offsetWidth + 5}px)`;
+            progressBarPercent.style.color = "white"
+            if (parseInt(progressBarBg.style.width) * 0.01 * +progressBar.offsetWidth < 35) {
+                progressBarPercent.style.color = "black"
+                progressBarPercent.style.left = `calc(100% - ${progressBarPercent.offsetWidth + 5}px)`
+            }
+            return;
+        }
+
+        progressBarBg.style.width = `${generalPercent - lastCostPercent}%`;
+        progressBarBgLastOperation.style.width = `${generalPercent}%`;
+        progressBarPercent.textContent = `${generalPercent}%`;
+        progressBarPercent.style.left = `calc(${generalPercent - lastCostPercent}% - ${progressBarPercent.offsetWidth + 5}px)`;
+        progressBarPercent.style.color = "white"
+        if (parseInt(progressBarBg.style.width) * 0.01 * +progressBar.offsetWidth < 35) {
+            progressBarPercent.style.color = "black"
+            progressBarPercent.style.left = `calc(100% - ${progressBarPercent.offsetWidth + 5}px)`
+        }
+    }
 }
 
 export default addCategoryExpenses;

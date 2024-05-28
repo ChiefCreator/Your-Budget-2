@@ -1388,7 +1388,7 @@
                                 </div>
                                 <footer class="tool-card__footer">
                                     <div class="tool-card__more more">
-                                        <a class="more__text" href="#">Подробнее</a>
+                                        <a class="more__text" href="./../statistics-page.html">Подробнее</a>
                                         <span class="more__icon"></span>
                                     </div>
                                 </footer>
@@ -1434,20 +1434,44 @@
         </div>
     </div>
     <div class="statistics__content">
-        <div class="statistics__chart">
-            <div class="operation-chart">
-                <header class="operation-chart__header">
-                    <h3 class="operation-chart__title">График расходов</h3>
-                    <div class="operation-chart__tools">
-                        <label class="switch switch-chart">
-                            <input class="switch__input switch-chart__input" type="checkbox">
-                            <div class="switch__element switch-chart__element"></div>
-                            <div class="switch__bg switch-chart__bg"></div>
-                        </label>
+        <div class="statistics__chart-comparison">
+            <div class="statistics__chart">
+                <div class="operation-chart">
+                    <header class="operation-chart__header">
+                        <h3 class="operation-chart__title">График расходов</h3>
+                        <div class="operation-chart__tools">
+                            <label class="switch switch-chart">
+                                <input class="switch__input switch-chart__input" type="checkbox">
+                                <div class="switch__element switch-chart__element"></div>
+                                <div class="switch__bg switch-chart__bg"></div>
+                            </label>
+                        </div>
+                    </header>
+                    <div class="operation-chart__hide-logo"></div>
+                    <div id="chartdiv"></div>
+                </div>
+            </div>
+            <div class="comparison">
+                <div class="comparison__block">
+                    <p class="comparison__name">Расходы</p>
+                    <div class="progress-bar progress-bar_expenses">
+                        <div class="progress-bar__bg">
+                            <!-- <p class="progress-bar__total">65%</p> -->
+                        </div>
+                        <p class="progress-bar__total">65%</p>
+                        <div class="progress-bar__bg-last-operation"></div>
                     </div>
-                </header>
-                <div class="operation-chart__hide-logo"></div>
-                <div id="chartdiv"></div>
+                </div>
+                <div class="comparison__block">
+                    <p class="comparison__name">Доходы</p>
+                    <div class="progress-bar progress-bar_income">
+                        <div class="progress-bar__bg">
+                            <!-- <p class="progress-bar__total">65%</p> -->
+                        </div>
+                        <p class="progress-bar__total">65%</p>
+                        <div class="progress-bar__bg-last-operation"></div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="statistics__operation-list operation-list">

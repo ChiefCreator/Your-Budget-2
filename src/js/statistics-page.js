@@ -559,7 +559,7 @@ function changeTrend() {
 // balance dynamics
 
 function fillEmptyObj(operations) {
-    let newArr = getPreviousDays(12).map(item => {
+    let newArr = getPreviousDays(24).map(item => {
         for (let obj of operations) {
             if (obj.date == item.date) {
                 item.cost += obj.cost
