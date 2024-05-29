@@ -6,7 +6,9 @@ import Chart from 'chart.js/auto';
 
 let accountObject = {};
 let accountArr = [];
+
 let chartsArr = [];
+let chartDynamicOfAccounts = {};
 
 let btnAddAccount = document.querySelector(".add-accounts");
 let popupAddAccount = document.querySelector(".popup-accounts-done");
@@ -61,7 +63,7 @@ Promise.all([getDataFromFirestore("accounts")])
             setAccountsToList(accountArr);
             chart(accountArr, chartBalance);
             changeBalance(accountArr);
-            console.log(accountArr)
+       
             initXYChartWithManyLines();
         })
 
@@ -76,98 +78,152 @@ initChart("chartDebtDone", [])
 // initChart("chartCard")
 // initChart("chartCredit")
 function initChart(chartId, data) {
-    if (!data || data.length <= 1) data = [{date: "1",cost: 1,}, {date: "2",cost: 4,}, {  date: "3",  cost: 3,}, {    date: "4",    cost: 7,}, {    date: "5",    cost: 2,}, {    date: "6",    cost: 9,}, {    date: "7",    cost: 14,}, {    date: "8",    cost: 10,}, {    date: "9",    cost: 17,}, {    date: "10",    cost: 13,}];
+    if (!data || data.length <= 1) {
+        data = [
+            { cost: 500, date: '2023-01-28' },
+            { cost: 0, date: '2024-05-27' },
+            { cost: 90, date: '2023-05-26' },
+            { cost: 0, date: '2024-05-25' },
+            { cost: 350, date: '2023-08-24' },
+            { cost: 0, date: '2024-05-23' },
+            { cost: -100, date: '2024-01-01' },
+            { cost: 0, date: '2024-05-21' },
+            { cost: -60, date: '2024-03-20' },
+            { cost: 0, date: '2024-05-19' },
+            { cost: 0, date: '2024-05-18' },
+            { cost: -20, date: '2024-05-17' },
+            { cost: 0, date: '2024-05-16' },
+            { cost: 0, date: '2024-05-15' },
+            { cost: 0, date: '2024-05-14' },
+            { cost: 0, date: '2024-05-13' },
+            { cost: 2000, date: '2024-05-12' },
+            { cost: 0, date: '2024-05-11' },
+            { cost: 0, date: '2024-05-10' },
+            { cost: -50, date: '2024-05-09' },
+            { cost: 300, date: '2024-05-08' },
+        ];
+    }
 
-    var root = am5.Root.new(chartId);   
-    root.setThemes([
-      am5themes_Animated.new(root)
-    ]);
+    var root = am5.Root.new(chartId);
+    root.setThemes([am5themes_Animated.new(root)]);
 
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
-      paddingLeft: 0
+        panX: false,
+        panY: false,
+        paddingLeft: 0
     }));
-    chart.get("colors").set("colors", [
-        am5.color(15723498),
-    ]);
 
     var xRenderer = am5xy.AxisRendererX.new(root, {
-        minGridDistance: 30,
-        minorGridEnabled: true,
+        minGridDistance: 30,  
     });
-    var yRenderer = am5xy.AxisRendererY.new(root, {
-        minGridDistance: 30,
-        minorGridEnabled: true,
-    });
-    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-        maxDeviation: 1,
-        categoryField: "date",
-        renderer: xRenderer,
+    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+        baseInterval: {
+            timeUnit: "day",
+            count: 0
+        },
         visible: false,
+        renderer: xRenderer,
     }));
+    xAxis.get("renderer").grid.template.set("forceHidden", true);
+
+    var yRenderer = am5xy.AxisRendererY.new(root, {});
     var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        maxDeviation: 1,
+        strictMinMax: true,
         renderer: yRenderer,
         visible: false,
     }));
-    xRenderer.grid.template.setAll({
-        visible: false
-    })
-    yRenderer.grid.template.setAll({
-        visible: false
-    })
+    yAxis.get("renderer").grid.template.set("forceHidden", true);
 
-    var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
+    var series = chart.series.push(am5xy.LineSeries.new(root, {
         name: "Series",
         xAxis: xAxis,
         yAxis: yAxis,
         valueYField: "cost",
-        categoryXField: "date",
+        valueXField: "date",
         tooltip: am5.Tooltip.new(root, {
-            labelText: "{valueX} {valueY}"
-        }),
-        stroke: "white",
+            labelText: "{valueY}"
+          }),
+        stroke: "rgb(255,255,255)",
     }));
     series.fills.template.setAll({
         visible: true,
-        fillOpacity: 0.2,
-        fill: "#FFFFFF"
+        fillOpacity: 0.3,
     });
-    series.bullets.push(function () {
-        return am5.Bullet.new(root, {
-            locationY: 0,
-            sprite: am5.Circle.new(root, {
-                radius: 2,
-                fill: "white"
-            })
-        });
-    });
+    series.set("fill", "rgba(255,255,255, 0.3)");
 
-    operationToChart(sortByDate(data, "increase"), chart, series, xAxis)
+    xAxis.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
+    series.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
+    series.appear(1000);
     chart.appear(1000, 100);
     chartsArr.push({root, xRenderer, yRenderer, xAxis, yAxis, series, data, chart});
+}
 
-    function operationToChart(arr, chart, series, xAxis) {
-        let uniteArr = arr.reduce((acc, obj) => {
-            const key = obj.date;
-            if (!acc[key]) acc[key] = {date: key, cost: 0};
-            acc[key].cost += obj.cost;
-            return acc;
-        }, {})
-
-        const resultArray = Object.values(uniteArr);
-
-        for (let obj of resultArray) {
-            for (let key of Object.keys(obj)) {
-                if (obj[key] != obj.cost && obj[key] != obj.date) {
-                    delete obj[key]
-                }
+function fillEmptyObj(operations) {
+    let newArr = getPreviousDays(24).map(item => {
+        for (let obj of operations) {
+            if (obj.date == item.date) {
+                item.cost += obj.cost
             }
         }
-        xAxis.data.setAll(resultArray);
-        series.data.setAll(resultArray);
-        
-        series.appear(1000);
+        return item
+    })
+
+    let data = [...newArr].reverse();
+
+    function fillEmptyCosts(costs) {
+        let nextNonZeroCost = 0;
+      
+        for (let i = 0; i < costs.length; i++) {
+            if (costs[i].cost === 0) {
+                costs[i].cost = nextNonZeroCost;
+            } 
+            else {
+                if (costs[i - 1]) costs[i].cost = data[i - 1].cost + costs[i].cost
+                nextNonZeroCost = costs[i].cost;
+            }
+        }
+      
+        return costs;
     }
+
+    function getPreviousDays(months) {
+        const dates = [];
+        const today = new Date();
+        for (let i = 0; i < months; i++) {
+            const newDate = new Date(today.getTime());
+            newDate.setMonth(today.getMonth() - i);
+            const daysInMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+            for (let j = 0; j < daysInMonth; j++) {
+                let day;
+                if (newDate.getMonth() == new Date().getMonth()) {
+                    if (j > new Date().getDate()) break;
+                    day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                    
+                } else {
+                    day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                }
+                const dayName = new Date(day).toLocaleString('ru', { month: 'numeric', day: 'numeric', year: 'numeric'});
+                dates.push(dayName.split(".").reverse().join("-"));
+            }
+        }
+        return sortByDate(dates.map((date) => { return { cost: 0, date: date }}), "decrease");
+    }
+
+    return fillEmptyCosts(data)
+}
+
+function changeDate(arr) {
+    for (let obj of arr) {
+        obj.date = Date.parse(obj.date)
+    }
+    return arr;
+}
+
+function getPreviousDateArr(arr, months) {
+    const month = new Date(arr[arr.length - 1].date).getMonth() - months
+    const date = new Date(new Date(arr[arr.length - 1].date).getFullYear(), month, new Date(arr[arr.length - 1].date).getDate()).toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
+
+    return arr.filter(obj => new Date(obj.date) >= new Date(date));
 }
 
 function initXYChartWithManyLines() {
@@ -176,98 +232,66 @@ function initXYChartWithManyLines() {
 
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
         panX: true,
-        panY: true,
+        panY: false,
         wheelX: "panX",
         wheelY: "zoomX",
-        pinchZoomX:true
+        pinchZoomX: false
     }));
-    chart.get("colors").set("step", 3);
 
-    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+        behavior: "none"
+      }));
+      cursor.lineY.set("visible", false);
+
+    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+        baseInterval: {
+            timeUnit: "day",
+            count: 1
+        },
         maxDeviation: 1,
-        categoryField: "date",
         renderer: am5xy.AxisRendererX.new(root, {
             minGridDistance: 80,
             minorGridEnabled: true,
             pan: "zoom"
           }),
-        tooltip: am5.Tooltip.new(root, {})
+        //   tooltip: am5.Tooltip.new(root, {})
     }));
     var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
         maxDeviation: 1,
         renderer: am5xy.AxisRendererY.new(root, {
             pan: "zoom"
-        })
+        }),
     }));
 
-    var data = [];
     for (let i = 0; i < accountArr.length; i++) {
         if (!accountArr[i].operations) continue;
-        var dataPart = transformAllOperationsToObjectsForXYChart(sortByDate(accountArr[i].operations, "increase"));
-        data = data.concat(dataPart)
-    }   
-    for (let i = 0; i < accountArr.length; i++) {
-        if (!accountArr[i].operations) continue;
-        makeSeries(sortByDate(data, "increase"), accountArr[i].title, accountArr[i].title, accountArr[i].bg, accountArr[i].iconBg, root, xAxis, yAxis, chart)
+        makeSeries(sortByDate(accountArr[i].operations, "increase"), accountArr[i].title, accountArr[i].bg, accountArr[i].iconBg, root, xAxis, yAxis, chart, 12)
     }  
     chart.appear(1000, 100);
+
+    chartDynamicOfAccounts = {root, xAxis, yAxis, chart};
 }
-function makeSeries(data, name, fieldName, bg, iconBg, root, xAxis, yAxis, chart) {
-    var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
+function makeSeries(data, name, bg, iconBg, root, xAxis, yAxis, chart, monthAmount) {
+    var series = chart.series.push(am5xy.LineSeries.new(root, {
       name: name,
       xAxis: xAxis,
       yAxis: yAxis,
-      valueYField: fieldName,
-      categoryXField: "date",
-      fill: bg,
+      valueYField: "cost",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        pointerOrientation: "horizontal",
+        labelText: "{valueY}"
+      }),
       stroke: bg,
     }));
 
-    series.fills.template.setAll({
-        visible: true,
-        fillOpacity: 0.2,
-    });
-
     series.strokes.template.setAll({
         strokeWidth: 3,
-      });
-
-    series.set("fill", am5.color(bg));
-    
-    series.bullets.push(function () {
-        return am5.Bullet.new(root, {
-            locationY: 0,
-            sprite: am5.Circle.new(root, {
-                radius: 3,
-                fill: iconBg
-            })
-        });
     });
   
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
+    xAxis.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), monthAmount)));
+    series.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), monthAmount)));
     series.appear();
-}
-function transformAllOperationsToObjectsForXYChart(arr) {
-    const mergedExpenses = {};
-
-  for (const expense of arr) {
-    const date = expense.date;
-    const cost = expense.cost;
-
-    if (mergedExpenses[date]) {
-      mergedExpenses[date] += cost;
-    } else {
-      mergedExpenses[date] = cost;
-    }
-  }
-
-  return Object.keys(mergedExpenses).map(date => {
-    return {
-      date,
-      [arr[0].account]: mergedExpenses[date]
-    };
-  });
 }
 
 function sortByDate(arr, typeOfSorting) {
@@ -463,3 +487,47 @@ function changeBalance(arr) {
     let cost = arr.reduce((acc, obj) => {return  acc + obj.cost}, 0)
     balance.textContent = cost;
 }
+
+// select
+
+document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
+
+    const dropdownButtom = dropdownWrapper.querySelector(".select__button")
+    const dropdown = dropdownWrapper.querySelector(".select__dropdown")
+    const dropdownList = dropdownWrapper.querySelector(".select__dropdown-list")
+    const dropdownListItems =  dropdownWrapper.querySelectorAll(".select__dropdown-item")
+    const dropdownInput = dropdownWrapper.querySelector(".select__input-hidden")
+            
+    dropdownButtom.addEventListener("click", function() {
+        dropdownList.classList.toggle("select__dropdown-list_visible");
+        dropdown.classList.toggle("select__dropdown_visible");
+        this.classList.add("select__button_active");
+    })
+                
+    dropdownListItems.forEach(item => {
+        item.addEventListener("click", function (e) {
+            e.stopPropagation()
+            dropdownButtom.querySelector(".select__button-title").textContent = this.textContent;
+            dropdownInput.value = this.dataset.value
+
+            dropdownList.classList.remove("select__dropdown-list_visible");
+            dropdown.classList.remove("select__dropdown_visible");
+
+            if (item.closest(".select-period")) {
+                chartDynamicOfAccounts.chart.series.clear()
+                for (let i = 0; i < accountArr.length; i++) {
+                    if (!accountArr[i].operations) continue;
+                    makeSeries(sortByDate(accountArr[i].operations, "increase"), accountArr[i].title, accountArr[i].bg, accountArr[i].iconBg, chartDynamicOfAccounts.root, chartDynamicOfAccounts.xAxis, chartDynamicOfAccounts.yAxis, chartDynamicOfAccounts.chart, +dropdownInput.value)
+                }  
+                chartDynamicOfAccounts.chart.appear(1000, 100);
+            }
+        })
+    })
+                
+    document.addEventListener("click", function(e) {
+        if (e.target != dropdownButtom) {
+            dropdownList.classList.remove("select__dropdown-list_visible");
+            dropdown.classList.remove("select__dropdown_visible");
+        }
+    })
+})

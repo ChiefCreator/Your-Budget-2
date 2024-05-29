@@ -918,7 +918,7 @@
             margin-top: auto;
             width: 100% !important;
             height: 130px !important;
-            transform: translate(35px, 15px);
+            transform: translate(23px, 15px);
         }
         .am5-layer-30{
             display: none !important;
@@ -1048,14 +1048,26 @@
 }
 .accounts-general-chart{
     margin-top: 15px;
-    width: 100%;
-    height: 395px;
+    width: 600px;
+    height: 330px;
     background-color: white;
     border-radius: 10px;
-    padding: 10px;
+    padding: 10px 10px 10px 10px;
+    &__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 7px;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
     &__chart{
-        width: 100% !important;
-        height: 100% !important;
+        width: calc(100% + 40px) !important;
+        height: calc(100% - 10px) !important;
+        margin-left: -25px !important;
         .am5-layer-30{
             display: none !important;
         }

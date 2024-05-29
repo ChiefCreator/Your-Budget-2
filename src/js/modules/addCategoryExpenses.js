@@ -637,6 +637,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         maxDeviation: 1,
         renderer: yRenderer,
         visible: false,
+        strictMinMax: true,
     }));
     xRenderer.grid.template.setAll({
         visible: false

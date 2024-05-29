@@ -73,7 +73,7 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
             minGridDistance: 80,
             minorGridEnabled: true,
             pan: "zoom"
-          }),
+        }),
     }));
     
     var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
@@ -85,13 +85,13 @@ const chartIncomePie = new Chart(document.getElementById('chartIncomePie'), {
         getFillFromSprite: false,
         labelText: "{categoryX}: {valueY}",
         getFillFromSprite: false,
-      });
+    });
       
     tooltip.get("background").setAll({
-      fill: am5.color("#133054"),
-      fillOpacity: 1,
-      stroke: am5.color("#133054"),
-      strokeOpacity: 0
+        fill: am5.color("#133054"),
+        fillOpacity: 1,
+        stroke: am5.color("#133054"),
+        strokeOpacity: 0
     });
 
     chart.zoomOutButton.set("forceHidden", true);
