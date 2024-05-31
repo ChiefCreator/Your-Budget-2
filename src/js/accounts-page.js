@@ -9,6 +9,7 @@ let accountArr = [];
 
 let chartsArr = [];
 let chartDynamicOfAccounts = {};
+let chartPieObject = {};
 
 let btnAddAccount = document.querySelector(".add-accounts");
 let popupAddAccount = document.querySelector(".popup-accounts-done");
@@ -60,9 +61,9 @@ Promise.all([getDataFromFirestore("accounts")])
         })
         .then(data => {
             accountArr = (data[0] != null) ? data[0] : [];
+            pieChart();
+            changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
             setAccountsToList(accountArr);
-            chart(accountArr, chartBalance);
-            changeBalance(accountArr);
        
             initXYChartWithManyLines();
         })
@@ -227,7 +228,7 @@ function getPreviousDateArr(arr, months) {
 }
 
 function initXYChartWithManyLines() {
-    var root = am5.Root.new("accounts-general-chart");
+    var root = am5.Root.new("accounts-dynamic-chart");
     root.setThemes([am5themes_Animated.new(root)]);
 
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
@@ -328,7 +329,7 @@ function addAccount(event, accountObject, accountArr) {
 
         addToFirestore(accountArr, "accounts");
 
-        chart(accountArr, chartBalance);
+        changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
     }
 }
 
@@ -460,32 +461,8 @@ function getDataFromFirestore(collection) {
     return fetch(firestoreUrl)
 }
 
-function chart(arr, chart) {
-    let titles = [];
-    let bgArr = [];
-    let costArr = [];
-
-    arr.forEach(item => {
-        titles.push(item.title);
-        bgArr.push(item.bg);
-
-        if (item.cost == 0) {
-            costArr.push(1);
-        } else {
-            costArr.push(item.cost);
-        }
-    })
-
-    chart.data.labels = titles;
-    chart.data.datasets[0].data = costArr;
-    chart.data.datasets[0].backgroundColor = bgArr;
-    chart.update();
-}
-
 function changeBalance(arr) {
-    let balance = document.querySelector(".balance__total-num");
-    let cost = arr.reduce((acc, obj) => {return  acc + obj.cost}, 0)
-    balance.textContent = cost;
+    return arr.reduce((acc, obj) => {return  acc + obj.cost}, 0)
 }
 
 // select
@@ -531,3 +508,97 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
         }
     })
 })
+
+// pie chart
+
+function pieChart() {
+    var root = am5.Root.new("chartdiv");
+    root.setThemes([am5themes_Animated.new(root)]);
+    var chart = root.container.children.push(am5percent.PieChart.new(root, {
+        layout: root.horizontalLayout,
+        radius: am5.percent(90),
+        innerRadius: am5.percent(50)
+    }));
+    
+    var series1 = chart.series.push(am5percent.PieSeries.new(root, {
+      valueField: "cost",
+      categoryField: "title",
+    }));
+    series1.slices.template.setAll({
+        templateField: "bg",
+        stroke: "white",
+        strokeWidth: 2
+    });
+    series1.slices.template.set("toggleKey", "none");
+    series1.slices.template.set("tooltipText", "");
+    series1.ticks.template.set("forceHidden", true);
+    series1.labels.template.set("forceHidden", true);
+
+    var series2 = chart.series.push(am5percent.PieSeries.new(root, {
+        valueField: "cost",
+        categoryField: "title",
+    }));
+    series2.slices.template.setAll({
+        templateField: "bg",
+        stroke: "white",
+        strokeWidth: 2
+    });
+    series2.slices.template.set("toggleKey", "none");
+    series2.slices.template.set("tooltipText", "");
+    series2.ticks.template.set("forceHidden", true);
+    series2.labels.template.set("forceHidden", true);
+    series2.ticks.template.set("visible", false);
+
+    var legend = chart.children.push(am5.Legend.new(root, {
+        centerY: am5.percent(50),
+        y: am5.percent(50),
+        layout: root.verticalLayout
+    }));
+    var label = root.tooltipContainer.children.push(am5.Label.new(root, {
+        x: am5.percent(28.5),
+        y: am5.p50,
+        centerX: am5.p50,
+        centerY: am5.p50,
+        fill: am5.color(0x000000),
+        fontSize: 30
+    }));
+
+    chartPieObject = {root, chart, series1, series2, legend, label}
+};
+
+function setBgTemplateField(arr) {
+    let newArr = []
+    for (let obj of arr) {
+        newArr.push({...obj, bg: {fill: obj.bg}})
+    }
+
+    return newArr;
+}
+
+function changePieChart(data, series1, series2, legend, label) {
+    let dataPlus = data.filter(obj => obj.cost >= 0);
+    let dataMinus = data.filter(obj => obj.cost < 0);
+
+    series1.data.setAll(dataPlus);
+    series2.data.setAll(dataMinus);
+
+    let seriesArr = series1.dataItems.concat(series2.dataItems);
+
+    series2.appear(1000, 100);
+    series1.appear(1000, 100);
+
+    legend.itemContainers.template.events.on("click", function(ev) {
+        let cost = 0;
+        for (let i = 0; i < seriesArr.length; i++) {
+            setTimeout(function(){
+                if (seriesArr[i]._settings.visible) {
+                    cost += seriesArr[i].dataContext.cost
+                    label.set("text", cost);
+                }
+            },0)
+        }
+    });
+
+    legend.data.setAll(seriesArr);
+    label.set("text", changeBalance(accountArr));
+}
