@@ -61,6 +61,7 @@ Promise.all([getDataFromFirestore("accounts")])
         })
         .then(data => {
             accountArr = (data[0] != null) ? data[0] : [];
+            console.log(accountArr)
             pieChart();
             changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
             setAccountsToList(accountArr);
@@ -555,7 +556,7 @@ function pieChart() {
         layout: root.verticalLayout
     }));
     var label = root.tooltipContainer.children.push(am5.Label.new(root, {
-        x: am5.percent(28.5),
+        x: am5.percent(30),
         y: am5.p50,
         centerX: am5.p50,
         centerY: am5.p50,

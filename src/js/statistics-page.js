@@ -1,4 +1,5 @@
 import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
+import noDataToggle from "./modules/no-data";
 
 let operationsExpenses = [];
 let categoriesExpensesByCurrentDate = [];
@@ -238,18 +239,18 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
         })
         .then(data => {
-            categoriesExpenses = data[0];
-            categoriesExpensesByCurrentDate = data[1];
-            categoriesIncome = data[2];
-            categoriesIncomeByCurrentDate = data[3];
+            categoriesExpenses = data[0] ? data[0] : [];
+            categoriesExpensesByCurrentDate = data[1] ? data[1] : [];
+            categoriesIncome = data[2] ? data[2] : [];
+            categoriesIncomeByCurrentDate = data[3] ? data[3] : [];
 
-            operationsExpenses = data[4];
+            operationsExpenses = data[4] ? data[4] : [];
             operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
-            operationsIncome = data[6];
+            operationsIncome = data[6] ? data[6] : [];
             operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
             
-            allOperations = operationsExpenses.concat(operationsIncome);
-            allCategories = categoriesExpenses.concat(categoriesIncome);
+            allOperations = (operationsExpenses && operationsIncome) ? operationsExpenses.concat(operationsIncome) : [];
+            allCategories = (categoriesExpenses && categoriesIncome) ? categoriesExpenses.concat(categoriesIncome) : [];
 
             updateChart(absCostInArr(operationsExpenses), xAxis, series, chart);
             changeTrend();
@@ -545,12 +546,13 @@ function changeTrend() {
     }
 
     function setValueToHtml(value, teg) {
-        if (value == "Infinity%" || value == "-Infinity%") {
+        if (value == "Infinity%" || value == "-Infinity%" || value == "NaN%") {
             teg.textContent = "Н/д";
             teg.style.color = "black";
         } else {
-            if (value.includes("-")) teg.style.color = "red"
-            if (!value.includes("-")) teg.style.color = "#31a51f"
+            if (value == "0") teg.style.color = "black"
+            else if (value.includes("-")) teg.style.color = "red"
+            else if (!value.includes("-")) teg.style.color = "#31a51f"
             teg.textContent = value
         }
     }

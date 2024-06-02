@@ -54,6 +54,11 @@ gulp.task("images:dev", function() {
         .pipe(gulp.dest("./build/img/"))
 });
 
+gulp.task("video:dev", function() {
+    return gulp.src("./src/video/*")
+        .pipe(gulp.dest("./build/video/"))
+});
+
 gulp.task("icons:dev", function() {
     return gulp.src("./src/icon/*")
         .pipe(gulp.dest("./build/icon/"))
@@ -86,5 +91,6 @@ gulp.task("watch:dev", function() {
     gulp.watch("./src/**/*.html", gulp.parallel("html:dev"));
     gulp.watch("./src/img/*", gulp.parallel("images:dev"));
     gulp.watch("./src/icon/*", gulp.parallel("icons:dev"));
+    gulp.watch("./src/video/*", gulp.parallel("video:dev"));
     gulp.watch("./src/js/**/*.js", gulp.parallel("js:dev"));
 })

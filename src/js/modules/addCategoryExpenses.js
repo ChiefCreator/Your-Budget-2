@@ -4,6 +4,7 @@ import 'swiper/css/bundle';
 import changeChart from "./changeChartExpensesAndIncome";
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
+import noDataToggle from "./no-data";
 
 function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xAxis) {
     // expenses переменные
@@ -100,6 +101,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
             setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
             setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
+
+            noDataToggle(categoriesExpensesByCurrentDate, document.querySelector(".no-data-list-categories-expenses"), document.querySelector(".no-data-list-categories-expenses").querySelector(".no-data__video"), [document.querySelector(".categories__header")]);
+            noDataToggle(categoriesIncomeByCurrentDate, document.querySelector(".no-data-list-categories-income"), document.querySelector(".no-data-list-categories-income").querySelector(".no-data__video"), [document.querySelector(".categories__header")])
         })
 
     togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
@@ -132,6 +136,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             setItemToList(objCategory, typeS);
             chart(categoriesByCurrentDate, chartPie);
             changeCostsOfCategories(categoriesByCurrentDate, typeS)
+
+            noDataToggle(categoriesExpensesByCurrentDate, document.querySelector(".no-data-list-categories-expenses"), document.querySelector(".no-data-list-categories-expenses").querySelector(".no-data__video"), [document.querySelector(".categories__header")]);
+            noDataToggle(categoriesIncomeByCurrentDate, document.querySelector(".no-data-list-categories-income"), document.querySelector(".no-data-list-categories-income").querySelector(".no-data__video"), [document.querySelector(".categories__header")])
         }
     }
 
@@ -460,6 +467,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     }
 
     function setOperationToList(arr, typeS) {
+        noDataToggle(arr, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")])
+
         let blockToPaste = document.querySelector(`.operation-list__item`);
 
         blockToPaste.querySelectorAll(".operation-list__wrapper").forEach(block => {

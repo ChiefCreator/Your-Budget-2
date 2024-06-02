@@ -1,6 +1,7 @@
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
 import toggleFilter from './toggle-filter';
+import noDataToggle from "./no-data";
 
 function functionalOnOperationsPage(chart, root, xAxis, yAxis) {
 
@@ -35,14 +36,14 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
         })
         .then(data => {
-            categoriesExpenses = data[0];
-            categoriesExpensesByCurrentDate = data[1];
-            categoriesIncome = data[2];
-            categoriesIncomeByCurrentDate = data[3];
+            categoriesExpenses = data[0] ? data[0] : [];
+            categoriesExpensesByCurrentDate = data[1] ? data[1] : [];
+            categoriesIncome = data[2] ? data[2] : [];
+            categoriesIncomeByCurrentDate = data[3] ? data[3] : [];
 
-            operationsExpenses = data[4];
+            operationsExpenses = data[4] ? data[4] : [];
             operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
-            operationsIncome = data[6];
+            operationsIncome = data[6] ? data[6] : [];
             operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
             
             allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
@@ -52,6 +53,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             setCategoriesToFilter(allCategoriesByCurrentDate);
 
             var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
+            noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
             createSeries(allCategoriesByCurrentDate, data)
             chart.appear(1000, 100);
 
@@ -95,6 +97,8 @@ function getDataFromFirestore(collection) {
 }
 
 function setOperationsToList(arr) {
+    noDataToggle(arr, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".list-all-operations")])
+
     let blockToPaste = document.querySelector(`.list-all-operations`);
 
     blockToPaste.querySelectorAll(".list-all-operation__wrapper").forEach(block => {
@@ -416,6 +420,7 @@ function resetFilter() {
 
     chart.series.clear();
     var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
+    noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
     createSeries(allCategoriesByCurrentDate, data);
     chart.appear(1000, 100);
 
@@ -482,6 +487,7 @@ applyFilter.addEventListener("click", function() {
     chart.series.clear();
     var data = transformAllOperationsToObjectsForChartBar(sortByDate(filteredAllOperationsByCurrentDate, "increase"));
     createSeries(filteredAllCategoriesByCurrentDate, data);
+    noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
     chart.appear(1000, 100);
 
     function isChecked(checkboxes) {
