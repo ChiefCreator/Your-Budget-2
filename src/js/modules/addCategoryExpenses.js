@@ -81,7 +81,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
             operationsIncome = (data[6] != null) ? data[6] : [];
             operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
-            accountArr = (data[8] != null) ? data[8] : [];
+            accountArr = (data[8] != null) ? data[8] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon_money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon_money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
             
             allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
             allCategoriesByCurrentDate = categoriesExpensesByCurrentDate.concat(categoriesIncomeByCurrentDate);
@@ -612,79 +612,131 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     }
     
     function initChart(chartId, data) {
-        console.log(data)
-        if (!data || data.length <= 1) {
-            data = [{  date: "1",  cost: 1,}, {  date: "2",  cost: 4,}, {  date: "3",  cost: 3,}, {    date: "4",    cost: 7,}, {    date: "5",    cost: 2,}, {    date: "6",    cost: 9,}, {    date: "7",    cost: 14,}, {    date: "8",    cost: 10,}, {    date: "9",    cost: 17,}, {    date: "10",    cost: 13,}];
-        } else {
-            data = transformAllOperationsToObjectsForXYChart(sortByDate(data, "increase"))
-        }
-    var root = am5.Root.new(chartId);   
-    root.setThemes([
-      am5themes_Animated.new(root)
-    ]);
-    var chart = root.container.children.push(am5xy.XYChart.new(root, {
-      paddingLeft: 0
-    }));
-      chart.get("colors").set("colors", [
-        am5.color(15723498),
-    ]);
-    var xRenderer = am5xy.AxisRendererX.new(root, {
-        minGridDistance: 30,
-        minorGridEnabled: true,
-    });
-    var yRenderer = am5xy.AxisRendererY.new(root, {
-        minGridDistance: 30,
-        minorGridEnabled: true,
-    });
-    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-        maxDeviation: 1,
-        categoryField: "date",
-        renderer: xRenderer,
-        visible: false,
-    }));
-    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-        maxDeviation: 1,
-        renderer: yRenderer,
-        visible: false,
-        strictMinMax: true,
-    }));
-    xRenderer.grid.template.setAll({
-        visible: false
-    })
-    yRenderer.grid.template.setAll({
-        visible: false
-    })
-    var series = chart.series.push(am5xy.SmoothedXLineSeries.new(root, {
-        name: "Series",
-        xAxis: xAxis,
-        yAxis: yAxis,
-        valueYField: "cost",
-        categoryXField: "date",
-        tooltip: am5.Tooltip.new(root, {
-            labelText: "{valueX} {valueY}"
-        }),
-        stroke: "white",
-    }));
-    series.fills.template.setAll({
-        visible: true,
-        fillOpacity: 0.2,
-        fill: "#FFFFFF"
-    });
-    series.bullets.push(function () {
-        return am5.Bullet.new(root, {
-            locationY: 0,
-            sprite: am5.Circle.new(root, {
-                radius: 2,
-                fill: "white"
-            })
+        var root = am5.Root.new(chartId);
+        root.setThemes([am5themes_Animated.new(root)]);
+    
+        var chart = root.container.children.push(am5xy.XYChart.new(root, {
+            panX: false,
+            panY: false,
+            paddingLeft: 0
+        }));
+    
+        var xRenderer = am5xy.AxisRendererX.new(root, {
+            minGridDistance: 30,  
         });
-    });
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
-    series.appear(1000);
-    chart.appear(1000, 100);
+        var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+            baseInterval: {
+                timeUnit: "day",
+                count: 0
+            },
+            visible: false,
+            renderer: xRenderer,
+        }));
+        xAxis.get("renderer").grid.template.set("forceHidden", true);
+    
+        var yRenderer = am5xy.AxisRendererY.new(root, {});
+        var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+            strictMinMax: true,
+            renderer: yRenderer,
+            visible: false,
+        }));
+        yAxis.get("renderer").grid.template.set("forceHidden", true);
+    
+        var series = chart.series.push(am5xy.LineSeries.new(root, {
+            name: "Series",
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "cost",
+            valueXField: "date",
+            tooltip: am5.Tooltip.new(root, {
+                labelText: "{valueY}"
+              }),
+            stroke: "rgb(255,255,255)",
+        }));
+        series.fills.template.setAll({
+            visible: true,
+            fillOpacity: 0.3,
+        });
+        series.set("fill", "rgba(255,255,255, 0.3)");
+    
+        if (!data || data.length <= 1) {
+            data = []
+            yAxis.set("min", 0)
+        }
+    
+        xAxis.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
+        series.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
+        series.appear(1000);
+        chart.appear(1000, 100);
+        chartsArr.push({root, xRenderer, yRenderer, xAxis, yAxis, series, data, chart});
+    }
 
-    chartsArr.push({root, xRenderer, yRenderer, xAxis, yAxis, series, data})
+    function fillEmptyObj(operations) {
+        let newArr = getPreviousDays(24).map(item => {
+            for (let obj of operations) {
+                if (obj.date == item.date) {
+                    item.cost += obj.cost
+                }
+            }
+            return item
+        })
+    
+        let data = [...newArr].reverse();
+    
+        function fillEmptyCosts(costs) {
+            let nextNonZeroCost = 0;
+          
+            for (let i = 0; i < costs.length; i++) {
+                if (costs[i].cost === 0) {
+                    costs[i].cost = nextNonZeroCost;
+                } 
+                else {
+                    if (costs[i - 1]) costs[i].cost = data[i - 1].cost + costs[i].cost
+                    nextNonZeroCost = costs[i].cost;
+                }
+            }
+          
+            return costs;
+        }
+    
+        function getPreviousDays(months) {
+            const dates = [];
+            const today = new Date();
+            for (let i = 0; i < months; i++) {
+                const newDate = new Date(today.getTime());
+                newDate.setMonth(today.getMonth() - i);
+                const daysInMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+                for (let j = 0; j < daysInMonth; j++) {
+                    let day;
+                    if (newDate.getMonth() == new Date().getMonth()) {
+                        if (j > new Date().getDate()) break;
+                        day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                        
+                    } else {
+                        day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                    }
+                    const dayName = new Date(day).toLocaleString('ru', { month: 'numeric', day: 'numeric', year: 'numeric'});
+                    dates.push(dayName.split(".").reverse().join("-"));
+                }
+            }
+            return sortByDate(dates.map((date) => { return { cost: 0, date: date }}), "decrease");
+        }
+    
+        return fillEmptyCosts(data)
+    }
+    
+    function changeDate(arr) {
+        for (let obj of arr) {
+            obj.date = Date.parse(obj.date)
+        }
+        return arr;
+    }
+    
+    function getPreviousDateArr(arr, months) {
+        const month = new Date(arr[arr.length - 1].date).getMonth() - months
+        const date = new Date(new Date(arr[arr.length - 1].date).getFullYear(), month, new Date(arr[arr.length - 1].date).getDate()).toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
+    
+        return arr.filter(obj => new Date(obj.date) >= new Date(date));
     }
 
     function setOperationsToAccounts(operationsAll, accounts) {

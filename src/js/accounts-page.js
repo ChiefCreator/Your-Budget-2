@@ -1,6 +1,7 @@
 import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import Chart from 'chart.js/auto';
+import noDataToggle from "./modules/no-data";
 
 // добавление нового счета
 
@@ -15,24 +16,24 @@ let btnAddAccount = document.querySelector(".add-accounts");
 let popupAddAccount = document.querySelector(".popup-accounts-done");
 let overblock = document.querySelector(".overblock");
 
-const chartBalance = new Chart(document.getElementById('balance-chart'), {
-    type: 'doughnut',
-    data: {
-        labels: [],
-        datasets: [{
-            data: [],
-            backgroundColor: [],
-            borderWidth: 1,
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                display: false
-            },
-        }
-    },
-});
+// const chartBalance = new Chart(document.getElementById('balance-chart'), {
+//     type: 'doughnut',
+//     data: {
+//         labels: [],
+//         datasets: [{
+//             data: [],
+//             backgroundColor: [],
+//             borderWidth: 1,
+//         }]
+//     },
+//     options: {
+//         plugins: {
+//             legend: {
+//                 display: false
+//             },
+//         }
+//     },
+// });
 const swiperAcoounts = new Swiper('.swiper-accounts', {
     speed: 600,
     spaceBetween: 15,
@@ -56,56 +57,26 @@ const swiperAcoountsDone = new Swiper('.swiper_accounts-done', {
 let userEmail = localStorage.getItem("email").replace(".", "*");
 
 Promise.all([getDataFromFirestore("accounts")])
-        .then(response => {
-            return Promise.all([response[0].json()]);
-        })
-        .then(data => {
-            accountArr = (data[0] != null) ? data[0] : [];
-            console.log(accountArr)
-            pieChart();
-            changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
-            setAccountsToList(accountArr);
-       
-            initXYChartWithManyLines();
-        })
+    .then(response => {
+        return Promise.all([response[0].json()]);
+    })
+    .then(data => {
+        accountArr = (data[0] != null) ? data[0] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon_money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon_money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
+        addToFirestore(accountArr, "accounts");
 
-// инициализация готовых счетов
-initChart("chartCashDone", [])
-initChart("chartCardDone", [])
-initChart("chartSavingsDone", [])
-initChart("chartCreditDone", [])
-initChart("chartDebtDone", [])
-// инициализация счетов
-// initChart("chartCash")
-// initChart("chartCard")
-// initChart("chartCredit")
+        pieChart();
+        changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
+        setAccountsToList(accountArr);
+        initXYChartWithManyLines();
+
+        // инициализация готовых счетов
+        initChart("chartCashDone", [])
+        initChart("chartCardDone", [])
+        initChart("chartSavingsDone", [])
+        initChart("chartCreditDone", [])
+        initChart("chartDebtDone", [])
+    })
 function initChart(chartId, data) {
-    if (!data || data.length <= 1) {
-        data = [
-            { cost: 500, date: '2023-01-28' },
-            { cost: 0, date: '2024-05-27' },
-            { cost: 90, date: '2023-05-26' },
-            { cost: 0, date: '2024-05-25' },
-            { cost: 350, date: '2023-08-24' },
-            { cost: 0, date: '2024-05-23' },
-            { cost: -100, date: '2024-01-01' },
-            { cost: 0, date: '2024-05-21' },
-            { cost: -60, date: '2024-03-20' },
-            { cost: 0, date: '2024-05-19' },
-            { cost: 0, date: '2024-05-18' },
-            { cost: -20, date: '2024-05-17' },
-            { cost: 0, date: '2024-05-16' },
-            { cost: 0, date: '2024-05-15' },
-            { cost: 0, date: '2024-05-14' },
-            { cost: 0, date: '2024-05-13' },
-            { cost: 2000, date: '2024-05-12' },
-            { cost: 0, date: '2024-05-11' },
-            { cost: 0, date: '2024-05-10' },
-            { cost: -50, date: '2024-05-09' },
-            { cost: 300, date: '2024-05-08' },
-        ];
-    }
-
     var root = am5.Root.new(chartId);
     root.setThemes([am5themes_Animated.new(root)]);
 
@@ -152,6 +123,11 @@ function initChart(chartId, data) {
         fillOpacity: 0.3,
     });
     series.set("fill", "rgba(255,255,255, 0.3)");
+
+    if (!data || data.length <= 1) {
+        data = []
+        yAxis.set("min", 0)
+    }
 
     xAxis.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
     series.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), 12)));
@@ -266,7 +242,7 @@ function initXYChartWithManyLines() {
     }));
 
     for (let i = 0; i < accountArr.length; i++) {
-        if (!accountArr[i].operations) continue;
+        if (!accountArr[i].operations) accountArr[i].operations = []
         makeSeries(sortByDate(accountArr[i].operations, "increase"), accountArr[i].title, accountArr[i].bg, accountArr[i].iconBg, root, xAxis, yAxis, chart, 12)
     }  
     chart.appear(1000, 100);
@@ -290,7 +266,7 @@ function makeSeries(data, name, bg, iconBg, root, xAxis, yAxis, chart, monthAmou
     series.strokes.template.setAll({
         strokeWidth: 3,
     });
-  
+
     xAxis.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), monthAmount)));
     series.data.setAll(changeDate(getPreviousDateArr(fillEmptyObj(data), monthAmount)));
     series.appear();
@@ -577,6 +553,8 @@ function setBgTemplateField(arr) {
 }
 
 function changePieChart(data, series1, series2, legend, label) {
+    noDataToggle(data, document.querySelector(".no-data-chart-balance"), document.querySelector(".no-data-chart-balance").querySelector(".no-data__video"), [document.querySelector(".balance__hide-logo"), document.querySelector("#chartdiv"), document.querySelector(".balance__header")], changeBalance(accountArr))
+
     let dataPlus = data.filter(obj => obj.cost >= 0);
     let dataMinus = data.filter(obj => obj.cost < 0);
 
