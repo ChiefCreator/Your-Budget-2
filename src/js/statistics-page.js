@@ -277,6 +277,7 @@ function updateChart(arr, xAxis, series, chart) {
     trendArr = setBg(uniteArrOfOperationsAndArrOfMounths(getPreviousMounths(), data));
     xAxis.data.setAll(trendArr);
     series.data.setAll(trendArr);
+    console.log(data, trendArr)
 
     series.appear();
     chart.appear(1000, 100);

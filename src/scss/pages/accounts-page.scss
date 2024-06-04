@@ -1051,7 +1051,7 @@
 .accounts-dynamic-chart{
     margin-top: 15px;
     flex: 1 1 60%;
-    height: 330px;
+    height: 305px;
     background-color: white;
     border-radius: 10px;
     padding: 10px 10px 10px 10px;
@@ -1100,5 +1100,110 @@
         .am5-layer-30{
             display: none !important;
         }
+    }
+}
+.account-statistics{
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.account-operations{
+    flex: 0 1 430px;
+    height: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: white;
+    .list-all-operations{
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        padding: 0 15px 0 0 !important;
+    }
+}
+.account-chart{
+    flex: 1 1 auto;
+    height: 285px;
+    padding: 0 15px;
+    border-radius: 10px;
+    background-color: white;
+    overflow: hidden;
+    position: relative;
+    &__header{
+        margin-bottom: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &__title{
+        font-size: 18px;
+        font-weight: 500;
+    }
+    &__hide-logo{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 19px;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background-color: white;
+        z-index: 1;
+    }
+    #account-chart{
+        margin-left: -10px !important;
+        width: calc(100% + 32px) !important;
+        height: 270px !important;
+    }
+}
+.account-statistics-popup{
+    position: fixed;
+    left: calc(100% + 490px);
+    top:15px;
+    width: 490px;
+    height: calc(100vh - 30px);
+    border-radius: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 4;
+    transition: left .3s ease;
+    overflow-y: auto;
+    &_open{
+        left: calc(100% - 500px);
+    }
+    &__head{
+        border-bottom: 2px solid #eef0f4;
+    }
+    &__head-content{
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &__title{
+        font-size: 23px;
+        font-weight: 600;
+        color: black;
+    }
+    &__close{
+        flex: 0 0 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        &::before{
+            content: "\f00d";
+            @include font-awesome;
+            font-size: 28px;
+            color: black;
+        }
+    }
+    &__body{
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
     }
 }

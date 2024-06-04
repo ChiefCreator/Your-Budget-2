@@ -2,6 +2,7 @@ import Swiper from 'swiper/bundle';
 import 'swiper/css/bundle';
 import Chart from 'chart.js/auto';
 import noDataToggle from "./modules/no-data";
+import { mergeIf } from 'chart.js/helpers';
 
 // добавление нового счета
 
@@ -11,29 +12,12 @@ let accountArr = [];
 let chartsArr = [];
 let chartDynamicOfAccounts = {};
 let chartPieObject = {};
+let chartBarObject = {}
 
 let btnAddAccount = document.querySelector(".add-accounts");
 let popupAddAccount = document.querySelector(".popup-accounts-done");
 let overblock = document.querySelector(".overblock");
 
-// const chartBalance = new Chart(document.getElementById('balance-chart'), {
-//     type: 'doughnut',
-//     data: {
-//         labels: [],
-//         datasets: [{
-//             data: [],
-//             backgroundColor: [],
-//             borderWidth: 1,
-//         }]
-//     },
-//     options: {
-//         plugins: {
-//             legend: {
-//                 display: false
-//             },
-//         }
-//     },
-// });
 const swiperAcoounts = new Swiper('.swiper-accounts', {
     speed: 600,
     spaceBetween: 15,
@@ -75,6 +59,8 @@ Promise.all([getDataFromFirestore("accounts")])
         initChart("chartSavingsDone", [])
         initChart("chartCreditDone", [])
         initChart("chartDebtDone", [])
+
+        initAccountChartBar();
     })
 function initChart(chartId, data) {
     var root = am5.Root.new(chartId);
@@ -188,6 +174,44 @@ function fillEmptyObj(operations) {
     }
 
     return fillEmptyCosts(data)
+}
+
+function fillEmptyObjForBar(operations) {
+    let newArr = getPreviousDays(24).map(item => {
+        for (let obj of operations) {
+            if (obj.date == item.date) {
+                item.cost += obj.cost
+            }
+        }
+        return item
+    })
+
+    let data = [...newArr].reverse();
+
+    function getPreviousDays(months) {
+        const dates = [];
+        const today = new Date();
+        for (let i = 0; i < months; i++) {
+            const newDate = new Date(today.getTime());
+            newDate.setMonth(today.getMonth() - i);
+            const daysInMonth = new Date(newDate.getFullYear(), newDate.getMonth() + 1, 0).getDate();
+            for (let j = 0; j < daysInMonth; j++) {
+                let day;
+                if (newDate.getMonth() == new Date().getMonth()) {
+                    if (j > new Date().getDate()) break;
+                    day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                    
+                } else {
+                    day = new Date(newDate.getFullYear(), newDate.getMonth(), j + 1);
+                }
+                const dayName = new Date(day).toLocaleString('ru', { month: 'numeric', day: 'numeric', year: 'numeric'});
+                dates.push(dayName.split(".").reverse().join("-"));
+            }
+        }
+        return sortByDate(dates.map((date) => { return { cost: 0, date: date }}), "decrease");
+    }
+
+    return data;
 }
 
 function changeDate(arr) {
@@ -475,6 +499,14 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
                 }  
                 chartDynamicOfAccounts.chart.appear(1000, 100);
             }
+            if (item.closest(".select-account-period")) {
+                let currentAccount = document.querySelector(".account_active");
+                let currentAccountArr = findObjectByHtmlIndex(currentAccount, accountArr)
+      
+                if (currentAccountArr.operations) {
+                    setDataToAccountChartBar(currentAccountArr.operations, +dropdownInput.value);
+                }
+            }
         })
     })
                 
@@ -532,7 +564,7 @@ function pieChart() {
         layout: root.verticalLayout
     }));
     var label = root.tooltipContainer.children.push(am5.Label.new(root, {
-        x: am5.percent(30),
+        x: am5.percent(28),
         y: am5.p50,
         centerX: am5.p50,
         centerY: am5.p50,
@@ -580,4 +612,179 @@ function changePieChart(data, series1, series2, legend, label) {
 
     legend.data.setAll(seriesArr);
     label.set("text", changeBalance(accountArr));
+}
+
+// operations list
+
+function setOperationsToList(arr) {
+    // noDataToggle(arr, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".list-all-operations")])
+
+    let blockToPaste = document.querySelector(`.list-all-operations`);
+
+    blockToPaste.querySelectorAll(".list-all-operation__wrapper").forEach(block => {
+        block.remove()
+    })
+
+    for (let i = 0;i < arr.length;i++) {
+        let block = `<div class="list-all-operation__wrapper" data-dat-wrapper="all${arr[i].date}">
+        <p class="list-all-operation__date">${arr[i].date}</p>
+        <div class="list-all-operation__wrapper-content" data-dat="all${arr[i].date}"></div>
+        </div>`;
+
+        let itemCategory = `<div class="operation operation_${arr[i].type} expand-operation expand-operation_${arr[i].type}" data-index="${arr[i].index}">
+            <header class="operation__head">
+                <div class="operation__icon ${arr[i].icon}" style="background-color: ${arr[i].bg}"></div>
+                <div class="operation__name">
+                    <h4 class="operation__title">${arr[i].title}</h4>
+                </div>
+                <div class="operation__info">
+                    <div class="operation__cost operation__cost_${arr[i].type}">
+                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${Math.abs(arr[i].cost)}</span> <span class="operation__totla-currency">BYN</span></p>
+                        <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
+                    </div>
+                    <div class="operation__button-list">
+                        <button class="operation__button operation__button_change"></button>
+                        <button class="operation__button operation__button_delete"></button>
+                    </div>
+                </div>
+            </header>
+        </div>`
+                    
+        function parser(itemCategory) {
+            var parser = new DOMParser();
+            let teg = parser.parseFromString(itemCategory, 'text/html');
+            let item = teg.querySelector(".expand-operation");
+            return item;
+        }
+        function parserBlockToPaste(block) {
+            var parser = new DOMParser();
+            let teg = parser.parseFromString(block, 'text/html');
+            let item = teg.querySelector(".list-all-operation__wrapper");
+            return item;
+        }
+
+      
+        blockToPaste.append(parserBlockToPaste(block));
+        document.querySelector(`[data-dat="all${arr[i].date}"]`).prepend(parser(itemCategory));
+
+        if (document.querySelectorAll(`[data-dat="all${arr[i].date}"]`).length > 1) {
+            document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`).length - 1].remove()
+        }
+    }
+}
+
+// account chart bar
+
+function initAccountChartBar() {
+    var root = am5.Root.new("account-chart"); 
+    root.setThemes([
+        am5themes_Animated.new(root)
+    ]);
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX: true,
+        paddingLeft: 0,
+        layout: root.verticalLayout
+    }));
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+        behavior: "none"
+    }));
+    cursor.lineY.set("visible", false);
+    chart.zoomOutButton.set("forceHidden", true);
+    var xRenderer = am5xy.AxisRendererX.new(root, {
+        pan: "zoom",
+        minGridDistance: 50,
+    })
+    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 1,
+        categoryField: "date",
+        strictMinMax: true,
+        renderer: xRenderer,
+    }));
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {
+            strokeOpacity: 0.1
+        }),
+        strictMinMax: true,
+    }));
+    var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        name: "месяцы",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "cost",
+        categoryXField: "date",
+    }));
+    series.columns.template.setAll({
+        tooltipText: "{categoryX}: {valueY}",
+        width: am5.percent(80),
+        tooltipY: 0,
+        strokeOpacity: 0,
+    });
+    series.columns.template.setAll({
+        templateField: "bg"
+    });
+
+    chartBarObject = {root, xRenderer, xAxis, yAxis, series, chart};
+}
+
+function setDataToAccountChartBar(arr, monthAmount) {
+    let data = setBg(getPreviousDateArr(fillEmptyObjForBar(arr), monthAmount))
+    chartBarObject.xAxis.data.setAll(data);
+    chartBarObject.series.data.setAll(data);
+    chartBarObject.series.appear(1000);
+    chartBarObject.chart.appear(1000, 100);
+}
+
+function setBg(arr) {
+    let newArr = []
+    for (let obj of arr) {
+        if (obj.cost >= 0) {
+            newArr.push({...obj, bg: {fill: "#31a51f"}, bulletLocation: {centerY: am5.p100}})
+        } else {
+            newArr.push({...obj, bg: {fill: "red"}, bulletLocation: {centerY: am5.p0}})
+        }
+    }
+
+    return newArr;
+}
+
+// клик по счетам
+
+let accountStatisticsPopup = document.querySelector(".account-statistics-popup");
+window.addEventListener("click", function(event) {
+    let account = event.target.closest(".account")
+    if (event.target.closest(".account")) {
+        account.classList.add("account_active");
+        accountStatisticsPopup.classList.add("account-statistics-popup_open");
+        let currentAccountArr = findObjectByHtmlIndex(account, accountArr)
+      
+        if (currentAccountArr.operations) {
+            setOperationsToList(sortByDate(currentAccountArr.operations, "decrease"));
+            setDataToAccountChartBar(currentAccountArr.operations, 1);
+        }
+
+        overblock.classList.add("overblock_open");
+    }
+})
+
+overblock.addEventListener("click", function() {
+    document.querySelector(".select-account-period").querySelector(".select__button-title").textContent = "1 месяц";
+    document.querySelector(".account_active").classList.remove("account_active");
+    overblock.classList.remove("overblock_open");
+    accountStatisticsPopup.classList.remove("account-statistics-popup_open");
+})
+
+function findObjectByHtmlIndex(htmlItem, arr) {
+    let index = htmlItem.dataset.index;
+    let modifiedObj = {}; 
+
+    for (let obj of arr) {
+        if (obj.index == index) {
+            modifiedObj = Object.assign({}, obj);
+        }
+    }
+
+    return modifiedObj;
 }
