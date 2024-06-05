@@ -252,16 +252,16 @@ function initXYChartWithManyLines() {
         },
         maxDeviation: 1,
         renderer: am5xy.AxisRendererX.new(root, {
-            minGridDistance: 80,
+            minGridDistance: 200,
             minorGridEnabled: true,
-            pan: "zoom"
           }),
+        strictMinMax: true,
         //   tooltip: am5.Tooltip.new(root, {})
     }));
     var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
         maxDeviation: 1,
+        strictMinMax: true,
         renderer: am5xy.AxisRendererY.new(root, {
-            pan: "zoom"
         }),
     }));
 
@@ -369,7 +369,7 @@ function setAccountToList(accountObject) {
     let blockToPaste = document.querySelector(`.swiper-accounts .swiper-wrapper`);
 
     let itemCategory = `<div class="swiper-slide">
-        <div class="account" style="background-color: ${accountObject.bg};" data-index="${accountObject.index}">
+        <div class="account account-expand" style="background-color: ${accountObject.bg};" data-index="${accountObject.index}">
             <header class="account__header">
                 <span class="account__icon account__${accountObject.icon}" style="background-color: ${accountObject.iconBg};"></span>
                 <div class="account__names">
@@ -407,7 +407,7 @@ function setAccountsToList(arr) {
 
     for (let i = 0; i < arr.length; i++) {
         let itemCategory = `<div class="swiper-slide">
-        <div class="account" style="background-color: ${arr[i].bg};" data-index="${arr[i].index}">
+        <div class="account account-expand" style="background-color: ${arr[i].bg};" data-index="${arr[i].index}">
             <header class="account__header">
                 <span class="account__icon account__${arr[i].icon}" style="background-color: ${arr[i].iconBg};"></span>
                 <div class="account__names">
@@ -754,9 +754,9 @@ function setBg(arr) {
 
 let accountStatisticsPopup = document.querySelector(".account-statistics-popup");
 window.addEventListener("click", function(event) {
-    let account = event.target.closest(".account")
-    if (event.target.closest(".account")) {
-        account.classList.add("account_active");
+    let account = event.target.closest(".account-expand")
+    if (event.target.closest(".account-expand")) {
+        account.classList.add("account-expand_active");
         accountStatisticsPopup.classList.add("account-statistics-popup_open");
         let currentAccountArr = findObjectByHtmlIndex(account, accountArr)
       
@@ -771,7 +771,7 @@ window.addEventListener("click", function(event) {
 
 overblock.addEventListener("click", function() {
     document.querySelector(".select-account-period").querySelector(".select__button-title").textContent = "1 месяц";
-    document.querySelector(".account_active").classList.remove("account_active");
+    document.querySelector(".account-expand_active").classList.remove("account-expand_active");
     overblock.classList.remove("overblock_open");
     accountStatisticsPopup.classList.remove("account-statistics-popup_open");
 })
