@@ -31,77 +31,83 @@ let userEmail = localStorage.getItem("email").replace(".", "*");
 let movableDate = document.querySelector(".balance-dynamics-chart__date-wrapper");
 movableDate.textContent = new Date().toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
 
-// инициализация графика
-var root = am5.Root.new("trend-chart"); 
-root.setThemes([
-    am5themes_Animated.new(root)
-]);
-var chart = root.container.children.push(am5xy.XYChart.new(root, {
-    panX: true,
-    wheelX: "panX",
-    wheelY: "zoomX",
-    pinchZoomX: true,
-    paddingLeft: 0,
-    layout: root.verticalLayout
-}));
-var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
-    behavior: "none"
-}));
-cursor.lineY.set("visible", false);
-chart.zoomOutButton.set("forceHidden", true);
-var xRenderer = am5xy.AxisRendererX.new(root, {
-    pan: "zoom",
-    minGridDistance: 10,
-})
-var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-    maxDeviation: 0.1,
-    categoryField: "date",
-    start: 0.5,
-    minZoomCount: 1,
-    maxZoomCount: 6,
-    renderer: xRenderer,
-}));
-xAxis.get("renderer").labels.template.setAll({
-    oversizedBehavior: "wrap",
-    textAlign: "center",
-});
-  xRenderer.labels.template.setAll({
-    fontSize: "0.8em"
-});
-var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-    renderer: am5xy.AxisRendererY.new(root, {
-        strokeOpacity: 0.1
-    }),
-}));
-var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-    name: "месяцы",
-    xAxis: xAxis,
-    yAxis: yAxis,
-    valueYField: "cost",
-    categoryXField: "date",
-    fill: "rgb(0,128,0)"
-}));
-series.columns.template.setAll({
-    tooltipText: "{categoryX}: {valueY}",
-    width: am5.percent(90),
-    tooltipY: 0,
-    strokeOpacity: 0,
-});
-series.columns.template.setAll({
-    templateField: "bg"
-});
-series.bullets.push(function () {
-    return am5.Bullet.new(root, {
-      locationY: 1,
-      sprite: am5.Label.new(root, {
-        text: "{valueY}",
-        templateField: "bulletLocation",
-        fill: "black",
-        centerX: am5.percent(50),
-        populateText: true
-      })
+// инициализация графиков
+let trendChartObj = {}
+trendChart();
+function trendChart() {
+    var root = am5.Root.new("trend-chart"); 
+    root.setThemes([
+        am5themes_Animated.new(root)
+    ]);
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+        panX: true,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        pinchZoomX: true,
+        paddingLeft: 0,
+        layout: root.verticalLayout
+    }));
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+        behavior: "none"
+    }));
+    cursor.lineY.set("visible", false);
+    chart.zoomOutButton.set("forceHidden", true);
+    var xRenderer = am5xy.AxisRendererX.new(root, {
+        pan: "zoom",
+        minGridDistance: 10,
+    })
+    var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+        maxDeviation: 0.1,
+        categoryField: "date",
+        start: 0.5,
+        minZoomCount: 1,
+        maxZoomCount: 6,
+        renderer: xRenderer,
+    }));
+    xAxis.get("renderer").labels.template.setAll({
+        oversizedBehavior: "wrap",
+        textAlign: "center",
     });
-});
+      xRenderer.labels.template.setAll({
+        fontSize: "0.8em"
+    });
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {
+            strokeOpacity: 0.1
+        }),
+    }));
+    var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+        name: "месяцы",
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "cost",
+        categoryXField: "date",
+        fill: "rgb(0,128,0)"
+    }));
+    series.columns.template.setAll({
+        tooltipText: "{categoryX}: {valueY}",
+        width: am5.percent(90),
+        tooltipY: 0,
+        strokeOpacity: 0,
+    });
+    series.columns.template.setAll({
+        templateField: "bg"
+    });
+    series.bullets.push(function () {
+        return am5.Bullet.new(root, {
+          locationY: 1,
+          sprite: am5.Label.new(root, {
+            text: "{valueY}",
+            templateField: "bulletLocation",
+            fill: "black",
+            centerX: am5.percent(50),
+            populateText: true
+          })
+        });
+    });
+
+    trendChartObj = {chart, series, xAxis, yAxis}
+}
 
 let balanceChartObj = {}
 balanceChart();
@@ -252,7 +258,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
             allOperations = (operationsExpenses && operationsIncome) ? operationsExpenses.concat(operationsIncome) : [];
             allCategories = (categoriesExpenses && categoriesIncome) ? categoriesExpenses.concat(categoriesIncome) : [];
 
-            updateChart(absCostInArr(operationsExpenses), xAxis, series, chart);
+            updateChart(absCostInArr(operationsExpenses), trendChartObj.xAxis, trendChartObj.series, trendChartObj.chart);
             changeTrend();
 
             balanceArr = getPreviousDateArr(fillEmptyObj(allOperations), 12)
@@ -449,11 +455,11 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
 
             if (item.closest(".select-trend")) {
                 if (dropdownInput.value == "expenses") {
-                    updateChart(absCostInArr(operationsExpenses), xAxis, series, chart)
+                    updateChart(absCostInArr(operationsExpenses), trendChartObj.xAxis, trendChartObj.series, trendChartObj.chart)
                 } else if (dropdownInput.value == "income") {
-                    updateChart(operationsIncome, xAxis, series, chart)
+                    updateChart(operationsIncome, trendChartObj.xAxis, trendChartObj.series, trendChartObj.chart)
                 } else if (dropdownInput.value == "netIncome") {
-                    updateChart(allOperations, xAxis, series, chart)
+                    updateChart(allOperations, trendChartObj.xAxis, trendChartObj.series, trendChartObj.chart)
                 }
             }
 
@@ -641,3 +647,30 @@ function getPreviousDateArr(arr, months) {
 
     return arr.filter(obj => new Date(obj.date) >= new Date(date));
 }
+
+// choose type of statistics
+
+let statisticsButtons = document.querySelectorAll(".statistics-types__item");
+statisticsButtons.forEach(button => {
+    button.addEventListener("click", function() {
+        let buttonActive = document.querySelector(".statistics-types__item_act")
+        if (buttonActive && buttonActive != button) {
+            buttonActive.classList.remove("statistics-types__item_act");
+        }
+        button.classList.add("statistics-types__item_act");
+
+        let dataTab = button.dataset.tab;
+        let currentTab = document.getElementById(dataTab);
+
+        let currentTabActive = document.querySelector(".statistics-tabs__tab_act")
+        if (currentTabActive && currentTabActive != currentTab) {
+            currentTabActive.classList.remove("statistics-tabs__tab_act");
+        }
+        currentTab.classList.add("statistics-tabs__tab_act");
+
+        balanceChartObj.series.appear()
+        balanceChartObj.chart.appear(1000, 100)
+        trendChartObj.series.appear()
+        trendChartObj.chart.appear(1000, 100)
+    })
+})

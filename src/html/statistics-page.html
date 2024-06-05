@@ -17,99 +17,135 @@
     <main class="page-statistics">
         <div class="container">
             <div class="page-statistics__content">
-                <div class="page-statistics__trend">
-                    <div class="trend">
-                        <div class="trend-chart">
-                            <div class="no-data no-data-chart-trend">
-                                <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>
-                                <p class="no-data__notice">График пуст! Добавьте операции, чтобы график был загружен</p>
-                            </div>
-                            <header class="trend-chart__header">
-                                <div class="trend-chart__title">
-                                    <span class="trend-chart__title-first">Тренд</span>
-                                    <span class="trend-chart__title-second">за</span>
-                                    <div class="select select-time">
-                                    <div class="select__button" data-lang="switch-lang">
-                                        <p class="select__button-title">2 месяца</p>
-                                        <span class="select__button-arrow"></span>
+                <div class="page-statistics__types">
+                    <div class="statistics-types">
+                        <header class="statistics-types__header">
+                            <h4 class="statistics-types__title">Аналитика</h4>
+                        </header>
+                        <div class="statistics-types__body">
+                            <ul class="statistics-types__list">
+                                <li class="statistics-types__item statistics-types__item_act statistics-types__item_balance-dynamic" data-tab="tab-balance-dynamic">
+                                    <div class="statistics-types__item-content">
+                                        <span class="statistics-types__item-icon"></span>
+                                        <h5 class="statistics-types__item-title">Динамика баланса</h5>
                                     </div>
-                                    <div class="select__dropdown">
-                                        <ul class="select__dropdown-list">
-                                            <li class="select__dropdown-item" data-value="2">2 месяца</li>
-                                            <li class="select__dropdown-item" data-value="3">3 месяца</li>
-                                            <li class="select__dropdown-item" data-value="6">6 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="8">8 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="10">10 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="12">12 месяцев</li>
-                                        </ul>
-                                        <input type="text" name="select-category" value="2" class="select__input-hidden">
+                                </li>
+                                <li class="statistics-types__item statistics-types__item_trend" data-tab="tab-trend">
+                                    <div class="statistics-types__item-content">
+                                        <span class="statistics-types__item-icon"></span>
+                                        <h5 class="statistics-types__item-title">Тренд расходов и доходов</h5>
                                     </div>
+                                </li>
+                                <li class="statistics-types__item statistics-types__item_budget" data-tab="tab-budget">
+                                    <div class="statistics-types__item-content">
+                                        <span class="statistics-types__item-icon"></span>
+                                        <h5 class="statistics-types__item-title">Бюджет</h5>
                                     </div>
-                                </div>
-                                <div class="select select-trend">
-                                    <div class="select__button" data-lang="switch-lang">
-                                        <p class="select__button-title">Расход</p>
-                                        <span class="select__button-arrow"></span>
+                                </li>
+                                <li class="statistics-types__item statistics-types__item_stream">
+                                    <div class="statistics-types__item-content">
+                                        <span class="statistics-types__item-icon"></span>
+                                        <h5 class="statistics-types__item-title">Поток расходов</h5>
                                     </div>
-                                    <div class="select__dropdown">
-                                        <ul class="select__dropdown-list">
-                                            <li class="select__dropdown-item" data-value="expenses">Расход</li>
-                                            <li class="select__dropdown-item" data-value="income">Доход</li>
-                                            <li class="select__dropdown-item" data-value="netIncome">Чистый доход</li>
-                                        </ul>
-                                        <input type="text" name="select-category" value="" class="select__input-hidden">
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="trend-chart__hide-logo"></div>
-                            <div id="trend-chart"></div>
-                        </div>  
-                    </div>
-                    <div class="trend-statistics">
-                        <div class="trend-card">
-                            <p class="trend-card__value trend-card__value_month-difference">+39%</p>
-                            <p class="trend-card__name">Изменение за месяц</p>
-                        </div>
-                        <div class="trend-card">
-                            <p class="trend-card__value trend-card__value_whole-difference">+72%</p>
-                            <p class="trend-card__name">Изменение за весь период</p>
-                        </div>
-                        <div class="trend-card">
-                            <p class="trend-card__value trend-card__value_average">400</p>
-                            <p class="trend-card__name">Среднее значение</p>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
                 <div class="page-statistics__general">
-                    <div class="balance-dynamics">
-                        <div class="balance-dynamics-chart">
-                            <div class="balance-dynamics-chart__date-wrapper">27 мая 2024</div>
-                            <header class="balance-dynamics-chart__header">
-                                <div class="balance-dynamics-chart__statistics">
-                                    <p class="balance-dynamics-chart__total"><span class="balance-dynamics-chart__total-num">1210</span> <span class="balance-dynamics-chart__currency">BYN</span></p>
-                                    <p class="balance-dynamics-chart__percent"><span class="balance-dynamics-chart__percent-num">-25%</span><p class="balance-dynamics-chart__percent-name">за 26 дней</p></p>
+                    <div class="statistics-tabs">
+                        <div class="statistics-tabs__tab statistics-tabs__tab_act" id="tab-balance-dynamic">
+                            <div class="balance-dynamics">
+                                <div class="balance-dynamics-chart">
+                                    <div class="balance-dynamics-chart__date-wrapper">27 мая 2024</div>
+                                    <header class="balance-dynamics-chart__header">
+                                        <div class="balance-dynamics-chart__statistics">
+                                            <p class="balance-dynamics-chart__total"><span class="balance-dynamics-chart__total-num">1210</span> <span class="balance-dynamics-chart__currency">BYN</span></p>
+                                            <p class="balance-dynamics-chart__percent"><span class="balance-dynamics-chart__percent-num">-25%</span><p class="balance-dynamics-chart__percent-name">за 26 дней</p></p>
+                                        </div>
+                                        <div class="select select-time-balance">
+                                            <div class="select__button" data-lang="switch-lang">
+                                                <p class="select__button-title">12 месяцев</p>
+                                                <span class="select__button-arrow"></span>
+                                            </div>
+                                            <div class="select__dropdown">
+                                                <ul class="select__dropdown-list">
+                                                    <li class="select__dropdown-item" data-value="1">1 месяц</li>
+                                                    <li class="select__dropdown-item" data-value="2">2 месяца</li>
+                                                    <li class="select__dropdown-item" data-value="3">3 месяца</li>
+                                                    <li class="select__dropdown-item" data-value="6">6 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="8">8 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="10">10 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="12">12 месяцев</li>
+                                                </ul>
+                                                <input type="text" name="select-category" value="12" class="select__input-hidden">
+                                            </div>
+                                        </div>
+                                    </header>
+                                    <div class="balance-dynamics-chart__hide-logo"></div>
+                                    <div id="balance-dynamics-chart"></div>
                                 </div>
-                                <div class="select select-time-balance">
-                                    <div class="select__button" data-lang="switch-lang">
-                                        <p class="select__button-title">12 месяцев</p>
-                                        <span class="select__button-arrow"></span>
+                            </div>
+                        </div>
+                        <div class="statistics-tabs__tab" id="tab-trend">
+                            <div class="trend">
+                                <div class="trend-chart">
+                                    <div class="no-data no-data-chart-trend">
+                                        <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>
+                                        <p class="no-data__notice">График пуст! Добавьте операции, чтобы график был загружен</p>
                                     </div>
-                                    <div class="select__dropdown">
-                                        <ul class="select__dropdown-list">
-                                            <li class="select__dropdown-item" data-value="1">1 месяц</li>
-                                            <li class="select__dropdown-item" data-value="2">2 месяца</li>
-                                            <li class="select__dropdown-item" data-value="3">3 месяца</li>
-                                            <li class="select__dropdown-item" data-value="6">6 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="8">8 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="10">10 месяцев</li>
-                                            <li class="select__dropdown-item" data-value="12">12 месяцев</li>
-                                        </ul>
-                                        <input type="text" name="select-category" value="12" class="select__input-hidden">
+                                    <header class="trend-chart__header">
+                                        <div class="trend-chart__title">
+                                            <span class="trend-chart__title-first">Тренд</span>
+                                            <span class="trend-chart__title-second">за</span>
+                                            <div class="select select-time">
+                                            <div class="select__button" data-lang="switch-lang">
+                                                <p class="select__button-title">2 месяца</p>
+                                                <span class="select__button-arrow"></span>
+                                            </div>
+                                            <div class="select__dropdown">
+                                                <ul class="select__dropdown-list">
+                                                    <li class="select__dropdown-item" data-value="2">2 месяца</li>
+                                                    <li class="select__dropdown-item" data-value="3">3 месяца</li>
+                                                    <li class="select__dropdown-item" data-value="6">6 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="8">8 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="10">10 месяцев</li>
+                                                    <li class="select__dropdown-item" data-value="12">12 месяцев</li>
+                                                </ul>
+                                                <input type="text" name="select-category" value="2" class="select__input-hidden">
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="select select-trend">
+                                            <div class="select__button" data-lang="switch-lang">
+                                                <p class="select__button-title">Расход</p>
+                                                <span class="select__button-arrow"></span>
+                                            </div>
+                                            <div class="select__dropdown">
+                                                <ul class="select__dropdown-list">
+                                                    <li class="select__dropdown-item" data-value="expenses">Расход</li>
+                                                    <li class="select__dropdown-item" data-value="income">Доход</li>
+                                                    <li class="select__dropdown-item" data-value="netIncome">Чистый доход</li>
+                                                </ul>
+                                                <input type="text" name="select-category" value="" class="select__input-hidden">
+                                            </div>
+                                        </div>
+                                    </header>
+                                    <div class="trend-chart__hide-logo"></div>
+                                    <div id="trend-chart"></div>
+                                </div>  
+                                <div class="trend-statistics">
+                                    <div class="trend-card">
+                                        <p class="trend-card__paragraph"><span class="trend-card__name">Изменение за месяц: </span><span class="trend-card__value trend-card__value_month-difference">+39%</span></p>
+                                    </div>
+                                    <div class="trend-card">
+                                        <p class="trend-card__paragraph"><span class="trend-card__name">Изменение за весь период: </span><span class="trend-card__value trend-card__value_whole-difference">+39%</span></p>
+                                    </div>
+                                    <div class="trend-card">
+                                        <p class="trend-card__paragraph"><span class="trend-card__name">Среднее значение: </span><span class="trend-card__value trend-card__value_average">+39%</span></p>
                                     </div>
                                 </div>
-                            </header>
-                            <div class="balance-dynamics-chart__hide-logo"></div>
-                            <div id="balance-dynamics-chart"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
