@@ -14,8 +14,15 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let operationsExpensesByCurrentDate = [];
     let categoriesExpensesByCurrentDate = [];
 
-    let btnAddDoneCategoriesExpenses = document.querySelector(".add-expenses");
-    let popupDoneCategoriesExpenses = document.querySelector(".popup-category-done_expenses");
+    // переменные expenses
+    let popupCategory = document.querySelector(".popup-category");
+    let inpTitle = popupCategory.querySelector(".popup-category__input");
+    let inpBg = popupCategory.querySelector(".input-color__input_bg");
+    let wrapperInpBg = inpBg.parentElement;
+    let inpColor = popupCategory.querySelector(".input-color__input_color");
+    let wrapperInpColor = inpColor.parentElement;
+    let icons = popupCategory.querySelectorAll(".popup-category__icon");
+    let btnAddCategoriesExpenses = document.querySelector(".add-expenses");
 
     let popupOperation = document.querySelector(".popup-operation");
     let btnCreateOperationPopup = popupOperation.querySelector(".popup-operation__button");
@@ -24,7 +31,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let textarreaComment = popupOperation.querySelector(".textarrea__input");
     let closeBtnPopupOperation = popupOperation.querySelector(".popup-operation__close");
 
-    const swiper = new Swiper('.swiper_categories-expenses', {
+    const swiper = new Swiper('.swiper_done-categories', {
         speed: 600,
         spaceBetween: 0,
         pagination: {
@@ -47,8 +54,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let operationsIncomeByCurrentDate = [];
     let categoriesIncomeByCurrentDate = [];
 
-    let btnAddDoneCategoriesIncome = document.querySelector(".add-income");
-    let popupDoneCategoriesIncome = document.querySelector(".popup-category-done_income");
+    let btnAddCategoriesIncome = document.querySelector(".add-income");
     
     // общие 
     let switchChart = document.querySelector(".switch-chart");
@@ -66,6 +72,18 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     let progressBarExpenses = document.querySelector(".progress-bar_expenses");
     let progressBarIncome = document.querySelector(".progress-bar_income");
+
+    let circleNum = document.querySelector(".progress-ring-wrapper__num");
+    let circle = document.querySelector(".progress-ring__circle");
+    let radius = circle.r.baseVal.value;
+    let circumference = 2 * Math.PI * radius;         
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = circumference;
+    function setProgress(percent) {
+        const offset = circumference - percent / 100 * circumference;
+        circle.style.strokeDashoffset = offset;
+    }
+    setProgress(50);
 
     Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate"), getDataFromFirestore("accounts")])
         .then(response => {
@@ -101,33 +119,29 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
             setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
             setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
-
-            noDataToggle(categoriesExpensesByCurrentDate, document.querySelector(".no-data-list-categories-expenses"), document.querySelector(".no-data-list-categories-expenses").querySelector(".no-data__video"), [document.querySelector(".categories__header")]);
-            noDataToggle(categoriesIncomeByCurrentDate, document.querySelector(".no-data-list-categories-income"), document.querySelector(".no-data-list-categories-income").querySelector(".no-data__video"), [document.querySelector(".categories__header")])
         })
 
-    togglePopup(btnAddDoneCategoriesExpenses, popupDoneCategoriesExpenses);
-    togglePopup(btnAddDoneCategoriesIncome, popupDoneCategoriesIncome);
+    togglePopup(btnAddCategoriesExpenses, popupCategory);
+    togglePopup(btnAddCategoriesIncome, popupCategory);
 
     // добавление категорий
 
-    window.addEventListener("click", (event) => addCategory(event, categoryExpenses, categoriesExpenses, operationsExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, chartExpensesPie, "expenses", "Expenses", "expensesCategory"));
-    window.addEventListener("click", (event) => addCategory(event, categoryIncome, categoriesIncome, operationsIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, "income", "Income", "incomeCategory"));
+    window.addEventListener("click", (event) => addCategory(event, categoryExpenses, categoriesExpenses, operationsExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, chartExpensesPie, "expenses", "Expenses", "expensesCategory", popupCategory, inpTitle, inpBg, inpColor));
+    window.addEventListener("click", (event) => addCategory(event, categoryIncome, categoriesIncome, operationsIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, "income", "Income", "incomeCategory", popupCategory, inpTitle, inpBg, inpColor));
 
-    function addCategory(event, objCategory, categories,operations, categoriesByCurrentDate, operationsByCurrentDate, chartPie, typeS, typeXL, indexName) {
-        let category = event.target.closest(`.done-${typeS}`);
+    function addCategory(event, objCategory, categories,operations, categoriesByCurrentDate, operationsByCurrentDate, chartPie, typeS, typeXL, indexName, popupCategory, inpTitle, inpBg, inpColor) {
+        let category = event.target.closest(`.done-category`);
 
-        if (event.target.closest(`.done-${typeS}`)) {
+        if (event.target.closest(`.popup-category_${typeS} .done-category`)) {
             chooseCategory(category, objCategory, typeS, indexName)
         }
-        if (event.target.closest(`.popup-category-done_${typeS} .popup-category-done__button`)) {
+        if (event.target.closest(`.popup-category_${typeS} .popup-category-done__button`)) {
             categories.push(Object.assign({}, objCategory));
 
             for (let obj of operationsByCurrentDate) {
                 operationsByCurrentDate.pop()
             }
             operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
-
             categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
 
             addToFirestore(categories, `categories${typeXL}`);
@@ -135,20 +149,65 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
             setItemToList(objCategory, typeS);
             chart(categoriesByCurrentDate, chartPie);
-            changeCostsOfCategories(categoriesByCurrentDate, typeS)
+            changeCostsOfCategories(categoriesByCurrentDate, typeS);
 
-            noDataToggle(categoriesExpensesByCurrentDate, document.querySelector(".no-data-list-categories-expenses"), document.querySelector(".no-data-list-categories-expenses").querySelector(".no-data__video"), [document.querySelector(".categories__header")]);
-            noDataToggle(categoriesIncomeByCurrentDate, document.querySelector(".no-data-list-categories-income"), document.querySelector(".no-data-list-categories-income").querySelector(".no-data__video"), [document.querySelector(".categories__header")])
+            resetPopupCategory();
+        }
+
+        if (event.target.closest(`.popup-category_${typeS} .popup-category__button`)) {
+            setValueToObject(objCategory, setIndex(indexName), inpTitle, inpBg, inpColor, typeS, document.querySelector(".popup-category__icon.act").dataset.categoryIcon);
+
+            if (validation(objCategory)) {
+                index++;
+
+                categories.push(Object.assign({}, objCategory))
+                categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
+
+                addToFirestore(categories, `categories${typeXL}`);
+                addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
+
+                setItemToList(objCategory, typeS);
+                chart(categoriesByCurrentDate, chartPie);
+
+                resetPopupCategory();
+            }
         }
     }
 
+    function resetPopupCategory() {
+        popupCategory.classList.remove("popup-category_open");
+        overblock.classList.remove("overblock_open");
+
+        if (document.querySelector(".done-category_act")) document.querySelector(".done-category_act").classList.remove(`done-category_act`);
+
+        inpTitle.value = "";
+        inpBg.value = "#A2A6B4";
+        inpColor.value = "#ffffff";
+        wrapperInpColor.style.border = `2px solid #eef0f4`;
+        wrapperInpBg.style.border = `2px solid ${inpBg.value}`;
+        wrapperInpColor.style.backgroundColor = "#ffffff";
+        wrapperInpBg.style.backgroundColor = inpBg.value;
+
+        setProgress(50);
+        circleNum.textContent = "01";
+
+        document.querySelectorAll(".popup-category__tab-button").forEach(button => {
+            button.classList.remove("popup-category__tab-button_act")
+            if (button.dataset.tab == "tab-add-category") button.classList.add("popup-category__tab-button_act")
+        })
+        document.querySelectorAll(".popup-category__tab").forEach(tab => {
+            tab.classList.remove("popup-category__tab_act");
+            if (tab.id == "tab-add-category") tab.classList.add("popup-category__tab_act")
+        })
+    }
+
     function chooseCategory(category, objCategory, type, indexName) {
-        let actCategory = document.querySelector(`.done-${type}_act`);
+        let actCategory = document.querySelector(`.done-category_act`);
 
         if (actCategory && actCategory != category) {
-            actCategory.classList.remove(`done-${type}_act`);
+            actCategory.classList.remove(`done-category_act`);
         }
-        category.classList.toggle(`done-${type}_act`);
+        category.classList.toggle(`done-category_act`);
         
         objCategory.title = JSON.parse(category.dataset.categoryDone).title
         objCategory.icon = JSON.parse(category.dataset.categoryDone).icon
@@ -185,13 +244,20 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         let overblock = document.querySelector(".overblock");
 
         btn.addEventListener("click", function() {
-            popup.classList.add("popup-category-done_open");
+            if (btn.classList.contains("add-income")) {
+                popup.classList.add("popup-category_income")
+                popup.classList.remove("popup-category_expenses")
+            }
+            else if (btn.classList.contains("add-expenses")) {
+                popup.classList.add("popup-category_expenses")
+                popup.classList.remove("popup-category_income")
+            }
+            popup.classList.add("popup-category_open");
             overblock.classList.add("overblock_open");
         })
 
         overblock.addEventListener("click", function() {
-            popup.classList.remove("popup-category-done_open");
-            overblock.classList.remove("overblock_open");
+            resetPopupCategory();
         })
     }
 
@@ -780,83 +846,16 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
 
     // создание категории
 
-    // переменные expenses
-    let popupCategoryExpenses = document.querySelector(".popup-category");
-    let createBtnsExpenses = document.querySelectorAll(".create-expenses");
+    changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor);
 
-    let objCategoryExpenses = {};
-    let inpTitleExpenses = popupCategoryExpenses.querySelector(".popup-category__input");
-    let inpBgExpenses = popupCategoryExpenses.querySelector(".input-color__input_bg");
-    let wrapperInpBgExpenses = inpBgExpenses.parentElement;
-    let inpColorExpenses = popupCategoryExpenses.querySelector(".input-color__input_color");
-    let wrapperInpColorExpenses = inpColorExpenses.parentElement;
-    let iconsExpenses = popupCategoryExpenses.querySelectorAll(".popup-category__icon");
-    let buttonCreateExpenses = popupCategoryExpenses.querySelector(".popup-category__button");
-
-    // переменные income
-    let popupCategoryIncome = document.querySelector(".popup-category_income");
-    let createBtnsIncome = document.querySelectorAll(".create-income");
-
-    let objCategoryIncome = {};
-    let inpTitleIncome = popupCategoryIncome.querySelector(".popup-category__input");
-    let inpBgIncome = popupCategoryIncome.querySelector(".input-color__input_bg");
-    let wrapperInpBgIncome = inpBgIncome.parentElement;
-    let inpColorIncome = popupCategoryIncome.querySelector(".input-color__input_color");
-    let wrapperInpColorIncome = inpColorIncome.parentElement;
-    let iconsIncome = popupCategoryIncome.querySelectorAll(".popup-category__icon");
-    let buttonCreateIncome = popupCategoryIncome.querySelector(".popup-category__button");
-
-    createBtnsExpenses.forEach(addBtn => {
-        addBtn.addEventListener("click", function() {
-            popupCategoryExpenses.classList.add("popup-category_open");
-            overblock.classList.add("overblock_open");
-        })
-    })
-    createBtnsIncome.forEach(addBtn => {
-        addBtn.addEventListener("click", function() {
-            popupCategoryIncome.classList.add("popup-category_open");
-            overblock.classList.add("overblock_open");
-        })
-    })
-    overblock.addEventListener("click", function() {
-        popupCategoryExpenses.classList.remove("popup-category_open");
-        popupCategoryIncome.classList.remove("popup-category_open");
-        overblock.classList.remove("overblock_open");
-    })
-
-    changeColor(iconsExpenses, inpBgExpenses, inpColorExpenses, wrapperInpBgExpenses, wrapperInpColorExpenses, objCategoryExpenses);
-    changeColor(iconsIncome, inpBgIncome, inpColorIncome, wrapperInpBgIncome, wrapperInpColorIncome, objCategoryIncome);
-
-    buttonCreateExpenses.addEventListener("click", () => createCategory(objCategoryExpenses, categoriesExpenses, categoriesExpensesByCurrentDate, operationsExpensesByCurrentDate, chartExpensesPie, popupCategoryExpenses, inpTitleExpenses, inpBgExpenses, inpColorExpenses, "expenses", "Expenses"));
-    buttonCreateIncome.addEventListener("click", () => createCategory(objCategoryIncome, categoriesIncome, categoriesIncomeByCurrentDate, operationsIncomeByCurrentDate, chartIncomePie, popupCategoryIncome, inpTitleIncome, inpBgIncome, inpColorIncome, "income", "Income"));
-
-    function createCategory(objCategory, categories, categoriesByCurrentDate, operationsByCurrentDate, chartPie, popupCategory, inpTitle, inpBg, inpColor, typeS, typeXL) {
-        setValueToObject(objCategory, index, inpTitle, inpBg, inpColor, typeS);
-
-        if (validation(objCategory)) {
-            index++;
-
-            categories.push(Object.assign({}, objCategory))
-            categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate));
-
-            addToFirestore(categories, `categories${typeXL}`);
-            addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`);
-
-            setItemToList(objCategory, typeS);
-            chart(categoriesByCurrentDate, chartPie);
-
-            popupCategory.classList.remove("popup-category_open");
-            overblock.classList.remove("overblock_open");
-        }
-    }
-
-    function setValueToObject(obj, index, inpTitle, inpBg, inpColor, typeS) {
+    function setValueToObject(obj, index, inpTitle, inpBg, inpColor, typeS, icon) {
         obj.index = index;
         obj.title = inpTitle.value;
         obj.bg = inpBg.value;
         obj.color = inpColor.value;
         obj.cost = 0;
         obj.type = typeS;
+        obj.icon = icon
         return obj;
     }
 
@@ -872,7 +871,7 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         return isError;
     }
 
-    function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, objCategory) {
+    function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor) {
 
         icons.forEach(icon => {
             icon.style.backgroundColor = inpBg.value;
@@ -895,7 +894,6 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
                 icon.classList.add("act");
                 icon.style.backgroundColor = changeColor(inpBg, inpColor, icon)[0]; 
                 icon.style.color = changeColor(inpBg, inpColor, icon)[1]; 
-                objCategory.icon = icon.dataset.categoryIcon;
             } else if (!event.target.closest(".popup-category__block-wrapper") && !event.target.closest(".popup-category__icon")) {
                 document.querySelectorAll(".popup-category__icon").forEach(icon => {
                     icon.style.backgroundColor = "#A2A6B4";
@@ -1317,6 +1315,39 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             progressBarPercent.style.left = `calc(100% - ${progressBarPercent.offsetWidth + 5}px)`
         }
     }
+
+    // переключение попапов с созданием операций
+
+    let switchPopupButtons = document.querySelectorAll(".popup-category__tab-button");
+    let buttonPopup = document.querySelector(".popup-category .button")
+    switchPopupButtons.forEach(button => {
+        button.addEventListener("click", function() {
+            let dataTab = button.dataset.tab;
+            let currentTab = document.getElementById(dataTab);
+            let activeTab = document.querySelector(".popup-category__tab_act");
+            let activeButton = document.querySelector(".popup-category__tab-button_act");
+
+            if (activeTab && activeTab != currentTab) {
+                activeTab.classList.remove("popup-category__tab_act");
+                activeButton.classList.remove("popup-category__tab-button_act");
+            }
+
+            currentTab.classList.add("popup-category__tab_act");
+            button.classList.add("popup-category__tab-button_act");
+
+            if (currentTab.classList.contains("popup-category__tab_create")) {
+                buttonPopup.classList.remove("popup-category-done__button");
+                buttonPopup.classList.add("popup-category__button")
+                setProgress(0);
+                circleNum.textContent = "02";
+            } else {
+                buttonPopup.classList.add("popup-category-done__button");
+                buttonPopup.classList.remove("popup-category__button")
+                setProgress(50);
+                circleNum.textContent = "01";
+            }
+        })
+    })
 }
 
 export default addCategoryExpenses;

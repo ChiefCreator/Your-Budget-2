@@ -54,7 +54,13 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
+    max-height: 340px;
     height: auto;
+    &__content{
+        max-height: 340px;
+        overflow-y: auto;
+        padding-right: 15px;
+    }
     &__header{
         display: flex;
         justify-content: space-between;

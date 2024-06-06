@@ -42,80 +42,54 @@
         </div>
     </div>
     <div class="categories__body">
-        <header class="categories__header">
-            <p class="categories__title">Категории</p>
-            <div class="categories__settings">
-        
-            </div>
-        </header>
-        <div class="categories__tabs">
-            <div class="categories__tab categories__tab_active categories__tab_expenses">
-                <div class="categories__tab-auto">
-                    <div class="no-data no-data_act no-data-list-categories-expenses">
-                        <video class="no-data__video" src="./../../video/no-data-list.mp4" autoplay muted></video>
-                        <p class="no-data__notice">Категорий нет! Добавьте новые категории</p>
-                    </div>
-                    <div class="categories__list list-categories list-categories_expenses">
+        <div class="categories__body-content">
+            <header class="categories__header">
+                <p class="categories__title">Категории</p>
+                <div class="categories__settings">
+            
+                </div>
+            </header>
+            <div class="categories__tabs">
+                <div class="categories__tab categories__tab_active categories__tab_expenses">
+                    <div class="categories__tab-auto">
+                        <div class="categories__list list-categories list-categories_expenses">
+                        </div>
+                        <div class="add-category add-expenses">
+                            <div class="add-category__icon"></div>
+                            <p class="add-category__name">Добавить категорию</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="categories__tab categories__tab_income">
-                <div class="categories__tab-auto">
-                    <div class="no-data no-data-list-categories-income">
-                        <video class="no-data__video" src="./../../video/no-data-list.mp4" autoplay muted></video>
-                        <p class="no-data__notice">Категорий нет! Добавьте новые категории</p>
-                    </div>
-                    <div class="categories__list list-categories list-categories_income">
+                <div class="categories__tab categories__tab_income">
+                    <div class="categories__tab-auto">
+                        <div class="categories__list list-categories list-categories_income">
+                        </div>
+                        <div class="add-category add-income">
+                            <div class="add-category__icon"></div>
+                            <p class="add-category__name">Добавить категорию</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="categories__tools tools-categories tools-categories_expenses tools-categories_active">
-        <header class="tools-categories__header">
-            <p class="tools-categories__title">Действия</p>
-            <div class="tools-categories__settings">
-        
-            </div>
-        </header>
-        <div class="tools-categories__list">
-            <div class="tools-categories__item tool-category add-expenses">
-                <div class="tool-category__icon tool-category__icon_add"></div>
-                <div class="tool-category__item">
-                    <p class="tool-category__item-text">Добавить категорию</p>
-                    <span class="tool-category__item-arrow"></span>
+    <div class="comparison">
+        <div class="comparison__block">
+            <p class="comparison__name">Расходы</p>
+            <div class="progress-bar progress-bar_expenses">
+                <div class="progress-bar__bg">
                 </div>
-            </div>
-            <div class="tools-categories__item tool-category create-expenses">
-                <div class="tool-category__icon tool-category__icon_create"></div>
-                <div class="tool-category__item">
-                    <p class="tool-category__item-text">Создать категорию</p>
-                    <span class="tool-category__item-arrow"></span>
-                </div>
+                <p class="progress-bar__total">65%</p>
+                <div class="progress-bar__bg-last-operation"></div>
             </div>
         </div>
-    </div>
-    <div class="categories__tools tools-categories tools-categories_income">
-        <header class="tools-categories__header">
-            <p class="tools-categories__title">Действия</p>
-            <div class="tools-categories__settings">
-        
-            </div>
-        </header>
-        <div class="tools-categories__list">
-            <div class="tool-category add-income">
-                <div class="tool-category__icon tool-category__icon_add"></div>
-                <div class="tool-category__item">
-                    <p class="tool-category__item-text">Добавить категорию</p>
-                    <span class="tool-category__item-arrow"></span>
+        <div class="comparison__block">
+            <p class="comparison__name">Доходы</p>
+            <div class="progress-bar progress-bar_income">
+                <div class="progress-bar__bg">
                 </div>
-            </div>
-            <div class="tool-category create-income">
-                <div class="tool-category__icon tool-category__icon_create"></div>
-                <div class="tool-category__item">
-                    <p class="tool-category__item-text">Создать категорию</p>
-                    <span class="tool-category__item-arrow"></span>
-                </div>
+                <p class="progress-bar__total">65%</p>
+                <div class="progress-bar__bg-last-operation"></div>
             </div>
         </div>
     </div>
