@@ -3,6 +3,11 @@
     min-width: 150px;
     height: 100%;
     position: relative;
+    &_without-border{
+        .select__button{
+            border-bottom: none;
+        }
+    }
     &__button{
         width: 100%;
         cursor: pointer;

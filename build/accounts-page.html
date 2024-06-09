@@ -9,120 +9,569 @@
 </head>
 <body>
     <div class="overblock"></div>
-    <div class="popup-accounts-done">
-    <header class="popup-accounts-done__head">
-        <div class="popup-accounts-done__head-content">
-            <h4 class="popup-accounts-done__title">Готовые счета</h4>
-            <div class="popup-accounts-done__close"></div>
+    <div class="popup-accounts">
+    <header class="popup-accounts__head">
+        <div class="popup-accounts__head-content">
+            <div class="popup-accounts__tab-buttons">
+                <div class="popup-accounts__tab-button popup-accounts__tab-button_act" data-tab="tab-add-accounts">Готовые счета</div>
+                <div class="popup-accounts__tab-button" data-tab="tab-create-accounts">Новые счета</div>
+            </div>
+            <div class="popup-accounts__close"></div>
         </div>
     </header>
-    <div class="popup-accounts-done__body">
-        <div class="popup-accounts-done__block-wrapper">
-            <div class="popup-accounts-done__block popup-accounts-done__block_no-padding">
-                <div class="swiper swiper_accounts-done">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide popup-accounts-done__slide">
-                            <div class="done-accounts">
-                                <div class="account account-choose" style="background-color:rgb(229, 151, 78)" data-accounts-done='{"type": "Обычный счет", "bg": "rgb(229, 151, 78)", "cost": 0, "icon": "icon_money7", "color": "#ffffff", "iconBg": "rgb(205, 129, 59)", "title": "Наличные", "chartId": "chartCash"}'>
-                                    <header class="account__header">
-                                        <span class="account__icon account__icon_money7" style="background-color:rgb(205, 129, 59)"></span>
-                                        <div class="account__names">
-                                            <h3 class="account__title">Наличные</h3>
-                                            <p class="account__type">Обычный счет</p>
+    <div class="popup-accounts__body">
+        <div class="popup-accounts__tab popup-accounts__tab_act popup-accounts__tab_add" id="tab-add-accounts">
+            <div class="popup-accounts__tab-content">
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block popup-accounts__block_no-padding">
+                        <div class="swiper swiper_accounts-done">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide popup-accounts-done__slide">
+                                    <div class="done-accounts">
+                                        <div class="account account-choose" style="background-color:rgb(229, 151, 78)" data-accounts-done='{"type": "Обычный счет", "bg": "rgb(229, 151, 78)", "cost": 0, "icon": "icon-money7", "color": "#ffffff", "iconBg": "rgb(205, 129, 59)", "title": "Наличные", "chartId": "chartCash"}'>
+                                            <header class="account__header">
+                                                <span class="account__icon icon-money7" style="background-color:rgb(205, 129, 59)"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Наличные</h3>
+                                                    <p class="account__type">Обычный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCashDone"></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </header>
-                                    <div class="account__body">
-                                        <div class="account__content">
-                                            <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                        <div class="account account-choose" style="background-color:#73b813" data-accounts-done='{"type": "Обычный счет", "bg": "#73b813", "color": "#ffffff", "cost": 0, "icon": "icon-money6", "iconBg": "#5f9c09", "title": "Карта", "chartId": "chartCard"}'>
+                                            <header class="account__header">
+                                                <span class="account__icon icon-money6" style="background-color:#5f9c09"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Карта</h3>
+                                                    <p class="account__type">Обычный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCardDone"></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="account__chart">
-                                            <div class="account__chart-item" id="chartCashDone"></div>
+                                        <div class="account account-choose" style="background-color:#c923d4" data-accounts-done='{"type": "Сберегательный счет", "bg": "#c923d4", "color": "#ffffff", "cost": 0, "icon": "icon-money12", "iconBg": "#a617b0", "title": "Сбережения", "chartId": "chartSavings"}'>
+                                            <header class="account__header">
+                                                <span class="account__icon icon-money12" style="background-color:#a617b0"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Сбережения</h3>
+                                                    <p class="account__type">Сберегательный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartSavingsDone"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="account account-choose" style="background-color:#73b813" data-accounts-done='{"type": "Обычный счет", "bg": "#73b813", "color": "#ffffff", "cost": 0, "icon": "icon_money6", "iconBg": "#5f9c09", "title": "Карта", "chartId": "chartCard"}'>
-                                    <header class="account__header">
-                                        <span class="account__icon account__icon_money6" style="background-color:#5f9c09"></span>
-                                        <div class="account__names">
-                                            <h3 class="account__title">Карта</h3>
-                                            <p class="account__type">Обычный счет</p>
+                                <div class="swiper-slide popup-accounts-done__slide">
+                                    <div class="done-accounts">
+                                        <div class="account account-choose" style="background-color:#d13b16" data-accounts-done='{"type": "Кредитный счет", "bg": "#d13b16", "color": "#ffffff", "cost": 0, "icon": "icon-money5", "iconBg": "#b13111", "title": "Кредит", "chartId": "chartCredit"}'>
+                                            <header class="account__header">
+                                                <span class="account__icon icon-money5" style="background-color:#b13111"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Кредит</h3>
+                                                    <p class="account__type">Кредитный счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartCreditDone"></div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </header>
-                                    <div class="account__body">
-                                        <div class="account__content">
-                                            <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
-                                        </div>
-                                        <div class="account__chart">
-                                            <div class="account__chart-item" id="chartCardDone"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="account account-choose" style="background-color:#c923d4" data-accounts-done='{"type": "Сберегательный счет", "bg": "#c923d4", "color": "#ffffff", "cost": 0, "icon": "icon_money12", "iconBg": "#a617b0", "title": "Сбережения", "chartId": "chartSavings"}'>
-                                    <header class="account__header">
-                                        <span class="account__icon account__icon_money12" style="background-color:#a617b0"></span>
-                                        <div class="account__names">
-                                            <h3 class="account__title">Сбережения</h3>
-                                            <p class="account__type">Сберегательный счет</p>
-                                        </div>
-                                    </header>
-                                    <div class="account__body">
-                                        <div class="account__content">
-                                            <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
-                                        </div>
-                                        <div class="account__chart">
-                                            <div class="account__chart-item" id="chartSavingsDone"></div>
+                                        <div class="account account-choose" style="background-color:#08c9ac" data-accounts-done='{"type": "Долговой счет", "bg": "#08c9ac", "color": "#ffffff", "cost": 0, "icon": "icon-money5", "iconBg": "#05a78f", "title": "Долг", "chartId": "chartDebt"}'>
+                                            <header class="account__header">
+                                                <span class="account__icon icon-money5" style="background-color:#05a78f"></span>
+                                                <div class="account__names">
+                                                    <h3 class="account__title">Долг</h3>
+                                                    <p class="account__type">Долговой счет</p>
+                                                </div>
+                                            </header>
+                                            <div class="account__body">
+                                                <div class="account__content">
+                                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                                </div>
+                                                <div class="account__chart">
+                                                    <div class="account__chart-item" id="chartDebtDone"></div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="swiper-slide popup-accounts-done__slide">
-                            <div class="done-accounts">
-                                <div class="account account-choose" style="background-color:#d13b16" data-accounts-done='{"type": "Кредитный счет", "bg": "#d13b16", "color": "#ffffff", "cost": 0, "icon": "icon_money5", "iconBg": "#b13111", "title": "Кредит", "chartId": "chartCredit"}'>
-                                    <header class="account__header">
-                                        <span class="account__icon account__icon_money5" style="background-color:#b13111"></span>
-                                        <div class="account__names">
-                                            <h3 class="account__title">Кредит</h3>
-                                            <p class="account__type">Кредитный счет</p>
-                                        </div>
-                                    </header>
-                                    <div class="account__body">
-                                        <div class="account__content">
-                                            <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
-                                        </div>
-                                        <div class="account__chart">
-                                            <div class="account__chart-item" id="chartCreditDone"></div>
+                        <div class="pagination pagination_done-accounts"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-accounts__tab popup-accounts__tab_create" id="tab-create-accounts">
+            <div class="popup-accounts__tab-content">
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block">
+                        <div class="popup-accounts__input-container">
+                            <div class="popup-accounts__input-content">
+                                <input class="popup-accounts__input" required>
+                                <label class="popup-accounts__input-label">Введите название</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block popup-accounts__block_flex">
+                        <p class="popup-accounts__block-name">Выберите тип счета</p>
+                        <div class="select select_without-border select-period">
+                            <div class="select__button" data-lang="switch-lang">
+                                <p class="select__button-title">Обычный</p>
+                                <span class="select__button-arrow"></span>
+                            </div>
+                            <div class="select__dropdown">
+                                <ul class="select__dropdown-list">
+                                    <li class="select__dropdown-item" data-value="Обычный счет">Обычный</li>
+                                    <li class="select__dropdown-item" data-value="Сберегательный счет">Сберегательный</li>
+                                    <li class="select__dropdown-item" data-value="Кредитный счет">Кредитный</li>
+                                    <li class="select__dropdown-item" data-value="Долговой счет">Долговой</li>
+                                </ul>
+                                <input type="text" name="select-category" value="Обычный счет" class="select__input-hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block popup-accounts__block_no-padding">
+                        <div class="swiper swiper_icons">
+                            <div class="swiper-wrapper">
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Еда и напитки</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_food1" data-category-icon="icon-food1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food2" data-category-icon="icon-food2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food3" data-category-icon="icon-food3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food4" data-category-icon="icon-food4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food5" data-category-icon="icon-food5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food6" data-category-icon="icon-food6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food7" data-category-icon="icon-food7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food8" data-category-icon="icon-food8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food9" data-category-icon="icon-food9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food10" data-category-icon="icon-food10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food11" data-category-icon="icon-food11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food12" data-category-icon="icon-food12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food13" data-category-icon="icon-food13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food14" data-category-icon="icon-food14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food15" data-category-icon="icon-food15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food16" data-category-icon="icon-food16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food17" data-category-icon="icon-food17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food18" data-category-icon="icon-food18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food19" data-category-icon="icon-food19"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food20" data-category-icon="icon-food20"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_food21" data-category-icon="icon-food21"></div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="account account-choose" style="background-color:#08c9ac" data-accounts-done='{"type": "Долговой счет", "bg": "#08c9ac", "color": "#ffffff", "cost": 0, "icon": "icon_money5", "iconBg": "#05a78f", "title": "Долг", "chartId": "chartDebt"}'>
-                                    <header class="account__header">
-                                        <span class="account__icon account__icon_money5" style="background-color:#05a78f"></span>
-                                        <div class="account__names">
-                                            <h3 class="account__title">Долг</h3>
-                                            <p class="account__type">Долговой счет</p>
-                                        </div>
-                                    </header>
-                                    <div class="account__body">
-                                        <div class="account__content">
-                                            <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
-                                        </div>
-                                        <div class="account__chart">
-                                            <div class="account__chart-item" id="chartDebtDone"></div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Для дома</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_home1" data-category-icon="icon-home1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home2" data-category-icon="icon-home2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home3" data-category-icon="icon-home3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home4" data-category-icon="icon-home4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home5" data-category-icon="icon-home5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home6" data-category-icon="icon-home6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home7" data-category-icon="icon-home7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home8" data-category-icon="icon-home8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home9" data-category-icon="icon-home9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home10" data-category-icon="icon-home10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home11" data-category-icon="icon-home11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home12" data-category-icon="icon-home12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_home13" data-category-icon="icon-home13"></div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Здания</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_building1" data-category-icon="icon-building1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building2" data-category-icon="icon-building2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building3" data-category-icon="icon-building3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building4" data-category-icon="icon-building4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building5" data-category-icon="icon-building5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building6" data-category-icon="icon-building6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building7" data-category-icon="icon-building7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building8" data-category-icon="icon-building8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building9" data-category-icon="icon-building9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building10" data-category-icon="icon-building10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building11" data-category-icon="icon-building11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building12" data-category-icon="icon-building12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building13" data-category-icon="icon-building13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building14" data-category-icon="icon-building14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building15" data-category-icon="icon-building15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building16" data-category-icon="icon-building16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building17" data-category-icon="icon-building17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_building18" data-category-icon="icon-building18"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Статистика</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics1" data-category-icon="icon-statistics1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics2" data-category-icon="icon-statistics2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics3" data-category-icon="icon-statistics3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics4" data-category-icon="icon-statistics4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics5" data-category-icon="icon-statistics5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics6" data-category-icon="icon-statistics6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics7" data-category-icon="icon-statistics7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics8" data-category-icon="icon-statistics8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics9" data-category-icon="icon-statistics9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics10" data-category-icon="icon-statistics10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics11" data-category-icon="icon-statistics11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics12" data-category-icon="icon-statistics12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics13" data-category-icon="icon-statistics13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_statistics14" data-category-icon="icon-statistics14"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Здоровье и медицина</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_health1" data-category-icon="icon-health1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health2" data-category-icon="icon-health2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health3" data-category-icon="icon-health3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health4" data-category-icon="icon-health4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health5" data-category-icon="icon-health5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health6" data-category-icon="icon-health6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health7" data-category-icon="icon-health7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health8" data-category-icon="icon-health8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health9" data-category-icon="icon-health9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health10" data-category-icon="icon-health10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health11" data-category-icon="icon-health11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health12" data-category-icon="icon-health12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health13" data-category-icon="icon-health13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health14" data-category-icon="icon-health14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health15" data-category-icon="icon-health15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health16" data-category-icon="icon-health16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health17" data-category-icon="icon-health17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health18" data-category-icon="icon-health18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_health19" data-category-icon="icon-health19"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Хобби</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby1" data-category-icon="icon-hobby1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby2" data-category-icon="icon-hobby2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby3" data-category-icon="icon-hobby3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby4" data-category-icon="icon-hobby4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby5" data-category-icon="icon-hobby5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby6" data-category-icon="icon-hobby6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby7" data-category-icon="icon-hobby7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby8" data-category-icon="icon-hobby8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby9" data-category-icon="icon-hobby9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby10" data-category-icon="icon-hobby10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby11" data-category-icon="icon-hobby11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby12" data-category-icon="icon-hobby12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby13" data-category-icon="icon-hobby13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby14" data-category-icon="icon-hobby14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby15" data-category-icon="icon-hobby15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby16" data-category-icon="icon-hobby16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby17" data-category-icon="icon-hobby17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby18" data-category-icon="icon-hobby18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_hobby19" data-category-icon="icon-hobby19"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Образование</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_education1" data-category-icon="icon-education1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education2" data-category-icon="icon-education2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education3" data-category-icon="icon-education3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education4" data-category-icon="icon-education4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education5" data-category-icon="icon-education5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education6" data-category-icon="icon-education6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education7" data-category-icon="icon-education7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education8" data-category-icon="icon-education8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education9" data-category-icon="icon-education9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education10" data-category-icon="icon-education10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education11" data-category-icon="icon-education11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education12" data-category-icon="icon-education12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_education13" data-category-icon="icon-education13"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Деньги</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_money1" data-category-icon="icon-money1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money2" data-category-icon="icon-money2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money3" data-category-icon="icon-money3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money4" data-category-icon="icon-money4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money5" data-category-icon="icon-money5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money6" data-category-icon="icon-money6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money7" data-category-icon="icon-money7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money8" data-category-icon="icon-money8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money9" data-category-icon="icon-money9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money10" data-category-icon="icon-money10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money11" data-category-icon="icon-money11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money12" data-category-icon="icon-money12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money13" data-category-icon="icon-money13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money14" data-category-icon="icon-money14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money15" data-category-icon="icon-money15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money16" data-category-icon="icon-money16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money17" data-category-icon="icon-money17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money18" data-category-icon="icon-money18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_money19" data-category-icon="icon-money19"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Технологии</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies1" data-category-icon="icon-technologies1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies2" data-category-icon="icon-technologies2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies3" data-category-icon="icon-technologies3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies4" data-category-icon="icon-technologies4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies5" data-category-icon="icon-technologies5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies6" data-category-icon="icon-technologies6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies7" data-category-icon="icon-technologies7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies8" data-category-icon="icon-technologies8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies9" data-category-icon="icon-technologies9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies10" data-category-icon="icon-technologies10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies11" data-category-icon="icon-technologies11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies12" data-category-icon="icon-technologies12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies13" data-category-icon="icon-technologies13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies14" data-category-icon="icon-technologies14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies15" data-category-icon="icon-technologies15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies16" data-category-icon="icon-technologies16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies17" data-category-icon="icon-technologies17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies18" data-category-icon="icon-technologies18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies19" data-category-icon="icon-technologies19"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies20" data-category-icon="icon-technologies20"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_technologies21" data-category-icon="icon-technologies21"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Люди</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_people1" data-category-icon="icon-people1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people2" data-category-icon="icon-people2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people3" data-category-icon="icon-people3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people4" data-category-icon="icon-people4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people5" data-category-icon="icon-people5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people6" data-category-icon="icon-people6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people7" data-category-icon="icon-people7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people8" data-category-icon="icon-people8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people9" data-category-icon="icon-people9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people10" data-category-icon="icon-people10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people11" data-category-icon="icon-people11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people12" data-category-icon="icon-people12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people13" data-category-icon="icon-people13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people14" data-category-icon="icon-people14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people15" data-category-icon="icon-people15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_people16" data-category-icon="icon-people16"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Магазин</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop1" data-category-icon="icon-shop1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop2" data-category-icon="icon-shop2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop3" data-category-icon="icon-shop3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop4" data-category-icon="icon-shop4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop5" data-category-icon="icon-shop5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop6" data-category-icon="icon-shop6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop7" data-category-icon="icon-shop7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop8" data-category-icon="icon-shop8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop9" data-category-icon="icon-shop9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop10" data-category-icon="icon-shop10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop11" data-category-icon="icon-shop11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop12" data-category-icon="icon-shop12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_shop13" data-category-icon="icon-shop13"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Транспорт и путешествия</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport1" data-category-icon="icon-transport1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport2" data-category-icon="icon-transport2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport3" data-category-icon="icon-transport3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport4" data-category-icon="icon-transport4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport5" data-category-icon="icon-transport5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport6" data-category-icon="icon-transport6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport7" data-category-icon="icon-transport7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport8" data-category-icon="icon-transport8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport9" data-category-icon="icon-transport9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport10" data-category-icon="icon-transport10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport11" data-category-icon="icon-transport11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport12" data-category-icon="icon-transport12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport13" data-category-icon="icon-transport13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport14" data-category-icon="icon-transport14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport15" data-category-icon="icon-transport15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport16" data-category-icon="icon-transport16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport17" data-category-icon="icon-transport17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport18" data-category-icon="icon-transport18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport19" data-category-icon="icon-transport19"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport20" data-category-icon="icon-transport20"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_transport21" data-category-icon="icon-transport21"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Доставка</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery1" data-category-icon="icon-delivery1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery2" data-category-icon="icon-delivery2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery3" data-category-icon="icon-delivery3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery4" data-category-icon="icon-delivery4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery5" data-category-icon="icon-delivery5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery6" data-category-icon="icon-delivery6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery7" data-category-icon="icon-delivery7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery8" data-category-icon="icon-delivery8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery9" data-category-icon="icon-delivery9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_delivery10" data-category-icon="icon-delivery10"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Природа</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature1" data-category-icon="icon-nature1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature2" data-category-icon="icon-nature2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature3" data-category-icon="icon-nature3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature4" data-category-icon="icon-nature4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature5" data-category-icon="icon-nature5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature6" data-category-icon="icon-nature6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature7" data-category-icon="icon-nature7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature8" data-category-icon="icon-nature8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature9" data-category-icon="icon-nature9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature10" data-category-icon="icon-nature10"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature11" data-category-icon="icon-nature11"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature12" data-category-icon="icon-nature12"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature13" data-category-icon="icon-nature13"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature14" data-category-icon="icon-nature14"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature15" data-category-icon="icon-nature15"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature16" data-category-icon="icon-nature16"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature17" data-category-icon="icon-nature17"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature18" data-category-icon="icon-nature18"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature19" data-category-icon="icon-nature19"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature20" data-category-icon="icon-nature20"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_nature21" data-category-icon="icon-nature21"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="swiper-slide">
+                                    <div class="popup-accounts__icon-list-wrapper">
+                                        <p class="popup-accounts__icon-list-title" data-swiper-parallax="-200" data-swiper-parallax-duration="500">Подписки, соц. сети</p>
+                                        <div class="popup-accounts__icon-list">
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions1" data-category-icon="icon-subscriptions1"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions2" data-category-icon="icon-subscriptions2"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions3" data-category-icon="icon-subscriptions3"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions4" data-category-icon="icon-subscriptions4"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions5" data-category-icon="icon-subscriptions5"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions6" data-category-icon="icon-subscriptions6"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions7" data-category-icon="icon-subscriptions7"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions8" data-category-icon="icon-subscriptions8"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions9" data-category-icon="icon-subscriptions9"></div>
+                                            <div class="popup-accounts__icon popup-accounts__icon_subscriptions10" data-category-icon="icon-subscriptions10"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pagination pagination_icons"></div>
+                    </div>
+                </div>
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block">
+                        <div class="popup-accounts__color-wrapper">
+                            <div class="input-color">
+                                <input type="color" class="input-color__input input-color__input_bg" value="#8a8fa1" id="input-color__input_bg">
+                            </div>
+                            <label class="input-color__title" for="input-color__input_bg">Фоновый цвет иконки</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block">
+                        <div class="popup-accounts__color-wrapper">
+                            <div class="input-color">
+                                <input type="color" class="input-color__input input-color__input_color" value="#a2a6b4" id="input-color__input_color">
+                            </div>
+                            <label class="input-color__title" for="input-color__input_color">Цвет счета</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-accounts__block-wrapper">
+                    <div class="popup-accounts__block">
+                        <div class="account account-example" style="background-color: #a2a6b4;">
+                            <header class="account__header">
+                                <span class="account__icon account__icon_money7" style="background-color: #8a8fa1;"></span>
+                                <div class="account__names">
+                                    <h3 class="account__title">Название</h3>
+                                    <p class="account__type">Тип счета</p>
+                                </div>
+                            </header>
+                            <div class="account__body">
+                                <div class="account__content">
+                                    <p class="account__total"><span class="account__num">0</span> <span class="account__currency">BYN</span></p>
+                                </div>
+                                <div class="account__chart">
+                                    <div class="account__chart-item" id="chartExample"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="pagination pagination_done-accounts"></div>
             </div>
         </div>
-        <div class="popup-accounts-done__block-wrapper popup-accounts-done__block-wrapper_button popup-accounts-done__block-wrapper_without-border">
-            <div class="popup-accounts-done__block">
-                <button class="button popup-accounts-done__button">Добавить счет</button>
-            </div>
+    </div>
+    <div class="popup-accounts__footer">
+        <button class="button popup-accounts-done__button">Добавить счет</button>
+        <div class="progress-ring-wrapper">
+            <svg class="progress-ring" width="60" height="60">
+                <circle class="progress-ring__circle-border" stroke="#133054" stroke-width="3" cx="30" cy="30" r="25" fill="transparent"/>
+                <circle class="progress-ring__circle" stroke="rgb(238, 238, 243)" stroke-width="3" cx="30" cy="30" r="25" fill="transparent"/>
+            </svg>
+            <p class="progress-ring-wrapper__num">01</p>
         </div>
     </div>
 </div>
@@ -207,44 +656,19 @@
                                     <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>
                                     <p class="no-data__notice">График пуст! Добавьте операции, чтобы график был загружен</p>
                                 </div>
+                                <!-- <p class="balance__total">1230</p> -->
                                 <div class="balance__hide-logo"></div>
                                 <div class="balance__chart" id="chartdiv"></div>
                             </div>        
                         </div>
                     </div>
-                    <div class="tools-accounts">
-                        <header class="tools-accounts__header">
-                            <p class="tools-accounts__title">Действия</p>
-                            <div class="tools-accounts__settings">
-                        
-                            </div>
-                        </header>
-                        <div class="tools-accounts__list">
-                            <div class="tool-accounts add-accounts">
-                                <div class="tool-accounts__icon tool-accounts__icon_add"></div>
-                                <div class="tool-accounts__item">
-                                    <p class="tool-accounts__item-text">Добавить счет</p>
-                                    <span class="tool-accounts__item-arrow"></span>
-                                </div>
-                            </div>
-                            <div class=" tool-accounts create-accounts">
-                                <div class="tool-accounts__icon tool-accounts__icon_create"></div>
-                                <div class="tool-accounts__item">
-                                    <p class="tool-accounts__item-text">Создать счет</p>
-                                    <span class="tool-accounts__item-arrow"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="page-accounts__accounts">
                     <div class="accounts">
                         <div class="accounts__bg"></div>
-                        <div class="accounts__content">
-                            <p class="accounts__title">Карты и счета</p>
+                        <div class="accounts__header">
+                            <h4 class="accounts__title">Карты и счета</h4>
                             <div class="swiper-buttons swiper-buttons-accounts">
-                                <div class="swiper-buttons__button swiper-buttons__button_prev"></div>
-                                <div class="swiper-buttons__button swiper-buttons__button_next"></div>
+                                <div class="swiper-buttons__button swiper-buttons__button_small swiper-buttons__button_prev"></div>
+                                <div class="swiper-buttons__button swiper-buttons__button_small swiper-buttons__button_next"></div>
                             </div>
                         </div>
                         <div class="accounts__body">
@@ -255,6 +679,8 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="page-accounts__accounts">
                     <div class="accounts-dynamic-chart">
                         <header class="accounts-dynamic-chart__header">
                             <h4 class="accounts-dynamic-chart__title">Динамика счетов</h4>

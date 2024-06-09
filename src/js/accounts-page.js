@@ -14,14 +14,26 @@ let chartDynamicOfAccounts = {};
 let chartPieObject = {};
 let chartBarObject = {}
 
-let btnAddAccount = document.querySelector(".add-accounts");
-let popupAddAccount = document.querySelector(".popup-accounts-done");
+let btnAddAccount = document.querySelector(".account-add");
+let popupAddAccount = document.querySelector(".popup-accounts");
 let overblock = document.querySelector(".overblock");
+
+let accountExample = document.querySelector(".account-example");
+let accountExampleTitle = accountExample.querySelector(".account__title");
+let accountExampleType = accountExample.querySelector(".account__type")
+let accountExampleIcon = accountExample.querySelector(".account__icon");
+let inpTitle = popupAddAccount.querySelector(".popup-accounts__input");
+let inpType = popupAddAccount.querySelector(".select__input-hidden");
+let inpBg = popupAddAccount.querySelector(".input-color__input_bg");
+let wrapperInpBg = inpBg.parentElement;
+let inpColor = popupAddAccount.querySelector(".input-color__input_color");
+let wrapperInpColor = inpColor.parentElement;
+let icons = popupAddAccount.querySelectorAll(".popup-accounts__icon");
 
 const swiperAcoounts = new Swiper('.swiper-accounts', {
     speed: 600,
     spaceBetween: 15,
-    slidesPerView: 2,
+    slidesPerView: 1,
     loop: true,
     navigation: {
         nextEl: '.swiper-buttons-accounts .swiper-buttons__button_next',
@@ -37,6 +49,15 @@ const swiperAcoountsDone = new Swiper('.swiper_accounts-done', {
         clickable: true,
     },
 })
+const swiperIcons = new Swiper('.swiper_icons', {
+    speed: 600,
+    spaceBetween: 0,
+    pagination: {
+        el: '.pagination_icons',
+        type: 'bullets',
+        clickable: true,
+    },
+})
 
 let userEmail = localStorage.getItem("email").replace(".", "*");
 
@@ -45,7 +66,7 @@ Promise.all([getDataFromFirestore("accounts")])
         return Promise.all([response[0].json()]);
     })
     .then(data => {
-        accountArr = (data[0] != null) ? data[0] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon_money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon_money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
+        accountArr = (data[0] != null) ? data[0] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon-money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon-money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
         addToFirestore(accountArr, "accounts");
 
         pieChart();
@@ -59,6 +80,7 @@ Promise.all([getDataFromFirestore("accounts")])
         initChart("chartSavingsDone", [])
         initChart("chartCreditDone", [])
         initChart("chartDebtDone", [])
+        initChart("chartExample", [])
 
         initAccountChartBar();
     })
@@ -305,12 +327,14 @@ function sortByDate(arr, typeOfSorting) {
     }
 }
 
-btnAddAccount.addEventListener("click", function() {
-    popupAddAccount.classList.add("popup-accounts-done_open");
-    overblock.classList.add("overblock_open");
+window.addEventListener("click", function(e){
+    if (e.target.closest(".account-add")) {
+        popupAddAccount.classList.add("popup-accounts_open");
+        overblock.classList.add("overblock_open");
+    }
 })
 overblock.addEventListener("click", function() {
-    popupAddAccount.classList.remove("popup-accounts-done_open");
+    popupAddAccount.classList.remove("popup-accounts_open");
     overblock.classList.remove("overblock_open");
 })
 
@@ -324,12 +348,18 @@ function addAccount(event, accountObject, accountArr) {
     }
     if (event.target.closest(`.popup-accounts-done__button`)) {
         accountArr.push(Object.assign({}, accountObject));
-
         setAccountToList(accountObject);
         swiperAcoounts.update();
-
         addToFirestore(accountArr, "accounts");
+        changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
+    }
+    if (event.target.closest(".popup-accounts__button")) {
+        setValueToObject(accountObject, setIndex(inpType.value), inpTitle, inpBg, inpColor, inpType, document.querySelector(".popup-accounts__icon.act").dataset.categoryIcon);
 
+        accountArr.push(Object.assign({}, accountObject));
+        setAccountToList(accountObject);
+        swiperAcoounts.update();
+        addToFirestore(accountArr, "accounts");
         changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
     }
 }
@@ -354,6 +384,19 @@ function chooseCategory(category, accountObject) {
     accountObject.operations = []
 }
 
+function setValueToObject(obj, index, inpTitle, inpBg, inpColor, type, icon) {
+    obj.index = index;
+    obj.title = inpTitle.value;
+    obj.iconBg = inpBg.value;
+    obj.bg = inpColor.value;
+    obj.cost = 0;
+    obj.type = type.value;
+    obj.icon = icon
+    obj.operations = [];
+    obj.chartId = `chart${index}`.split(" ").join("");
+    return obj;
+}
+
 function setIndex(indexName) {
     let indexCode = 0;
     if (localStorage.getItem("indexCode")) {
@@ -371,7 +414,7 @@ function setAccountToList(accountObject) {
     let itemCategory = `<div class="swiper-slide">
         <div class="account account-expand" style="background-color: ${accountObject.bg};" data-index="${accountObject.index}">
             <header class="account__header">
-                <span class="account__icon account__${accountObject.icon}" style="background-color: ${accountObject.iconBg};"></span>
+                <span class="account__icon ${accountObject.icon}" style="background-color: ${accountObject.iconBg};"></span>
                 <div class="account__names">
                     <h3 class="account__title">${accountObject.title}</h3>
                     <p class="account__type">${accountObject.type}</p>
@@ -388,14 +431,15 @@ function setAccountToList(accountObject) {
             </div>
         </div>`;
 
+    blockToPaste.append(parser(itemCategory))
+    initChart(accountObject.chartId, accountObject.operations)
+
     function parser(itemCategory) {
         var parser = new DOMParser();
         let teg = parser.parseFromString(itemCategory, 'text/html');
         let item = teg.querySelector(".swiper-slide");
         return item;
     }
-    blockToPaste.append(parser(itemCategory))
-    initChart(accountObject.chartId, accountObject.operations)
 }
 
 function setAccountsToList(arr) {
@@ -409,7 +453,7 @@ function setAccountsToList(arr) {
         let itemCategory = `<div class="swiper-slide">
         <div class="account account-expand" style="background-color: ${arr[i].bg};" data-index="${arr[i].index}">
             <header class="account__header">
-                <span class="account__icon account__${arr[i].icon}" style="background-color: ${arr[i].iconBg};"></span>
+                <span class="account__icon ${arr[i].icon}" style="background-color: ${arr[i].iconBg};"></span>
                 <div class="account__names">
                     <h3 class="account__title">${arr[i].title}</h3>
                     <p class="account__type">${arr[i].type}</p>
@@ -426,15 +470,27 @@ function setAccountsToList(arr) {
             </div>
         </div>`;
 
-        function parser(itemCategory) {
-            var parser = new DOMParser();
-            let teg = parser.parseFromString(itemCategory, 'text/html');
-            let item = teg.querySelector(".swiper-slide");
-            return item;
-        }
         blockToPaste.append(parser(itemCategory))
         initChart(arr[i].chartId, arr[i].operations)
     }
+
+    let addAccount = `<div class="swiper-slide">
+        <div class="account-add">
+            <header class="account-add__header">
+                <p class="account-add__name">Добавить счет</p>
+            </header>
+            <div class="account-add__body">
+                <span class="account-add__icon"></span>
+            </div>
+        </div>
+    </div>`
+    function parser(itemCategory) {
+        var parser = new DOMParser();
+        let teg = parser.parseFromString(itemCategory, 'text/html');
+        let item = teg.querySelector(".swiper-slide");
+        return item;
+    }
+    blockToPaste.append(parser(addAccount))
 }
 
 function addToFirestore(arr, collection) {
@@ -507,6 +563,9 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
                     setDataToAccountChartBar(currentAccountArr.operations, +dropdownInput.value);
                 }
             }
+            if (item.closest(".select-period")) {
+                accountExampleType.textContent = dropdownInput.value;
+            }
         })
     })
                 
@@ -563,14 +622,21 @@ function pieChart() {
         y: am5.percent(50),
         layout: root.verticalLayout
     }));
-    var label = root.tooltipContainer.children.push(am5.Label.new(root, {
-        x: am5.percent(28),
-        y: am5.p50,
-        centerX: am5.p50,
-        centerY: am5.p50,
-        fill: am5.color(0x000000),
-        fontSize: 30
-    }));
+    var label = series1.children.push(am5.Label.new(root, {
+        text: "${valueSum.formatNumber('#,###.')}",
+        fontSize: 40,
+        centerX: am5.percent(50),
+        centerY: am5.percent(50),
+        populateText: true,
+        oversizedBehavior: "fit"
+      }));
+    series1.onPrivate("width", function(width) {
+        label.set("maxWidth", width * 0.7);
+      });
+      
+      series1.onPrivate("valueSum", function() {
+        label.text.markDirtyText();
+      });
 
     chartPieObject = {root, chart, series1, series2, legend, label}
 };
@@ -788,3 +854,137 @@ function findObjectByHtmlIndex(htmlItem, arr) {
 
     return modifiedObj;
 }
+
+// создание счета
+
+changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, accountExample, accountExampleIcon);
+
+function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, account, accountIcon) {
+
+    icons.forEach(icon => {
+        icon.style.backgroundColor = inpBg.value;
+        icon.style.color = inpColor.value; 
+
+        wrapperInpBg.style.backgroundColor = inpBg.value;
+        wrapperInpColor.style.backgroundColor = inpColor.value; 
+    })
+
+    window.addEventListener("click", function(event) {
+        let icon = event.target.closest(".popup-accounts__icon");
+
+        if (event.target.closest(".popup-accounts__icon")) {
+            document.querySelectorAll(".popup-accounts__icon").forEach(icon => {
+                icon.style.backgroundColor = "#A2A6B4";
+                icon.style.color = "white"; 
+                icon.classList.remove("act");
+                accountExampleIcon.class = "account__icon";
+            })
+
+            accountExampleIcon.setAttribute("class", `account__icon ${icon.dataset.categoryIcon}`);
+            icon.classList.add("act");
+            icon.style.backgroundColor = changeColor(inpBg, inpColor, icon)[0]; 
+            account.style.backgroundColor = changeColor(inpBg, inpColor, icon)[1]; 
+            accountIcon.style.backgroundColor = changeColor(inpBg, inpColor, icon)[0]; 
+        } else if (!event.target.closest(".popup-accounts__block-wrapper") && !event.target.closest(".popup-accounts__icon")) {
+            document.querySelectorAll(".popup-accounts__icon").forEach(icon => {
+                icon.style.backgroundColor = "#A2A6B4";
+                icon.style.color = "white"; 
+                icon.classList.remove("act");
+            })
+        }
+    })
+
+    function changeColor(inpBg, inpColor, icon) {
+        let bg = inpBg.value;
+        let color = inpColor.value;
+        inpBg.addEventListener("input", function() {
+            bg = inpBg.value;
+
+            if (icon.classList.contains("act")) {
+                icon.style.backgroundColor = bg;
+            }
+        })
+        inpColor.addEventListener("input", function() {
+            color = inpColor.value;
+        })
+        return [bg, color]
+    }
+
+    wrapperInpColor.style.border = `2px solid ${inpColor.value}`;
+    wrapperInpBg.style.border = `2px solid ${inpBg.value}`;
+
+    function changeBgOFInputs() {
+        inpBg.addEventListener("input", function() {
+            wrapperInpBg.style.backgroundColor = inpBg.value;
+            accountIcon.style.backgroundColor = inpBg.value;
+
+            if (inpBg.value == "#ffffff") {
+                wrapperInpBg.style.border = `2px solid #eef0f4`;
+            } else {
+                wrapperInpBg.style.border = `2px solid ${inpBg.value}`;
+            }
+        })
+
+        inpColor.addEventListener("input", function() {
+            wrapperInpColor.style.backgroundColor = inpColor.value;
+            account.style.backgroundColor = inpColor.value;
+        
+            if (inpColor.value == "#ffffff") {
+                wrapperInpColor.style.border = `2px solid #eef0f4`;
+            } else {
+                wrapperInpColor.style.border = `2px solid ${inpColor.value}`;
+            }
+        
+        })
+    }
+    changeBgOFInputs();
+}
+
+inpTitle.addEventListener("input", function() {
+    accountExampleTitle.textContent = inpTitle.value;
+})
+
+ // переключение попапов с созданием счетоы
+
+let circleNum = document.querySelector(".progress-ring-wrapper__num");
+let circle = document.querySelector(".progress-ring__circle");
+let radius = circle.r.baseVal.value;
+let circumference = 2 * Math.PI * radius;         
+circle.style.strokeDasharray = `${circumference} ${circumference}`;
+circle.style.strokeDashoffset = circumference;
+function setProgress(percent) {
+    const offset = circumference - percent / 100 * circumference;
+    circle.style.strokeDashoffset = offset;
+}
+setProgress(50);
+
+ let switchPopupButtons = document.querySelectorAll(".popup-accounts__tab-button");
+ let buttonPopup = document.querySelector(".popup-accounts .button")
+ switchPopupButtons.forEach(button => {
+     button.addEventListener("click", function() {
+         let dataTab = button.dataset.tab;
+         let currentTab = document.getElementById(dataTab);
+         let activeTab = document.querySelector(".popup-accounts__tab_act");
+         let activeButton = document.querySelector(".popup-accounts__tab-button_act");
+
+         if (activeTab && activeTab != currentTab) {
+             activeTab.classList.remove("popup-accounts__tab_act");
+             activeButton.classList.remove("popup-accounts__tab-button_act");
+         }
+
+         currentTab.classList.add("popup-accounts__tab_act");
+         button.classList.add("popup-accounts__tab-button_act");
+
+         if (currentTab.classList.contains("popup-accounts__tab_create")) {
+             buttonPopup.classList.remove("popup-accounts-done__button");
+             buttonPopup.classList.add("popup-accounts__button")
+             setProgress(0);
+             circleNum.textContent = "02";
+         } else {
+             buttonPopup.classList.add("popup-accounts-done__button");
+             buttonPopup.classList.remove("popup-accounts__button")
+             setProgress(50);
+             circleNum.textContent = "01";
+         }
+     })
+})

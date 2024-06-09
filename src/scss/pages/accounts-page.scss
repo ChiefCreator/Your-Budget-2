@@ -5,9 +5,14 @@
         width: 100%;
         display: flex;
         gap: 15px;
+        min-height: calc(100vh - 120px);
     }
     &__balance{
+        display: flex;
+        flex-direction: column;
         flex: 0 0 450px;
+        height: 100%;
+        min-height: calc(100vh - 120px);
     }
     &__accounts{
         flex: 1 1 auto;
@@ -19,13 +24,13 @@
     }
 }
 .balance{
-    background-color: white;
+    width: 100%;
+    flex: 1 1 auto;
+    background-color: rgb(255, 255, 255);
     border-radius: 10px;
     padding: 15px;
     display: flex;
     flex-direction: column;
-    flex: 0 0 450px;
-    height: 300px;
     &__header{
         display: flex;
         align-items: center;
@@ -37,13 +42,13 @@
         font-weight: 500;
     }
     &__body{
-        height: 100%;
+        flex: 1 1 auto;
         width: 100%;
-
     }
     &__chart-wrapper{
         width: 100%;
         height: 100%;
+        min-height: 300px;
         position: relative;
     }
     &__chart{
@@ -65,33 +70,45 @@
         background-color: white;
         z-index: 1;
     }
+    &__total{
+        font-size: 22px;
+        font-weight: 600;
+        color: red;
+        position: absolute;
+        top: 50%;
+        left: 32.5%;
+        transform: translate(-50%, -50%);
+    }
 }
 .accounts{
-    flex: 1 1 auto;
-    height: auto;
+    margin-top: 15px;
+    width: 100%;
+    flex: 0 0 auto;
     border-radius: 10px;
     padding: 15px;
     overflow: hidden;
     display: flex;
-    gap: 30px;
     position: relative;
+    display: flex;
+    flex-direction: column;
     &__title{
-        font-size: 22px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 500;
         color: white;
     }
-    &__content{
-        flex: 0 0 auto;
+    &__header{
+        width: 100%;
         height: auto;
         display: flex;
-        flex-direction: column;
+        align-items: center;
         justify-content: space-between;
         z-index: 2;
+        margin-bottom: 8px;
     }
     &__body{
         display: block;
         flex: 1 1 50%;
-        max-width: 815px;
+        max-width: 450px;
         height: 100%;   
         position: relative;
     }
@@ -100,10 +117,13 @@
         position: absolute;
         left: 0;
         top:0;
-        width: 90%;
+        width: 100%;
         height: 100%;
         background-color: $main-color;
         border-radius: 10px;
+    }
+    .swiper-buttons{
+        margin-right: 0;
     }
 }
 .account{
@@ -939,6 +959,41 @@
         font-size: 20px;
     }
 }
+.account-add{
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(118, 116, 136, 0.2);
+    border: 2px solid white;
+    border-style: dashed;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    &__name{
+        color: white;
+        font-size: 20px;
+        font-weight: 600;
+    }
+    &__body{
+        width: 100%;
+        flex: 1 1 auto;
+        position: relative;
+    }
+    &__icon{
+        position: absolute;
+        left: 50%;
+        top:50%;
+        transform: translate(-50%, -50%);
+        &::before{
+            content: "\2b";
+            @include font-awesome;
+            color: white;
+            font-size: 80px;
+        }
+    }
+}
 .account-choose{
     transition: box-shadow .3s ease;
     &_act{
@@ -952,7 +1007,7 @@
         height: 100%;
     }
     .swiper-slide{
-        width: 400px !important;
+        width: 450px !important;
         height: 100%;
     }
 }
@@ -1049,8 +1104,7 @@
     }
 }
 .accounts-dynamic-chart{
-    margin-top: 15px;
-    height: 394px;
+    height: 100%;
     background-color: white;
     border-radius: 10px;
     padding: 15px;
