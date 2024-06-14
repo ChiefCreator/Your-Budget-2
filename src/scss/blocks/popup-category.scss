@@ -10,7 +10,7 @@
     flex-direction: column;
     z-index: 4;
     transition: left .3s ease;
-    overflow: auto;
+    overflow-x: hidden;
     &_open{
         left: calc(100% - 515px);
     }
@@ -43,7 +43,6 @@
         }
     }
     &__body{
-        overflow: hidden;
     }
     &__tab-buttons{
         padding: 10px;
@@ -64,7 +63,7 @@
         display: grid;
         grid-template-rows: 1fr;
         grid-template-columns: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
         grid-template-rows: 0fr;
         transform: translateX(500px);
         transition: transform .5s ease;
@@ -156,12 +155,12 @@
     &__icon-list{
         display: flex;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: clamp(0.625rem, -2.109rem + 12.5vw, 1.25rem);
     }
     &__icon{
-        flex: 0 0 50px;
-        height: 50px;
-        border-radius: 10px;
+        flex: 0 0 clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
+        height: clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
+        border-radius: clamp(0.438rem, -0.383rem + 3.75vw, 0.625rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -173,7 +172,7 @@
             content: "\f00d";
             @include font-awesome;
             color: inherit;
-            font-size: 30px;
+            font-size: clamp(1.563rem, 0.195rem + 6.25vw, 1.875rem);
         }
         &_food1::before{
             content: "\f805";
@@ -951,6 +950,27 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+    @media screen and (max-width: 650px) {
+        width: 100%;
+        border-radius: 0;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        // min-height: calc(100vh - 30px);
+        left: 0;
+        top: 100%;
+        transition: top .3s ease;
+        &_open{
+            top: 30px;
+        }
+    }
+    @media screen and (max-width:550px) {
+        &__tab-buttons{
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+            gap: 7px;
+        }
     }
 }
 .progress-ring-wrapper{

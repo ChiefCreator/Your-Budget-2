@@ -10,6 +10,7 @@
 <body>
     <div class="overblock"></div>
     <div class="popup-operation">
+    <div class="overblock-date-picker"></div>
     <header class="popup-operation__head">
         <div class="popup-operation__head-content">
             <h4 class="popup-operation__title">Новая операция</h4>
@@ -757,6 +758,69 @@
         </div>
     </div>
 </div>
+    <nav class="mobile-navigation">
+    <div class="mobile-navigation__content">
+        <ul class="mobile-navigation__list">
+            <li class="mobile-navigation__item mobile-navigation__item_accounts">
+                <a href="./../accounts-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Счета</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_operations">
+                <a href="./../operations-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Операции</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_home mobile-navigation__item_active">
+                <a href="./../main-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Главная</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_statistics">
+                <a href="./../statistics-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Статистика</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_settings">
+                <a href="#" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Настройки</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    <div class="tablet-menu">
+    <header class="tablet-menu__header">
+        <div class="tablet-menu__header-content">
+            <h5 class="tablet-menu__title">Your Budget</h5>
+            <span class="tablet-menu__close"></span>
+        </div>
+    </header>
+    <div class="tablet-menu__body">
+        <ul class="tablet-menu__list">
+            <li class="tablet-menu__item">
+                <a href="./../main-page.html" class="tablet-menu__link">Главная</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../operations-page.html" class="tablet-menu__link">Операции</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../statistics-page.html" class="tablet-menu__link">Статистика</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../accounts-page.html" class="tablet-menu__link">Счета</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="#" class="tablet-menu__link">Настройки</a>
+            </li>
+        </ul>
+    </div>
+</div>
     <header class="header">
         <div class="container">
             <nav class="navigation">
@@ -780,6 +844,12 @@
         <div class="main-date__input-wrapper">
             <input class="main-date__input" id="main-picker">
         </div>
+    </div>
+    <div class="navigation__burger-menu burger-menu">
+        <span class="burger-menu__line burger-menu__line-1"></span>
+        <span class="burger-menu__line burger-menu__line-2"></span>
+        <span class="burger-menu__line burger-menu__line-3"></span>
+        <span class="burger-menu__line burger-menu__line-4"></span>
     </div>
 </nav>
         </div>
@@ -900,10 +970,6 @@
                 <div class="swiper-buttons swiper-buttons-statistics">
                     <div class="swiper-buttons__button swiper-buttons__button_prev"></div>
                     <div class="swiper-buttons__button swiper-buttons__button_next"></div>
-                </div>
-                <div class="swiper-statistics__buttons">
-                    <div class="swiper-statistics__button swiper-statistics__button_prev"></div>
-                    <div class="swiper-statistics__button swiper-statistics__button_next"></div>
                 </div>
             </div>
             <div class="swiper-statistics__slider-wrapper">

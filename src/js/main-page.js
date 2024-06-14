@@ -5,6 +5,7 @@ import inputTextarrea from "./modules/inputTextarrea";
 import airDatepicker from "./modules/airDatepicker";
 import Chart from 'chart.js/auto';
 import sliders from "./modules/sliders";
+import tabletMenu from "./modules/tabletMenu";
 
 const chartExpensesPie = new Chart(document.getElementById('chartExpensesPie'), {
     type: 'doughnut',
@@ -137,10 +138,20 @@ import Swiper from 'swiper/bundle';
 const swiper = new Swiper('.swiper-statistics-slider', {
     speed: 600,
     spaceBetween: 15,
-    slidesPerView:3,
+    slidesPerView: 1.5,
     loop: true,
     navigation: {
         nextEl: '.swiper-buttons-statistics .swiper-buttons__button_next',
         prevEl: '.swiper-buttons-statistics .swiper-buttons__button_prev',
     },
+    breakpoints: {
+        1355: {
+            slidesPerView: 3,
+        },
+        460: {
+            slidesPerView: 2,
+        },
+    }
 })
+
+tabletMenu();

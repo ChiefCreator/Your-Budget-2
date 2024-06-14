@@ -1,22 +1,38 @@
 .statistics{
-    margin-top: 15px;
+    margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    margin-bottom: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 120px);
+    &__swiper{
+        flex: 0 0 auto;
+    }
     &__content{
+        flex: 1 1 auto;
         display: flex;
         gap: 15px;
-        margin-bottom: 15px;
     }
-    flex: 1 1 auto;
     &__chart-comparison{
         flex: 1 1 60%;
     }
     &__chart{
-        height: 340px;
+        height: 100%;
         position: relative;
     }   
     &__operation-list{
-        flex: 1 1 40%;
+        flex: 0 0 400px;
         height: 360px;
         position: relative;
+    }
+    @media screen and (max-width: 1250px) {
+        &__operation-list{
+            display: none !important;
+        }
+    }
+    @media screen and (max-width: 840px) {
+        max-width: 600px;
+        margin-top: 0;
     }
 }
 .switch-operations{
@@ -235,9 +251,9 @@
 }
 .swiper-statistics{
     width: 100%;
-    height: 270px;
+    height: auto;
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     &__bg{
         position: absolute;
         left: 0;
@@ -256,37 +272,59 @@
         border-radius: 10px;
         padding: 15px 0 15px 15px;
         display: flex;
-        gap: 20px;
+        gap: 10px;
     }
     &__content{
-        flex: 1 1 50%;
+        flex: 1 1 auto;
         display: flex;
         flex-direction: column;
     }
     &__text{
-        font-size: 35px;
+        font-size: clamp(1.375rem, -0.346rem + 2.55vw, 2.188rem);
         font-weight: 600;
         color: white;
     }
     &__slider-wrapper{
-        flex: 1 1 50%;
-        max-width: 630px;
+        flex: 0 1 630px;
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+    @media screen and (max-width: 1100px) {
+        &__wrapper{
+            flex-direction: column;
+        }
+        &__content{
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .swiper-buttons{
+            margin-right: 15px;
+        }
+        .swiper-buttons__button{
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            &::before{
+                font-size: 14px;
+            }
+        }
+        &__bg{
+            width: 100%;
+        }
+        &__slider-wrapper{
+            flex: 0 1 auto;
+            padding-right: 15px;
+        }
     }
 }
 .swiper-statistics-slider{
     width: 100% !important;
     height: 100%;
-    &__wrapper{
-        height: 100%;
-    }
-    &__slide{
-        width: 200px !important; 
-        height: 100%;
-    }
 }
 .tool-card{
-    width: 200px;
-    height: 100%;
+    min-width: 190px;
+    min-height: 240px;
     background-color: rgb(210, 128, 210);
     padding: 15px;
     border-radius: 10px;
@@ -449,7 +487,7 @@
     }
 }
 .comparison{
-    margin-top: 15px;
+    margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     width: 100%;
     height: 100px;
     background-color: white;

@@ -997,6 +997,8 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
         minView:"months",
         dateFormat: 'yyyy-MM',
         buttons: [buttonYear, buttonAll],
+        container: '.main-date__input-wrapper',
+        isVisibleMY: false,
         onSelect: ({date, formattedDate, datepicker}) => {
             let mounth = transformDate(formattedDate)
         
@@ -1017,9 +1019,31 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
             localStorage.setItem("currentDate", formattedDate);   
             changeMainDate(operationsIncomeByCurrentDate, categoriesIncomeByCurrentDate, operationsIncome, categoriesIncome, chartIncomePie, "income", "Income");
             changeMainDate(operationsExpensesByCurrentDate, categoriesExpensesByCurrentDate, operationsExpenses, categoriesExpenses, chartExpensesPie, "expenses", "Expenses");       
-        },
+        }
+    }
+    if (parseFloat(window.innerWidth) <= 650) {
+        mainDatePickerSettings.container = '.air-datepicker-global-container'
+        mainDatePickerSettings.isMobile = true
+        mainDatePickerSettings.autoClose = false
     }
     let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
+
+    let overblockDatePicker = document.querySelector(".overblock-date-picker")
+    let dateButton = document.querySelector(".main-date");
+    dateButton.addEventListener("click", function() {
+        console.log("dd")
+        mainDatePickerSettings.isVisibleMY = true;
+        overblockDatePicker.classList.add("overblock-date-picker_open");
+        if (mainDatePicker) mainDatePicker.show();
+        console.log("ddd")
+    })
+    overblockDatePicker.addEventListener("click", function() {
+        overblockDatePicker.classList.remove("overblock-date-picker_open");
+        if (mainDatePickerSettings.isVisibleMY) {
+            mainDatePicker.hide();
+            mainDatePickerSettings.isVisibleMY = false;
+        }
+    })
 
 
     function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operations, categories, chartPie, typeS, typeXL) {

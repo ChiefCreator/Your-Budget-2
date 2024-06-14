@@ -4,13 +4,15 @@ html{
 body{
     font-family: $main-font;
     overflow-x: hidden;
-    // background-color: rgb(255, 255, 255);
     background-color: rgb(238, 238, 243);
 }
 .container{
     max-width: 1590px;
-    padding: 0 15px;
+    padding: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     margin: 0 auto;
+    @media screen and (max-width: 650px) {
+        padding: 0;
+    }
 }
 .hide{
     display: none !important;
@@ -23,6 +25,9 @@ body{
     width: 3px;
     background-color: rgb(201, 204, 217);
     border-radius: 10px;
+    @media screen and (max-width: 650px) {
+        display: none;
+    }
 }
 ::-webkit-scrollbar-thumb {
     background-color: $main-color;

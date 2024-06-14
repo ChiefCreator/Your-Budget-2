@@ -1,16 +1,19 @@
 .categories{
-    position: sticky;
-    top: 0;
-    height: auto;
-    margin-bottom: auto;
-    flex: 0 1 450px;
+    // position: sticky;
+    // top: 0;
+    // height: auto;
+    // margin-bottom: auto;
+    flex: 1 1 auto;
+    max-width: 450px;
+    min-width: 380px;
     &__slider-wrapper{
-        margin-top: 15px;
-        max-width: 450px;
-        min-height: 200px;
+        margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+        min-height: 185px;
         position: relative;
+        width: 100%;
     }
     &__body{
+        margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
         background-color: white;
         border-radius: 10px;
         padding: 15px;
@@ -58,9 +61,16 @@
     &__tab_active &__tab-auto{
         height: auto;
     }
+    @media screen and (max-width: 840px) {
+        position: static;
+        max-width: 80%;
+    }
+    @media screen and (max-width: 650px) {
+        max-width: 100%;
+        min-width: 300px;
+    }
 }
 .slider-categories{
-    width: 100%;
     &__item{
         background-color: white;
         border-radius: 10px;

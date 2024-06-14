@@ -1,22 +1,42 @@
-.air-datepicker-global-container {
+.main-date__input-wrapper{
     width: 200px !important;
     .air-datepicker{
-        top: 15px !important;
+        top: -7px !important;
+        left: -220px !important;
+    }
+    .air-datepicker--pointer{
+        left: calc(100% - 15px) !important;
+    }
+    @media screen and (max-width: 650px){
+        width: 200px !important;
+        .air-datepicker{
+            top: 50% !important;
+            left: 50% !important;
+        }
     }
 }
 .popup-operation-datepicker, .popup-change-operation-expenses-datepicker, .popup-change-operation-income-datepicker{
     height: 100%;
     .air-datepicker {
         width: 250px !important;
-        top: -35px !important;
+        top: -12px !important;
+        left: -350px !important;
+    }
+    @media screen and (max-width: 650px){
+        .air-datepicker{
+            top: 50% !important;
+            left: 50% !important;
+        }
     }
 }
 .air-datepicker {
     border-radius: 10px !important;
     background: white !important;
-    z-index: 100 !important;
-    position: relative !important;
+    z-index: 4 !important;
     border: none !important;
+}
+.air-datepicker-overlay{
+    display: none;
 }
 .air-datepicker-body--day-name {
     color: #0c6cde !important;

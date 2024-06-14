@@ -38,8 +38,8 @@ function categoriesSlide() {
         sliderCategory.classList.toggle("slider-categories_active");
         expensesTab.classList.toggle("categories__tab_active");
         incomeTab.classList.toggle("categories__tab_active");
-        expensesTools.classList.toggle("tools-categories_active");
-        incomeTools.classList.toggle("tools-categories_active");
+        // expensesTools.classList.toggle("tools-categories_active");
+        // incomeTools.classList.toggle("tools-categories_active");
     }
 }
 

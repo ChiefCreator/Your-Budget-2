@@ -1,5 +1,14 @@
 .page-index__content{
     width: 100%;
     display: flex;
-    gap: 15px;
+    gap: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    @media screen and (max-width: 840px) {
+        flex-direction: column;
+        align-items: center;
+    }
+    @media screen and (max-width: 650px) {
+        height: calc(100vh - 90.4px - 70px);
+        overflow-y: auto;
+        padding: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    }
 }

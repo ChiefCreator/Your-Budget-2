@@ -115,6 +115,19 @@
     &__select-content{
 
     }
+    @media screen and (max-width: 650px) {
+        width: 100%;
+        border-radius: 0;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        min-height: calc(100vh - 30px);
+        left: 0;
+        top: 100%;
+        transition: top .3s ease;
+        &_open{
+            top: 30px;
+        }
+    }
 }
 .input-cost{
     width: 100%;
