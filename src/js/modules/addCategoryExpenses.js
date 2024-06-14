@@ -1031,11 +1031,9 @@ function addCategoryExpenses(chartExpensesPie, chartIncomePie, chart, series, xA
     let overblockDatePicker = document.querySelector(".overblock-date-picker")
     let dateButton = document.querySelector(".main-date");
     dateButton.addEventListener("click", function() {
-        console.log("dd")
         mainDatePickerSettings.isVisibleMY = true;
         overblockDatePicker.classList.add("overblock-date-picker_open");
         if (mainDatePicker) mainDatePicker.show();
-        console.log("ddd")
     })
     overblockDatePicker.addEventListener("click", function() {
         overblockDatePicker.classList.remove("overblock-date-picker_open");

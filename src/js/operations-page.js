@@ -1,6 +1,7 @@
 import functionalOnOperationsPage from "./modules/functionalOnOperationsPage";
 import expandOperation from "./modules/expand-operation";
 import toggleFilter from './modules/toggle-filter';
+import tabletMenu from "./modules/tabletMenu";
 
 // инициализация графика
 var root = am5.Root.new("chartExpensesAndIncomeBar"); 
@@ -42,3 +43,4 @@ var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
 // функции
 functionalOnOperationsPage(chart, root, xAxis, yAxis);
 expandOperation();
+tabletMenu()

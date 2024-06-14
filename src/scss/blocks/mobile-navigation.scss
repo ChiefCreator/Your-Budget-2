@@ -41,16 +41,6 @@
         &_settings .mobile-navigation__icon::before{
             content: "\f1de";
         }
-        &_active{
-            .mobile-navigation__text{
-                color: rgb(30, 30, 120);
-            }
-            .mobile-navigation__icon{
-                &::before{
-                    color: rgb(30, 30, 120);
-                }
-            }
-        }
     }
     &__link{
         display: flex;

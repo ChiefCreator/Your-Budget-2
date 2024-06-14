@@ -9,6 +9,12 @@
     <title>Your Budget</title>
 </head>
 <body>
+    <div class="overblock"></div>
+    <div class="overblock-date-picker"></div>
+    <div class="operations-mobile-menu">
+        @@include("./blocks/mobile-menu.html")
+    </div>
+    @@include("./blocks/tablet-menu.html")
     <header class="header">
         <div class="container">
             @@include("./blocks/navigation.html")
@@ -18,6 +24,12 @@
         <div class="container">
             <div class="page-operation__content">
                 <div class="page-operation__operations">
+                    <header class="page-operation__header">
+                        <div class="page-operation__buttons">
+                            <div class="page-operation__button page-operation__button_chart">График</div>
+                            <div class="page-operation__button page-operation__button_filter">Фильтр</div>
+                        </div>
+                    </header>
                     <div class="no-data no-data-operations-all">
                         <video class="no-data__video" src="./../../video/no-data-list.mp4" autoplay muted></video>
                         <p class="no-data__notice">Операций нет! Добавьте новые операции</p>
@@ -27,6 +39,10 @@
                     </div>
                 </div>
                 <div class="page-operation__chart operations-chart">
+                    <header class="operations-chart__header">
+                        <h5 class="operations-chart__title">График операций</h5>
+                        <div class="operations-chart__close"></div>
+                    </header>
                     <div class="operations-chart-bar">
                         <div class="no-data no-data-chart-operations-all">
                             <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>

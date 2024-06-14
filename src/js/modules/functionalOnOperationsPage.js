@@ -244,6 +244,7 @@ let mainDatePickerSettings = {
     view: "months",
     minView:"months",
     dateFormat: 'yyyy-MM',
+    container: ".main-date__input-wrapper",
     buttons: [buttonYear, buttonAll],
     onSelect: ({date, formattedDate, datepicker}) => {
         let mounth = transformDate(formattedDate)
@@ -268,7 +269,27 @@ let mainDatePickerSettings = {
         resetFilter()
     },
 }
+if (parseFloat(window.innerWidth) <= 650) {
+    mainDatePickerSettings.container = '.air-datepicker-global-container'
+    mainDatePickerSettings.isMobile = true
+    mainDatePickerSettings.autoClose = false
+}
 let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
+
+let overblockDatePicker = document.querySelector(".overblock-date-picker")
+    let dateButton = document.querySelector(".main-date");
+    dateButton.addEventListener("click", function() {
+        mainDatePickerSettings.isVisibleMY = true;
+        overblockDatePicker.classList.add("overblock-date-picker_open");
+        if (mainDatePicker) mainDatePicker.show();
+    })
+    overblockDatePicker.addEventListener("click", function() {
+        overblockDatePicker.classList.remove("overblock-date-picker_open");
+        if (mainDatePickerSettings.isVisibleMY) {
+            mainDatePicker.hide();
+            mainDatePickerSettings.isVisibleMY = false;
+        }
+    })
 
 function changeMainDate() {
 
@@ -527,5 +548,26 @@ function setCategoriesToFilter(arr) {
     }
 }
 }
+
+let overblock = document.querySelector(".overblock");
+
+let chartButtonPopup = document.querySelector(".page-operation__button_chart")
+let filterButtonPopup = document.querySelector(".page-operation__button_filter")
+let chartPopup = document.querySelector(".operations-chart")
+let filterPopup = document.querySelector(".operations-sorting")
+
+chartButtonPopup.addEventListener("click", function() {
+    chartPopup.classList.add("operations-chart_open")
+    overblock.classList.add("overblock_open");
+})
+filterButtonPopup.addEventListener("click", function() {
+    filterPopup.classList.add("operations-sorting_open")
+    overblock.classList.add("overblock_open");
+})
+overblock.addEventListener("click", function() {
+    overblock.classList.remove("overblock_open");
+    filterPopup.classList.remove("operations-sorting_open")
+    chartPopup.classList.remove("operations-chart_open")
+})
 
 export default functionalOnOperationsPage;

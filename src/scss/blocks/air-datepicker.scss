@@ -1,5 +1,4 @@
 .main-date__input-wrapper{
-    width: 200px !important;
     .air-datepicker{
         top: -7px !important;
         left: -220px !important;
@@ -8,7 +7,6 @@
         left: calc(100% - 15px) !important;
     }
     @media screen and (max-width: 650px){
-        width: 200px !important;
         .air-datepicker{
             top: 50% !important;
             left: 50% !important;

@@ -9,6 +9,73 @@
     <title>Your Budget</title>
 </head>
 <body>
+    <div class="overblock"></div>
+    <div class="overblock-date-picker"></div>
+    <div class="operations-mobile-menu">
+        <nav class="mobile-navigation">
+    <div class="mobile-navigation__content">
+        <ul class="mobile-navigation__list">
+            <li class="mobile-navigation__item mobile-navigation__item_accounts">
+                <a href="./../accounts-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Счета</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_operations">
+                <a href="./../operations-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Операции</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_home mobile-navigation__item_active">
+                <a href="./../main-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Главная</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_statistics">
+                <a href="./../statistics-page.html" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Статистика</p>
+                </a>
+            </li>
+            <li class="mobile-navigation__item mobile-navigation__item_settings">
+                <a href="#" class="mobile-navigation__link">
+                    <span class="mobile-navigation__icon"></span>
+                    <p class="mobile-navigation__text">Настройки</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+    </div>
+    <div class="tablet-menu">
+    <header class="tablet-menu__header">
+        <div class="tablet-menu__header-content">
+            <h5 class="tablet-menu__title">Your Budget</h5>
+            <span class="tablet-menu__close"></span>
+        </div>
+    </header>
+    <div class="tablet-menu__body">
+        <ul class="tablet-menu__list">
+            <li class="tablet-menu__item">
+                <a href="./../main-page.html" class="tablet-menu__link">Главная</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../operations-page.html" class="tablet-menu__link">Операции</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../statistics-page.html" class="tablet-menu__link">Статистика</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../accounts-page.html" class="tablet-menu__link">Счета</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="#" class="tablet-menu__link">Настройки</a>
+            </li>
+        </ul>
+    </div>
+</div>
     <header class="header">
         <div class="container">
             <nav class="navigation">
@@ -46,6 +113,12 @@
         <div class="container">
             <div class="page-operation__content">
                 <div class="page-operation__operations">
+                    <header class="page-operation__header">
+                        <div class="page-operation__buttons">
+                            <div class="page-operation__button page-operation__button_chart">График</div>
+                            <div class="page-operation__button page-operation__button_filter">Фильтр</div>
+                        </div>
+                    </header>
                     <div class="no-data no-data-operations-all">
                         <video class="no-data__video" src="./../../video/no-data-list.mp4" autoplay muted></video>
                         <p class="no-data__notice">Операций нет! Добавьте новые операции</p>
@@ -55,6 +128,10 @@
                     </div>
                 </div>
                 <div class="page-operation__chart operations-chart">
+                    <header class="operations-chart__header">
+                        <h5 class="operations-chart__title">График операций</h5>
+                        <div class="operations-chart__close"></div>
+                    </header>
                     <div class="operations-chart-bar">
                         <div class="no-data no-data-chart-operations-all">
                             <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>
