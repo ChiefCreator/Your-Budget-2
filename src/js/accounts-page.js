@@ -3,6 +3,7 @@ import 'swiper/css/bundle';
 import Chart from 'chart.js/auto';
 import noDataToggle from "./modules/no-data";
 import { mergeIf } from 'chart.js/helpers';
+import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
 
 // добавление нового счета
 
@@ -39,6 +40,17 @@ const swiperAcoounts = new Swiper('.swiper-accounts', {
         nextEl: '.swiper-buttons-accounts .swiper-buttons__button_next',
         prevEl: '.swiper-buttons-accounts .swiper-buttons__button_prev',
     },
+    breakpoints: {
+        1050: {
+            slidesPerView: 1,
+        },
+        900: {
+            slidesPerView: 2,
+        },
+        450: {
+            slidesPerView: 1.2,
+        },
+    }
 })
 const swiperAcoountsDone = new Swiper('.swiper_accounts-done', {
     speed: 600,
@@ -624,7 +636,7 @@ function pieChart() {
     }));
     var label = series1.children.push(am5.Label.new(root, {
         text: "${valueSum.formatNumber('#,###.')}",
-        fontSize: 40,
+        fontSize: "clamp(0.813rem, -1.156rem + 9vw, 2.5rem)",
         centerX: am5.percent(50),
         centerY: am5.percent(50),
         populateText: true,

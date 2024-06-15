@@ -1,10 +1,10 @@
 .page-accounts{
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-bottom: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     &__content{
+        margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
         width: 100%;
         display: flex;
-        gap: 15px;
+        gap: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
         min-height: calc(100vh - 120px);
     }
     &__balance{
@@ -21,6 +21,35 @@
         width: 100%;
         display: flex;
         gap: 15px;
+    }
+    @media screen and (max-width: 1050px) {
+        height: calc(100vh - 90.4px - 70px);
+        overflow-y: auto;
+        &__content{
+            flex-direction: column;
+            align-items: center;
+        }
+        &__balance{
+            flex: 1 1 auto;
+            flex-direction: column-reverse;
+            gap: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+            width: 80%;
+        }
+        &__accounts{
+            width: 80%;
+            flex: 1 1 400px;
+        }
+    }
+    @media screen and (max-width: 650px) {
+        &__content{
+            padding: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+        }
+        &__balance{
+            width: 100%;
+        }
+        &__accounts{
+            width: 100%;
+        }
     }
 }
 .balance{
@@ -81,7 +110,7 @@
     }
 }
 .accounts{
-    margin-top: 15px;
+    margin-top: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     width: 100%;
     flex: 0 0 auto;
     border-radius: 10px;
@@ -124,6 +153,11 @@
     }
     .swiper-buttons{
         margin-right: 0;
+    }
+    @media screen and (max-width: 1050px) {
+        &__body{
+            max-width: 100%;
+        }
     }
 }
 .account{
@@ -1001,15 +1035,15 @@
     }
 }
 .swiper-accounts{
-    width: 100% !important;
-    height: 100%;
-    .swiper-wrapper{
-        height: 100%;
-    }
-    .swiper-slide{
-        width: 450px !important;
-        height: 100%;
-    }
+    // width: 100% !important;
+    // height: 100%;
+    // .swiper-wrapper{
+    //     height: 100%;
+    // }
+    // .swiper-slide{
+    //     width: 450px !important;
+    //     height: 100%;
+    // }
 }
 .tools-accounts{
     width: 100%;
@@ -1125,6 +1159,16 @@
         margin-left: -28px !important;
         .am5-layer-30{
             display: none !important;
+        }
+    }
+    @media screen and (max-width: 410px) {
+        &__header{
+            flex-direction: column;
+            align-items: start;
+            gap: 3px;
+        }
+        &__chart{
+            height: calc(100% - 30px) !important;
         }
     }
 }
@@ -1252,5 +1296,29 @@
         display: flex;
         flex-direction: column;
         flex: 1 1 auto;
+    }
+    @media screen and (max-width:650px) {
+        width: 100%;
+        border-radius: 0;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        left: 0;
+        top: 100%;
+        transition: top .3s ease;
+        &_open{
+            top: 30px;
+        }
+    }
+}
+.accounts-mobile-menu{
+    .mobile-navigation__item_accounts{
+        .mobile-navigation__text{
+            color: rgb(30, 30, 120);
+        }
+        .mobile-navigation__icon{
+            &::before{
+                color: rgb(30, 30, 120);
+            }
+        }
     }
 }

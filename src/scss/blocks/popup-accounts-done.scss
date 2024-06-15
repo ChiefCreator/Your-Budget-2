@@ -169,12 +169,12 @@
     &__icon-list{
         display: flex;
         flex-wrap: wrap;
-        gap: 18px;
+        gap: clamp(0.625rem, 0.042rem + 2.67vw, 1.125rem);
     }
     &__icon{
-        flex: 0 0 50px;
-        height: 50px;
-        border-radius: 10px;
+        flex: 0 0 clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
+        height: clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
+        border-radius: clamp(0.438rem, -0.383rem + 3.75vw, 0.625rem);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -976,6 +976,14 @@
         transition: top .3s ease;
         &_open{
             top: 30px;
+        }
+    }
+    @media screen and (max-width:365) {
+        &__tab-buttons{
+            flex-direction: column;
+            align-items: start;
+            justify-content: start;
+            gap: 7px;
         }
     }
 }
