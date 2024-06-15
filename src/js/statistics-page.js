@@ -1,5 +1,6 @@
 import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
 import noDataToggle from "./modules/no-data";
+import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
 
 let operationsExpenses = [];
 let categoriesExpensesByCurrentDate = [];
@@ -36,8 +37,20 @@ let trendChartObj = {}
 trendChart();
 function trendChart() {
     var root = am5.Root.new("trend-chart"); 
+    const responsive = am5themes_Responsive.new(root);
+    responsive.addRule({
+        relevant: function(width, height) {
+            return width < 550;
+        },
+        applying: function() {
+            xAxis.set("start", 0.75);
+        },
+        removing: function() {
+            xAxis.set("start", 0.5);
+        }
+    });
     root.setThemes([
-        am5themes_Animated.new(root)
+        am5themes_Animated.new(root), responsive
     ]);
     var chart = root.container.children.push(am5xy.XYChart.new(root, {
         panX: true,
@@ -47,6 +60,9 @@ function trendChart() {
         paddingLeft: 0,
         layout: root.verticalLayout
     }));
+    chart.responsive = {
+        "enabled": true
+      };
     var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
         behavior: "none"
     }));
@@ -64,6 +80,7 @@ function trendChart() {
         maxZoomCount: 6,
         renderer: xRenderer,
     }));
+    // xAxis.set("start", 0.5);
     xAxis.get("renderer").labels.template.setAll({
         oversizedBehavior: "wrap",
         textAlign: "center",
