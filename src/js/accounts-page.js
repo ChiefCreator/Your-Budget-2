@@ -6,21 +6,38 @@ import { mergeIf } from 'chart.js/helpers';
 import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
 import AirDatepicker from 'air-datepicker';
 import 'air-datepicker/air-datepicker.css';
+import addToFirestore from './modules/functions/addToFirestore';
+import getDataFromFirestore from './modules/functions/getDataFromFirestore';
+import getPreviousDateArr from './modules/functions/getPreviousDateArr';
+import sortByDate from './modules/functions/sortByDate';
+import setIndex from './modules/functions/setIndex';
+import setAccountsToList from './modules/functions/setAccountsToList';
+import setProgressOfCircleProgressBar from './modules/functions/setProgressOfCircleProgressBar';
+import setOperationToList from './modules/functions/setOperationToList';
 
-// добавление нового счета
-
+// expenses переменные
+let categoriesExpenses = [];
+let operationsExpenses = [];
+let operationsExpensesByCurrentDate = [];
+let categoriesExpensesByCurrentDate = [];
+// income переменные 
+let categoriesIncome = [];
+let operationsIncome = [];
+let operationsIncomeByCurrentDate = [];
+let categoriesIncomeByCurrentDate = [];
+// account variables
 let accountObject = {};
 let accountArr = [];
-
+// general variables
 let chartsArr = [];
 let chartDynamicOfAccounts = {};
 let chartPieObject = {};
-let chartBarObject = {}
-
+let chartBarObject = {};
+let userEmail = localStorage.getItem("email").replace(".", "*");
+// html-элементы
 let btnAddAccount = document.querySelector(".account-add");
 let popupAddAccount = document.querySelector(".popup-accounts");
 let overblock = document.querySelector(".overblock");
-
 let accountExample = document.querySelector(".account-example");
 let accountExampleTitle = accountExample.querySelector(".account__title");
 let accountExampleType = accountExample.querySelector(".account__type")
@@ -32,7 +49,7 @@ let wrapperInpBg = inpBg.parentElement;
 let inpColor = popupAddAccount.querySelector(".input-color__input_color");
 let wrapperInpColor = inpColor.parentElement;
 let icons = popupAddAccount.querySelectorAll(".popup-accounts__icon");
-
+// sliders
 const swiperAcoounts = new Swiper('.swiper-accounts', {
     speed: 600,
     spaceBetween: 15,
@@ -73,20 +90,8 @@ const swiperIcons = new Swiper('.swiper_icons', {
     },
 })
 
-// expenses переменные
-let categoriesExpenses = [];
-let operationsExpenses = [];
-let operationsExpensesByCurrentDate = [];
-let categoriesExpensesByCurrentDate = [];
-// income переменные 
-let categoriesIncome = [];
-let operationsIncome = [];
-let operationsIncomeByCurrentDate = [];
-let categoriesIncomeByCurrentDate = [];
-
-let userEmail = localStorage.getItem("email").replace(".", "*");
-
-Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("categoriesExpensesByDate"),getDataFromFirestore("categoriesIncome"), getDataFromFirestore("categoriesIncomeByDate"),  getDataFromFirestore("operationsExpenses"), getDataFromFirestore("operationsExpensesByDate"), getDataFromFirestore("operationsIncome"), getDataFromFirestore("operationsIncomeByDate"), getDataFromFirestore("accounts")])
+// get data
+Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromFirestore("categoriesExpensesByDate", userEmail),getDataFromFirestore("categoriesIncome", userEmail), getDataFromFirestore("categoriesIncomeByDate", userEmail),  getDataFromFirestore("operationsExpenses", userEmail), getDataFromFirestore("operationsExpensesByDate", userEmail), getDataFromFirestore("operationsIncome", userEmail), getDataFromFirestore("operationsIncomeByDate", userEmail), getDataFromFirestore("accounts", userEmail)])
     .then(response => {
         return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json(), response[8].json()]);
     })
@@ -100,11 +105,11 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
         operationsIncome = (data[6] != null) ? data[6] : [];
         operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
         accountArr = (data[8] != null) ? data[8] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon-money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon-money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
-        addToFirestore(accountArr, "accounts");
+        addToFirestore(accountArr, "accounts", userEmail);
 
         pieChart();
         changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
-        setAccountsToList(accountArr);
+        setAccountsToList(accountArr, "swiper-accounts", chartsArr, "account-expand", true);
         initXYChartWithManyLines();
 
         // инициализация готовых счетов
@@ -117,6 +122,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses"), getDataFromFirestore("c
 
         initAccountChartBar();
     })
+
 function initChart(chartId, data) {
     var root = am5.Root.new(chartId);
     root.setThemes([am5themes_Animated.new(root)]);
@@ -276,13 +282,6 @@ function changeDate(arr) {
     return arr;
 }
 
-function getPreviousDateArr(arr, months) {
-    const month = new Date(arr[arr.length - 1].date).getMonth() - months
-    const date = new Date(new Date(arr[arr.length - 1].date).getFullYear(), month, new Date(arr[arr.length - 1].date).getDate()).toLocaleString("ru", {year: "numeric", month: "numeric", day:"numeric"}).split(".").reverse().join("-");
-
-    return arr.filter(obj => new Date(obj.date) >= new Date(date));
-}
-
 function initXYChartWithManyLines() {
     var root = am5.Root.new("accounts-dynamic-chart");
     root.setThemes([am5themes_Animated.new(root)]);
@@ -351,15 +350,6 @@ function makeSeries(data, name, bg, iconBg, root, xAxis, yAxis, chart, monthAmou
     series.appear();
 }
 
-function sortByDate(arr, typeOfSorting) {
-    if (typeOfSorting == "decrease") {
-        return arr.sort((a, b) => new Date(b.date) - new Date(a.date));
-    } 
-    else if (typeOfSorting == "increase") {
-        return arr.sort((a, b) => new Date(a.date) - new Date(b.date));
-    }
-}
-
 window.addEventListener("click", function(e){
     if (e.target.closest(".account-add")) {
         popupAddAccount.classList.add("popup-accounts_open");
@@ -381,18 +371,18 @@ function addAccount(event, accountObject, accountArr) {
     }
     if (event.target.closest(`.popup-accounts-done__button`)) {
         accountArr.push(Object.assign({}, accountObject));
-        setAccountToList(accountObject);
+        setAccountsToList(accountArr, "swiper-accounts", chartsArr, "account-expand", true);
         swiperAcoounts.update();
-        addToFirestore(accountArr, "accounts");
+        addToFirestore(accountArr, "accounts", userEmail);
         changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
     }
     if (event.target.closest(".popup-accounts__button")) {
         setValueToObject(accountObject, setIndex(inpType.value), inpTitle, inpBg, inpColor, inpType, document.querySelector(".popup-accounts__icon.act").dataset.categoryIcon);
 
         accountArr.push(Object.assign({}, accountObject));
-        setAccountToList(accountObject);
+        setAccountsToList(accountArr, "swiper-accounts", chartsArr, "account-expand", true);
         swiperAcoounts.update();
-        addToFirestore(accountArr, "accounts");
+        addToFirestore(accountArr, "accounts", userEmail);
         changePieChart(setBgTemplateField(accountArr), chartPieObject.series1, chartPieObject.series2, chartPieObject.legend, chartPieObject.label);
     }
 }
@@ -430,133 +420,11 @@ function setValueToObject(obj, index, inpTitle, inpBg, inpColor, type, icon) {
     return obj;
 }
 
-function setIndex(indexName) {
-    let indexCode = 0;
-    if (localStorage.getItem("indexCode")) {
-        indexCode = JSON.parse(localStorage.getItem("indexCode"))
-        indexCode++;
-    }
-    localStorage.setItem("indexCode", JSON.stringify(indexCode))
-
-    return indexName + indexCode;
-}
-
-function setAccountToList(accountObject) {
-    let blockToPaste = document.querySelector(`.swiper-accounts .swiper-wrapper`);
-
-    let itemCategory = `<div class="swiper-slide">
-        <div class="account account-expand" style="background-color: ${accountObject.bg};" data-index="${accountObject.index}">
-            <header class="account__header">
-                <span class="account__icon ${accountObject.icon}" style="background-color: ${accountObject.iconBg};"></span>
-                <div class="account__names">
-                    <h3 class="account__title">${accountObject.title}</h3>
-                    <p class="account__type">${accountObject.type}</p>
-                </div>
-            </header>
-            <div class="account__body">
-                <div class="account__content">
-                    <p class="account__total"><span class="account__num">${accountObject.cost}</span> <span class="account__currency">BYN</span></p>
-                </div>
-                <div class="account__chart">
-                    <div class="account__chart-item" id="${accountObject.chartId}"></div>
-                </div>
-            </div>
-            </div>
-        </div>`;
-
-    blockToPaste.append(parser(itemCategory))
-    initChart(accountObject.chartId, accountObject.operations)
-
-    function parser(itemCategory) {
-        var parser = new DOMParser();
-        let teg = parser.parseFromString(itemCategory, 'text/html');
-        let item = teg.querySelector(".swiper-slide");
-        return item;
-    }
-}
-
-function setAccountsToList(arr) {
-    let blockToPaste = document.querySelector(`.swiper-accounts .swiper-wrapper`);
-
-    blockToPaste.querySelectorAll(".swiper-slide").forEach(block => {
-        block.remove()
-    })
-
-    for (let i = 0; i < arr.length; i++) {
-        let itemCategory = `<div class="swiper-slide">
-        <div class="account account-expand" style="background-color: ${arr[i].bg};" data-index="${arr[i].index}">
-            <header class="account__header">
-                <span class="account__icon ${arr[i].icon}" style="background-color: ${arr[i].iconBg};"></span>
-                <div class="account__names">
-                    <h3 class="account__title">${arr[i].title}</h3>
-                    <p class="account__type">${arr[i].type}</p>
-                </div>
-            </header>
-            <div class="account__body">
-                <div class="account__content">
-                    <p class="account__total"><span class="account__num">${arr[i].cost}</span> <span class="account__currency">BYN</span></p>
-                </div>
-                <div class="account__chart">
-                    <div class="account__chart-item" id="${arr[i].chartId}"></div>
-                </div>
-            </div>
-            </div>
-        </div>`;
-
-        blockToPaste.append(parser(itemCategory))
-        initChart(arr[i].chartId, arr[i].operations)
-    }
-
-    let addAccount = `<div class="swiper-slide">
-        <div class="account-add">
-            <header class="account-add__header">
-                <p class="account-add__name">Добавить счет</p>
-            </header>
-            <div class="account-add__body">
-                <span class="account-add__icon"></span>
-            </div>
-        </div>
-    </div>`
-    function parser(itemCategory) {
-        var parser = new DOMParser();
-        let teg = parser.parseFromString(itemCategory, 'text/html');
-        let item = teg.querySelector(".swiper-slide");
-        return item;
-    }
-    blockToPaste.append(parser(addAccount))
-}
-
-function addToFirestore(arr, collection) {
-    const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
-
-    fetch(firestoreUrl, {
-        method: 'PUT',
-        body: JSON.stringify(arr),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    // .then(data => {
-    //   console.log('Category added:', data);
-    // })
-    .catch(error => {
-      console.error('Error adding category:', error);
-    });
-}
-
-function getDataFromFirestore(collection) {
-    const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
-
-    return fetch(firestoreUrl)
-}
-
 function changeBalance(arr) {
     return arr.reduce((acc, obj) => {return  acc + obj.cost}, 0)
 }
 
 // select
-
 document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
 
     const dropdownButtom = dropdownWrapper.querySelector(".select__button")
@@ -611,7 +479,6 @@ document.querySelectorAll(".select").forEach(function(dropdownWrapper) {
 })
 
 // pie chart
-
 function pieChart() {
     var root = am5.Root.new("chartdiv");
     const responsive = am5themes_Responsive.new(root);
@@ -700,7 +567,6 @@ function pieChart() {
 
     chartPieObject = {root, chart, series1, series2, legend, label}
 };
-
 function setBgTemplateField(arr) {
     let newArr = []
     for (let obj of arr) {
@@ -709,7 +575,6 @@ function setBgTemplateField(arr) {
 
     return newArr;
 }
-
 function changePieChart(data, series1, series2, legend, label) {
     noDataToggle(data, document.querySelector(".no-data-chart-balance"), document.querySelector(".no-data-chart-balance").querySelector(".no-data__video"), [document.querySelector(".balance__hide-logo"), document.querySelector("#chartdiv"), document.querySelector(".balance__header")], changeBalance(accountArr))
 
@@ -740,67 +605,7 @@ function changePieChart(data, series1, series2, legend, label) {
     label.set("text", changeBalance(accountArr));
 }
 
-// operations list
-
-function setOperationsToList(arr) {
-    // noDataToggle(arr, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".list-all-operations")])
-
-    let blockToPaste = document.querySelector(`.list-all-operations`);
-
-    blockToPaste.querySelectorAll(".list-all-operation__wrapper").forEach(block => {
-        block.remove()
-    })
-
-    for (let i = 0;i < arr.length;i++) {
-        let block = `<div class="list-all-operation__wrapper" data-dat-wrapper="all${arr[i].date}">
-        <p class="list-all-operation__date">${arr[i].date}</p>
-        <div class="list-all-operation__wrapper-content" data-dat="all${arr[i].date}"></div>
-        </div>`;
-
-        let itemCategory = `<div class="operation operation_${arr[i].type} expand-operation expand-operation_${arr[i].type}" data-index="${arr[i].index}">
-            <header class="operation__head">
-                <div class="operation__icon ${arr[i].icon}" style="background-color: ${arr[i].bg}"></div>
-                <div class="operation__name">
-                    <h4 class="operation__title">${arr[i].title}</h4>
-                </div>
-                <div class="operation__info">
-                    <div class="operation__cost operation__cost_${arr[i].type}">
-                        <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${Math.abs(arr[i].cost)}</span> <span class="operation__totla-currency">BYN</span></p>
-                        <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
-                    </div>
-                    <div class="operation__button-list">
-                        <button class="operation__button operation__button_change"></button>
-                        <button class="operation__button operation__button_delete"></button>
-                    </div>
-                </div>
-            </header>
-        </div>`
-                    
-        function parser(itemCategory) {
-            var parser = new DOMParser();
-            let teg = parser.parseFromString(itemCategory, 'text/html');
-            let item = teg.querySelector(".expand-operation");
-            return item;
-        }
-        function parserBlockToPaste(block) {
-            var parser = new DOMParser();
-            let teg = parser.parseFromString(block, 'text/html');
-            let item = teg.querySelector(".list-all-operation__wrapper");
-            return item;
-        }
-
-      
-        blockToPaste.append(parserBlockToPaste(block));
-        document.querySelector(`[data-dat="all${arr[i].date}"]`).prepend(parser(itemCategory));
-
-        if (document.querySelectorAll(`[data-dat="all${arr[i].date}"]`).length > 1) {
-            document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`)[document.querySelectorAll(`[data-dat-wrapper="all${arr[i].date}"]`).length - 1].remove()
-        }
-    }
-}
-
 // account chart bar
-
 function initAccountChartBar() {
     var root = am5.Root.new("account-chart"); 
     root.setThemes([
@@ -854,7 +659,6 @@ function initAccountChartBar() {
 
     chartBarObject = {root, xRenderer, xAxis, yAxis, series, chart};
 }
-
 function setDataToAccountChartBar(arr, monthAmount) {
     let data = setBg(getPreviousDateArr(fillEmptyObjForBar(arr), monthAmount))
     chartBarObject.xAxis.data.setAll(data);
@@ -862,7 +666,6 @@ function setDataToAccountChartBar(arr, monthAmount) {
     chartBarObject.series.appear(1000);
     chartBarObject.chart.appear(1000, 100);
 }
-
 function setBg(arr) {
     let newArr = []
     for (let obj of arr) {
@@ -877,7 +680,6 @@ function setBg(arr) {
 }
 
 // клик по счетам
-
 let accountStatisticsPopup = document.querySelector(".account-statistics-popup");
 window.addEventListener("click", function(event) {
     let account = event.target.closest(".account-expand")
@@ -887,21 +689,19 @@ window.addEventListener("click", function(event) {
         let currentAccountArr = findObjectByHtmlIndex(account, accountArr)
       
         if (currentAccountArr.operations) {
-            setOperationsToList(sortByDate(currentAccountArr.operations, "decrease"));
+            setOperationToList(sortByDate(currentAccountArr.operations, "decrease"), "list-all-operations", false);
             setDataToAccountChartBar(currentAccountArr.operations, 1);
         }
 
         overblock.classList.add("overblock_open");
     }
 })
-
 overblock.addEventListener("click", function() {
     document.querySelector(".select-account-period").querySelector(".select__button-title").textContent = "1 месяц";
     document.querySelector(".account-expand_active").classList.remove("account-expand_active");
     overblock.classList.remove("overblock_open");
     accountStatisticsPopup.classList.remove("account-statistics-popup_open");
 })
-
 function findObjectByHtmlIndex(htmlItem, arr) {
     let index = htmlItem.dataset.index;
     let modifiedObj = {}; 
@@ -916,9 +716,7 @@ function findObjectByHtmlIndex(htmlItem, arr) {
 }
 
 // создание счета
-
 changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, accountExample, accountExampleIcon);
-
 function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, account, accountIcon) {
 
     icons.forEach(icon => {
@@ -999,24 +797,18 @@ function changeColor(icons, inpBg, inpColor, wrapperInpBg, wrapperInpColor, acco
     }
     changeBgOFInputs();
 }
-
 inpTitle.addEventListener("input", function() {
     accountExampleTitle.textContent = inpTitle.value;
 })
 
  // переключение попапов с созданием счетоы
-
 let circleNum = document.querySelector(".progress-ring-wrapper__num");
 let circle = document.querySelector(".progress-ring__circle");
 let radius = circle.r.baseVal.value;
 let circumference = 2 * Math.PI * radius;         
 circle.style.strokeDasharray = `${circumference} ${circumference}`;
 circle.style.strokeDashoffset = circumference;
-function setProgress(percent) {
-    const offset = circumference - percent / 100 * circumference;
-    circle.style.strokeDashoffset = offset;
-}
-setProgress(50);
+setProgressOfCircleProgressBar(circle, circumference, 50);
 
  let switchPopupButtons = document.querySelectorAll(".popup-accounts__tab-button");
  let buttonPopup = document.querySelector(".popup-accounts .button")
@@ -1038,12 +830,12 @@ setProgress(50);
          if (currentTab.classList.contains("popup-accounts__tab_create")) {
              buttonPopup.classList.remove("popup-accounts-done__button");
              buttonPopup.classList.add("popup-accounts__button")
-             setProgress(0);
+             setProgressOfCircleProgressBar(circle, circumference, 0);
              circleNum.textContent = "02";
          } else {
              buttonPopup.classList.add("popup-accounts-done__button");
              buttonPopup.classList.remove("popup-accounts__button")
-             setProgress(50);
+             setProgressOfCircleProgressBar(circle, circumference, 50);
              circleNum.textContent = "01";
          }
      })
@@ -1153,8 +945,8 @@ let dateText = document.querySelector(".main-date__value");
         operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations))
         categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate))
 
-        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
-        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
+        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`, userEmail)
+        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`, userEmail)
     }
     
     function transformDate(date) {

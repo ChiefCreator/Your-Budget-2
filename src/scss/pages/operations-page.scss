@@ -35,7 +35,6 @@
         background-color: rgb(238, 238, 243);
         font-weight: 500;
         font-size: 16px;
-        display: none;
         cursor: pointer;
         &::before{
             @include font-awesome;
@@ -44,6 +43,7 @@
             margin-right: 5px;
         }
         &_chart{
+            display: none;
             &::before{
                 content: "\e473";
             }
@@ -75,13 +75,6 @@
         background-color: white;
         border-radius: 10px;
     }
-    @media screen and (max-width: 1250px) {
-        &__button{
-            &_filter{
-                display: block;
-            }
-        }
-    }
     @media screen and (max-width: 855px) {
         &__button{
             &_chart{
@@ -107,6 +100,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    &__wrapper-date{
+        font-size: 14px;
+        margin-bottom: 3px;
+        font-weight: 500;
+    }
     .item-category:last-child {
         margin-bottom: 0;
     }
@@ -115,6 +113,18 @@
     }
 }
 .operations-sorting{
+    position: fixed;
+    z-index: 5;
+    left: calc(100% + 400px);
+    top: 15px;
+    bottom: 15px;
+    transition: left .3s ease;
+    width: 400px;
+    min-height: auto !important;
+    overflow-y: auto;
+    &_open{
+        left: calc(100% - 415px);
+    }
     border-radius: 10px;
     background-color: white;
     display: flex;
@@ -163,20 +173,6 @@
         padding: 15px;
         display: flex;
         gap: 10px;
-    }
-    @media screen and (max-width: 1250px) {
-        position: fixed;
-        z-index: 5;
-        left: calc(100% + 400px);
-        top: 15px;
-        bottom: 15px;
-        transition: left .3s ease;
-        width: 400px;
-        min-height: auto !important;
-        overflow-y: auto;
-        &_open{
-            left: calc(100% - 415px);
-        }
     }
     @media screen and (max-width: 650px) {
         right: auto;

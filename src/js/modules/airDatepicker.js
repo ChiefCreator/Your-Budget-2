@@ -37,7 +37,7 @@ function airDatepicker() {
     if (parseFloat(window.innerWidth) <= 650) {
         dateOperationExpensesSettings.container = '.air-datepicker-global-container'
         dateOperationExpensesSettings.isMobile = true
-        dateOperationExpensesSettings.autoClose = true
+        dateOperationExpensesSettings.autoClose = false
     }
     let dateButton = document.querySelector(".popup-operation-datepicker");
     dateButton.addEventListener("click", function() {
