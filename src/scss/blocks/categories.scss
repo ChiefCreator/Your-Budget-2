@@ -110,6 +110,7 @@
     }
 }
 .switch-categories{
+    --element-width: clamp(1.188rem, -0.063rem + 2.5vw, 1.5rem);
     &__input{
         &:checked + .switch-categories__element{
             &::before{
@@ -124,7 +125,7 @@
     }
     &_active{
         .switch-categories__element{
-            left: calc(100% - 3px - 24px);
+            left: calc(100% - 3px - var(--element-width));
             &::before{
                 content: "\e098";
             }

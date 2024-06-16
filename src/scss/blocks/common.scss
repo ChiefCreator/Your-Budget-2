@@ -323,8 +323,9 @@
     cursor: pointer;
 }
 .switch{
-    flex: 0 0 70px;
-    height: 30px;
+    --element-width: clamp(1.188rem, -0.063rem + 2.5vw, 1.5rem);
+    flex: 0 0 clamp(3.438rem, -0.313rem + 7.5vw, 4.375rem);
+    height: clamp(1.563rem, 0.313rem + 2.5vw, 1.875rem);
     border-radius: 8px;
     background-color: $second-light-color;
     position: relative;
@@ -336,17 +337,17 @@
         opacity: 0;
         cursor: pointer;
         &:checked + .switch__element{
-            left: calc(100% - 3px - 24px);
+            left: calc(100% - var(--element-width) - 3px);
             &::before{
                 content: "\f2f6";
             }
         }
     }
     &__element{
-        width: 24px;
-        height: 24px;
+        width: var(--element-width);
+        height: var(--element-width);
         background-color: $main-color;
-        border-radius: 7px;
+        border-radius: clamp(0.313rem, -0.188rem + 1vw, 0.438rem);
         position: absolute;
         left: 3px;
         top:50%;
