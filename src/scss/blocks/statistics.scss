@@ -1,6 +1,6 @@
 .statistics{
     margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
-    margin-bottom: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    // margin-bottom: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
@@ -31,8 +31,15 @@
         }
     }
     @media screen and (max-width: 840px) {
+        flex: 1 1 100%;
+        min-height: auto;
         max-width: 600px;
         margin-top: 0;
+    }
+    @media screen and (max-width: 650px) {
+        &__content{
+            margin-bottom: 70px;
+        }
     }
 }
 .switch-operations{
@@ -220,6 +227,8 @@
     background-color: white;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     &__header{
         margin-bottom: 7px;
         display: flex;
@@ -245,8 +254,12 @@
         z-index: 1;
     }
     #chartdiv{
+        flex: 1 1 auto;
         width: 100% !important;
-        height: calc(100% - 23px) !important;
+        height: auto !important;
+    }
+    @media screen and (max-width: 840px) {
+        height: 350px;
     }
 }
 .swiper-statistics{

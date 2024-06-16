@@ -153,13 +153,12 @@
         font-weight: 500;
     }
     &__icon-list{
-        display: flex;
-        flex-wrap: wrap;
-        gap: clamp(0.625rem, -2.109rem + 12.5vw, 1.25rem);
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: clamp(0.625rem, -0.104rem + 3.33vw, 1.25rem);
     }
     &__icon{
-        flex: 0 0 clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
-        height: clamp(2.5rem, -0.234rem + 12.5vw, 3.125rem);
+        height: clamp(2.813rem, 2.448rem + 1.67vw, 3.125rem);
         border-radius: clamp(0.438rem, -0.383rem + 3.75vw, 0.625rem);
         display: flex;
         align-items: center;
@@ -172,7 +171,7 @@
             content: "\f00d";
             @include font-awesome;
             color: inherit;
-            font-size: clamp(1.563rem, 0.195rem + 6.25vw, 1.875rem);
+            font-size: clamp(1.563rem, 1.198rem + 1.67vw, 1.875rem);
         }
         &_food1::before{
             content: "\f805";

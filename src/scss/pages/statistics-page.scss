@@ -3,7 +3,7 @@
         margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
         display: flex;
         gap: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
-        height: calc(100vh - 120px);
+        min-height: calc(100vh - 120px);
     }
     &__types{
         flex: 1 1 500px;
@@ -18,10 +18,12 @@
         &__content{
             flex-direction: column;
         }
+        &__types{
+            min-width: 0;
+            flex: 0 0 auto;
+        }
     }
     @media screen and (max-width: 650px) {
-        height: calc(100vh - 90.4px - 70px);
-        overflow-y: auto;
         padding: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
     }
 }
@@ -30,6 +32,7 @@
     height: 100%;
     border-radius: 10px;
     background-color: white;
+    overflow: hidden;
     &__header{
         padding: 15px;
         border-bottom: 3px solid $second-light-color;
@@ -87,6 +90,11 @@
         font-size: 16px;
         font-weight: 500;
     }
+    @media screen and (max-width: 850px) {
+        &__header{
+            display: none;
+        }
+    }
 }
 .statistics-tabs{
     height: 100%;
@@ -97,17 +105,27 @@
             display: block;
         }
     }
+    @media screen and (max-width: 650px) {
+        margin-bottom: 70px;
+    }
 }
 .trend{
-    height: 100%;
+    height: calc(100vh - 120px);
     background-color: white;
     border-radius: 10px;
     padding: 10px 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    @media screen and (max-width: 850px) {
+        height: 400px;
+    }
 }
 .trend-chart{
     width: 100%;
-    height: auto;
+    flex: 1 1 auto;
     position: relative;
+    display: flex;
+    flex-direction: column;
     &__header{
         margin-bottom: 7px;
         display: flex;
@@ -137,8 +155,9 @@
         z-index: 1;
     }
     #trend-chart{
+        flex: 1 1 auto;
         width: 100%;
-        height: 450px !important;
+        height: auto !important;
     }
     @media screen and (max-width: 470px) {
         &__header{
@@ -149,8 +168,14 @@
             flex-direction: column;
         }
     }
+    @media screen and (max-width: 850px) {
+        #trend-chart{
+            height: calc(100% - 50px) !important;
+        }
+    }
 }
 .trend-statistics{
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -207,7 +232,7 @@
         bottom: 0;
         left: 0;
         width: 100%;
-        height: 36.5px;
+        height: 37.5px;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
         background-color: white;

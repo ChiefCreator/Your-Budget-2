@@ -96,6 +96,11 @@
             margin-bottom: 0;
         }
     }
+    @media screen and (max-width: 650px) {
+        margin-top: clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+        margin-bottom: 70px;
+        padding: 0 clamp(0.5rem, -0.113rem + 2.8vw, 0.938rem);
+    }
 }
 .list-all-operations{
     width: 100%;

@@ -27,6 +27,12 @@
         }
     }
 }
+@media screen and (max-width: 425px){
+    .air-datepicker{
+        background-color: red !important;
+        width: 80% !important;
+    }
+}
 .air-datepicker {
     border-radius: 10px !important;
     background: white !important;

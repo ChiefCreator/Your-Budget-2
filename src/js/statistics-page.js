@@ -1,6 +1,8 @@
 import { slice } from "@amcharts/amcharts5/.internal/core/util/Array";
 import noDataToggle from "./modules/no-data";
 import am5themes_Responsive from "@amcharts/amcharts5/themes/Responsive";
+import AirDatepicker from 'air-datepicker';
+import 'air-datepicker/air-datepicker.css';
 
 let operationsExpenses = [];
 let categoriesExpensesByCurrentDate = [];
@@ -309,6 +311,25 @@ function getDataFromFirestore(collection) {
     const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
 
     return fetch(firestoreUrl)
+}
+
+function addToFirestore(arr, collection) {
+    const firestoreUrl = `https://database-fc7b1-default-rtdb.europe-west1.firebasedatabase.app/users/${userEmail}/${collection}.json`;
+
+    fetch(firestoreUrl, {
+        method: 'PUT',
+        body: JSON.stringify(arr),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    // .then(data => {
+    //   console.log('Category added:', data);
+    // })
+    .catch(error => {
+      console.error('Error adding category:', error);
+    });
 }
 
 function sortByDate(arr, typeOfSorting) {
@@ -676,3 +697,130 @@ statisticsButtons.forEach(button => {
         trendChartObj.chart.appear(1000, 100)
     })
 })
+
+// календарь
+
+let buttonYear = {
+    content: 'Выбрать год',
+    className: 'custom-button-classname',
+    onClick: (dp) => {
+        if (dp.currentView == "years") {
+            buttonYear.content = 'Выбрать год'
+            dp.update({
+                view : "months",
+                minView : "months",
+                dateFormat: 'yyyy-MM',
+            })
+        } else if (dp.currentView == "months") {
+            buttonYear.content = 'Выбрать месяц'
+            dp.update({
+                view : "years",
+                minView : "years",
+                dateFormat: 'yyyy',
+            })
+        }
+    }
+}
+let buttonAll = {
+    content: 'Все время',
+    className: 'custom-button-classname',
+    onClick: (dp) => {
+        dateText.textContent = "Все время";
+        localStorage.setItem("currentDate", "Все время");
+    }
+}
+let mainDatePickerSettings = {
+    inline: false,
+    position:'left top',
+    view: "months",
+    minView:"months",
+    dateFormat: 'yyyy-MM',
+    buttons: [buttonYear, buttonAll],
+    container: '.main-date__input-wrapper',
+    isVisibleMY: false,
+    onSelect: ({date, formattedDate, datepicker}) => {
+        let mounth = transformDate(formattedDate)
+    
+        if (datepicker.currentView == "months") {
+            if (date) {
+                dateText.textContent = mounth;  
+            } else {
+                dateText.textContent = "Выберите дату";  
+            }
+        } else {
+            if (date) {
+                dateText.textContent = formattedDate;  
+            } else {
+                dateText.textContent = "Выберите дату";  
+            }
+        }
+        localStorage.setItem("currentDate", formattedDate);   
+        changeMainDate(operationsIncomeByCurrentDate, categoriesIncomeByCurrentDate, operationsIncome, categoriesIncome, "income", "Income");
+        changeMainDate(operationsExpensesByCurrentDate, categoriesExpensesByCurrentDate, operationsExpenses, categoriesExpenses, "expenses", "Expenses");       
+    }
+}
+if (parseFloat(window.innerWidth) <= 650) {
+    mainDatePickerSettings.container = '.air-datepicker-global-container'
+    mainDatePickerSettings.isMobile = true
+    mainDatePickerSettings.autoClose = false
+}
+let mainDatePicker = new AirDatepicker('#main-picker', mainDatePickerSettings)
+
+let overblockDatePicker = document.querySelector(".overblock-date-picker")
+let dateButton = document.querySelector(".main-date");
+dateButton.addEventListener("click", function() {
+    mainDatePickerSettings.isVisibleMY = true;
+    overblockDatePicker.classList.add("overblock-date-picker_open");
+    if (mainDatePicker) mainDatePicker.show();
+})
+overblockDatePicker.addEventListener("click", function() {
+    overblockDatePicker.classList.remove("overblock-date-picker_open");
+    if (mainDatePickerSettings.isVisibleMY) {
+        mainDatePicker.hide();
+        mainDatePickerSettings.isVisibleMY = false;
+    }
+})
+
+
+function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operations, categories, typeS, typeXL) {
+    for (let i = 0;i < operationsByCurrentDate.length;i++) {
+        for (let k = 0;k < operationsByCurrentDate.length;k++) {
+            operationsByCurrentDate.pop()
+        }
+        operationsByCurrentDate.pop()
+    }
+    
+    operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations))
+    categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateOperation(categories, operationsByCurrentDate))
+
+    addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
+    addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
+}
+
+function sortArrayByCurrentDate(arr) {
+    function filterExpensesByMonth(arr, yearMonth) {
+        const [year, month] = yearMonth.split('-');
+        return arr.filter(expense => {
+            const expenseDate = new Date(expense.date);
+            return expenseDate.getFullYear() === parseInt(year) && expenseDate.getMonth() + 1 === parseInt(month);
+        });
+    }
+
+    return filterExpensesByMonth(arr, localStorage.getItem("currentDate"));
+}
+
+function updateOperation(categories, operations) {
+
+    categories.forEach(category => {
+        const matchingCategories = operations.filter(operation => operation.title === category.title);
+        
+        if (matchingCategories.length > 0) {
+            const totalCost = matchingCategories.reduce((acc, curr) => acc + curr.cost, 0);
+            category.cost = totalCost;
+        } else {
+            category.cost = 0;
+        }
+      });
+      
+    return categories
+}

@@ -1,8 +1,4 @@
 .categories{
-    // position: sticky;
-    // top: 0;
-    // height: auto;
-    // margin-bottom: auto;
     flex: 1 1 auto;
     max-width: 450px;
     min-width: 380px;
@@ -68,6 +64,9 @@
     @media screen and (max-width: 650px) {
         max-width: 100%;
         min-width: 300px;
+        &__body-content{
+            padding-right: 0;
+        }
     }
 }
 .slider-categories{
