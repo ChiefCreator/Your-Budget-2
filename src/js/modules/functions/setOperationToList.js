@@ -1,7 +1,5 @@
-import noDataToggle from "./../no-data";
-
-function setOperationToList(arr, blockToPasteHtmlName, isPart) {
-    // noDataToggle(arr, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")])
+function setOperationToList(arr, blockToPasteHtmlName, isPart, noDataToggle) {
+    if (noDataToggle) noDataToggle()
 
     let blockToPaste = document.querySelector(`.${blockToPasteHtmlName}`);
 

@@ -31,6 +31,8 @@ import objOperation from './modules/functions/objOperation';
 import changeColor from './modules/changeColor';
 import initXYChartOperations from './modules/initXYChartOperations';
 
+import noDataToggle from "./modules/no-data";
+
 // expenses переменные
 let categoryExpenses = {};
 let categoriesExpenses = [];
@@ -152,7 +154,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromF
         setDataToChartPieCategories(categoriesIncomeByCurrentDate, chartIncomePie);
         changeCostsOfCategories(categoriesIncomeByCurrentDate, "income");
 
-        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true);
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
         changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
 
         setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
@@ -495,7 +497,7 @@ function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operat
     setDataToChartPieCategories(categoriesByCurrentDate, chartPie);
     changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
-    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true);
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true,() => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
     changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
 
     setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
@@ -562,7 +564,7 @@ function deleteOperation(event, typeS, typeXL, operations, operationsByCurrentDa
         addToFirestore(categories, `operations${typeXL}`, userEmail);
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`, userEmail);
 
-        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true);
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
 
         setDataToChartPieCategories(categoriesByCurrentDate, chartPie);
         changeCostsOfCategories(categoriesByCurrentDate, typeS);
@@ -682,7 +684,7 @@ function changeOperations(event, popup, typeS, typeXL, operations, operationsByC
 
     setDataToChartPieCategories(categoriesByCurrentDate, chartPie)
     changeCostsOfCategories(categoriesByCurrentDate, typeS)
-    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true)
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]))
     changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
 
     accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);

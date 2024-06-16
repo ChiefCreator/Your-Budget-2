@@ -67,7 +67,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromF
             allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
             allCategoriesByCurrentDate = categoriesExpensesByCurrentDate.concat(categoriesIncomeByCurrentDate);
 
-            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false);
+            setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
             setCategoriesToFilter(allCategoriesByCurrentDate);
 
             var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
@@ -252,7 +252,7 @@ function changeMainDate() {
     addToFirestore(categoriesExpensesByCurrentDate, `categoriesExpensesByDate`, userEmail)
     addToFirestore(categoriesIncomeByCurrentDate, `categoriesIncomeByDate`, userEmail)
 
-    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false); 
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")])); 
     
     objChartBarOperations.chart.series.clear();
     var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
@@ -337,7 +337,7 @@ function resetFilter() {
     let checkboxes = document.querySelectorAll(".input-check__inp");
     checkboxes.forEach(checkbox => { if (checkbox.checked) checkbox.checked = false});
 
-    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false);
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
 
     objChartBarOperations.chart.series.clear();
     var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
@@ -397,7 +397,7 @@ applyFilter.addEventListener("click", function() {
         filteredAllCategoriesByCurrentDate = allCategoriesByCurrentDate.filter(item => arrTitlesOfCheckboxes.includes(item.title));
     }
 
-    setOperationToList(sortByDate(filteredAllOperationsByCurrentDate, "decrease"), "list-all-operations", false);
+    setOperationToList(sortByDate(filteredAllOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
 
     objChartBarOperations.chart.series.clear();
     var data = transformAllOperationsToObjectsForChartBar(sortByDate(filteredAllOperationsByCurrentDate, "increase"));
