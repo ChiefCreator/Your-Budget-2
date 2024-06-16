@@ -1,3 +1,5 @@
+import setIndex from "./setIndex";
+
 function chooseCategory(category, objCategory, type, indexName) {
     let actCategory = document.querySelector(`.done-category_act`);
 

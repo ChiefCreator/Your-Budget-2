@@ -19,7 +19,6 @@ import chartExpensesPie from './modules/functions/chartExpensesPie';
 import chartIncomePie from './modules/functions/chartIncomePie';
 import setDataToChartPieCategories from "./modules/functions/setDataToChartPieCategories";
 import setProgressOfCircleProgressBar from "./modules/functions/setProgressOfCircleProgressBar";
-import setIndex from './modules/functions/setIndex';
 import addCategoryToPopup from './modules/functions/addCategoryToPopup';
 import setOperationToList from './modules/functions/setOperationToList';
 import setOperationsToAccounts from "./modules/functions/setOperationsToAccounts";
@@ -30,7 +29,7 @@ import sortByDate from './modules/functions/sortByDate';
 import objOperation from './modules/functions/objOperation';
 import changeColor from './modules/changeColor';
 import initXYChartOperations from './modules/initXYChartOperations';
-
+import setIndex from "./modules/functions/setIndex";
 import noDataToggle from "./modules/no-data";
 
 // expenses переменные

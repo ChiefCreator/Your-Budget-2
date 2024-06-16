@@ -15,7 +15,6 @@ import getDaysOfMonth from './modules/functions/getDaysOfMonth';
 import getMaxCost from './modules/functions/getMaxCost';
 import setCategoriesToFilter from "./modules/functions/setCategoriesToFilter";
 import initChartBarOperations from './modules/initChartBarOperations';
-// import
 
 // expenses переменные
 let operationsExpenses = [];

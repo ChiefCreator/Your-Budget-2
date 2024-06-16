@@ -1,3 +1,5 @@
+import setDots from "../setDots";
+
 function setOperationToList(arr, blockToPasteHtmlName, isPart, noDataToggle) {
     if (noDataToggle) noDataToggle()
 
@@ -16,8 +18,8 @@ function setOperationToList(arr, blockToPasteHtmlName, isPart, noDataToggle) {
         let itemCategory = `<div class="operation operation_${arr[i].type} expand-operation expand-operation_${arr[i].type}" data-index="${arr[i].index}">
         <header class="operation__head">
             <div class="operation__icon ${arr[i].icon}" style="background-color: ${arr[i].bg}"></div>
-            <div class="operation__name">
-                <h4 class="operation__title">${arr[i].title}</h4>
+            <div class="operation__name element-name-wrapper">
+                <h4 class="operation__title element-name">${arr[i].title}</h4>
             </div>
             <div class="operation__info">
                 <div class="operation__cost operation__cost_${arr[i].type}">
@@ -47,8 +49,10 @@ function setOperationToList(arr, blockToPasteHtmlName, isPart, noDataToggle) {
 
         if (isPart) {
             pasteThreeOperations();
+            setDots()
         } else {
             pasteAllOperations()
+            setDots()
         }
 
         function pasteThreeOperations() {
