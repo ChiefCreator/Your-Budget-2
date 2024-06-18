@@ -26,10 +26,6 @@ function setOperationToList(arr, blockToPasteHtmlName, isPart, noDataToggle) {
                     <p class="operation__total"><span class="operation__total-sign"></span> <span class="operation__total-num">${Math.abs(arr[i].cost)}</span> <span class="operation__totla-currency">BYN</span></p>
                     <span class="operation__arrow operation__arrow_${arr[i].type}"></span>
                 </div>
-                <div class="operation__button-list">
-                    <button class="operation__button operation__button_change"></button>
-                    <button class="operation__button operation__button_delete"></button>
-                </div>
             </div>
         </header>
     </div>`

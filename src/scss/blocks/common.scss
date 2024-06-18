@@ -181,14 +181,6 @@
     &:last-child{
         margin-bottom: 0px;
     }
-    &_open{
-        .operation__cost{
-            display: none;
-        }
-        .operation__button-list{
-            right: 0;
-        }
-    }
 }
 .item-category{
     border-radius: 10px;

@@ -10,7 +10,6 @@
 </head>
 <body>
     <div class="overblock"></div>
-    <div class="overblock-date-picker"></div>
     <div class="operations-mobile-menu">
         <nav class="mobile-navigation">
     <div class="mobile-navigation__content">
@@ -49,6 +48,59 @@
     </div>
 </nav>
     </div>
+    <div class="popup-operation-statistics">
+    <header class="popup-operation-statistics__head">
+        <div class="popup-operation-statistics__head-content">
+            <h5 class="popup-operation-statistics__title">Статистика по операции</h5>
+            <div class="popup-operation-statistics__close"></div>
+        </div>
+    </header>
+    <div class="popup-operation-statistics__body">
+        <div class="popup-operation-statistics__block-wrapper">
+            <div class="popup-operation-statistics__block">
+                <div class="list-categories">
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation-statistics__block-wrapper">
+            <div class="popup-operation-statistics__block">
+                <ul class="popup-operation-statistics__properties">
+                    <li class="popup-operation-statistics__property popup-operation-statistics__property_account">
+                        <span class="popup-operation-statistics__property-icon"></span>
+                        <p class="popup-operation-statistics__property-name">Счет</p>
+                    </li>
+                    <li class="popup-operation-statistics__property popup-operation-statistics__property_comment">
+                        <span class="popup-operation-statistics__property-icon"></span>
+                        <p class="popup-operation-statistics__property-name">Комментарий пока не добавлен</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="popup-operation-statistics__block-wrapper">
+            <div class="popup-operation-statistics__block">
+                <ul class="popup-operation-statistics__button-list">
+                    <li class="popup-operation-statistics__button popup-operation-statistics__button_change">
+                        <p class="popup-operation-statistics__button-name">Изменить</p>
+                    </li>
+                    <li class="popup-operation-statistics__button popup-operation-statistics__button_delete">
+                        <p class="popup-operation-statistics__button-name">Удалить</p>
+                    </li>
+                    <li class="popup-operation-statistics__button popup-operation-statistics__button_copy">
+                        <p class="popup-operation-statistics__button-name">Скопировать</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="popup-operation-statistics__chart">
+            <div class="no-data no-data-chart-operation-statistics">
+                <video class="no-data__video" src="./../../video/no-data-chart-calc.mp4" autoplay muted></video>
+                <p class="no-data__notice">График пуст! Добавьте операции, чтобы график был загружен</p>
+            </div>
+            <div class="popup-operation-statistics__hide-logo"></div>
+            <div id="popup-operation-statistics-chart"></div>
+        </div>
+    </div>
+</div>
     <div class="tablet-menu">
     <header class="tablet-menu__header">
         <div class="tablet-menu__header-content">
@@ -76,6 +128,102 @@
         </ul>
     </div>
 </div>
+    <div class="popup-operation">
+    <div class="overblock-date-picker"></div>
+    <header class="popup-operation__head">
+        <div class="popup-operation__head-content">
+            <h4 class="popup-operation__title">Новая операция</h4>
+            <div class="popup-operation__close"></div>
+        </div>
+    </header>
+    <div class="popup-operation__body">
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="list-categories">
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="input-cost">
+                    <p class="input-cost__name">Введите сумму</p>
+                    <div class="input-cost__inp-wrapper">
+                        <input class="input-cost__input" required>
+                        <label class="input-cost__input-label">0</label>
+                    </div>
+                    <span class="input-cost__currency">BYN</span>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="input-date">
+                    <p class="input-cost__name">Введите дату</p>
+                    <div class="input-date__inp-wrapper">
+                        <input class="input-date__input" required>
+                    </div>
+                    <div class="input-date__icon-wrapper">
+                        <div class="popup-operation-datepicker">
+                            <input class="input-date__icon-input" id="date-operation">
+                        </div>
+                        <span class="input-date__icon"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block">
+                <div class="textarrea">
+                    <div class="textarrea__content">
+                        <textarea class="textarrea__input" required></textarea>
+                        <label class="textarrea__input-label">Введите комментарий</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper">
+            <div class="popup-operation__block popup-operation__block_no-padding">
+                <div class="swiper swiper-accounts-operations">
+                    <div class="swiper-wrapper">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="popup-operation__block-wrapper popup-operation__block-wrapper_button popup-operation__block-wrapper_without-border">
+            <div class="popup-operation__block">
+                <button class="button popup-operation__button">Создать операцию</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="tablet-menu">
+    <header class="tablet-menu__header">
+        <div class="tablet-menu__header-content">
+            <h5 class="tablet-menu__title">Your Budget</h5>
+            <span class="tablet-menu__close"></span>
+        </div>
+    </header>
+    <div class="tablet-menu__body">
+        <ul class="tablet-menu__list">
+            <li class="tablet-menu__item">
+                <a href="./../main-page.html" class="tablet-menu__link">Главная</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../operations-page.html" class="tablet-menu__link">Операции</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../statistics-page.html" class="tablet-menu__link">Статистика</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="./../accounts-page.html" class="tablet-menu__link">Счета</a>
+            </li>
+            <li class="tablet-menu__item">
+                <a href="#" class="tablet-menu__link">Настройки</a>
+            </li>
+        </ul>
+    </div>
+</div>
+    <div class="overblock-date-picker"></div>
     <header class="header">
         <div class="container">
             <nav class="navigation">

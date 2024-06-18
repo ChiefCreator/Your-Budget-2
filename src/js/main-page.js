@@ -31,6 +31,8 @@ import changeColor from './modules/changeColor';
 import initXYChartOperations from './modules/initXYChartOperations';
 import setIndex from "./modules/functions/setIndex";
 import noDataToggle from "./modules/no-data";
+import addOperationToPopup from "./modules/functions/addOperationToPopup";
+import initXYChartOperationsStatistics from "./modules/initXYChartOperationStatistics";
 
 // expenses переменные
 let categoryExpenses = {};
@@ -51,6 +53,7 @@ let accountArr = [];
 let chartsArr = [];
 let index = 0;
 let objXYChartOperations = {};
+let objXYChartOperationsStatistics = {};
 // html-элементы для категорий
 let popupCategory = document.querySelector(".popup-category");
 let inpTitle = popupCategory.querySelector(".popup-category__input");
@@ -117,6 +120,7 @@ let circumference = 2 * Math.PI * radius;
 circle.style.strokeDasharray = `${circumference} ${circumference}`;
 circle.style.strokeDashoffset = circumference;
 initXYChartOperations(objXYChartOperations);
+initXYChartOperationsStatistics(objXYChartOperationsStatistics);
 // date
 let dateText = document.querySelector(".main-date__value");
 let currentDate = new Date().getFullYear() + "-" + ("0" + (+(new Date()).getMonth() + 1)).slice(-2);
@@ -154,7 +158,7 @@ Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromF
         changeCostsOfCategories(categoriesIncomeByCurrentDate, "income");
 
         setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
-        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsExpensesByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
 
         setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
 
@@ -295,9 +299,9 @@ window.addEventListener("click", function(event) {
 })
 switchButton.addEventListener("click", function() {
     if (switchButton.querySelector(".switch-operations__input").checked == false) {
-        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"))
+        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsExpensesByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]))
     } else {
-        changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"))
+        changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsIncomeByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]))
     }
 })
 overblock.addEventListener("click", function() {
@@ -307,6 +311,7 @@ overblock.addEventListener("click", function() {
 })
 closeBtnPopupOperation.addEventListener("click", function() {
     closePopup(popupOperation, inputCost);
+    document.querySelector(".popup-operation-statistics").classList.remove("popup-operation-statistics_open");
 })
 
 function addCategoryToPopupOperation(event, typeS, popup, operationsByCurrentDate, button) {
@@ -367,8 +372,8 @@ function createOperation(inputCost, inputDate, inputComment, typeS, typeXL, oper
     addToFirestore(operations, `operations${typeXL}`, userEmail);
     addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`, userEmail);
 
-    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true);
-    changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
+    changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
 
     accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
     setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
@@ -497,7 +502,7 @@ function changeMainDate(operationsByCurrentDate, categoriesByCurrentDate, operat
     changeCostsOfCategories(categoriesByCurrentDate, typeS)
 
     setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true,() => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
-    changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+    changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
 
     setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
     setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
@@ -541,21 +546,45 @@ function sortArrayByCurrentDate(arr) {
 
 }
 
+let operationPopupStatistics = document.querySelector(".popup-operation-statistics");
+let accountOperationPopupStatistics = operationPopupStatistics.querySelector(".popup-operation-statistics__property_account .popup-operation-statistics__property-name")
+let commentOperationPopupStatistics = operationPopupStatistics.querySelector(".popup-operation-statistics__property_comment .popup-operation-statistics__property-name")
+window.addEventListener("click", (event) => {
+    let operation = event.target.closest(".expand-operation");
+    if (event.target.closest(".expand-operation")) {
+        let findObjOperation = findObjectByHtmlIndex(operation, allOperationsByCurrentDate);
+        addOperationToPopup(findObjOperation, "popup-operation-statistics");
+        accountOperationPopupStatistics.textContent = findObjOperation.account;
+        (findObjOperation.comment.length == 0) ? commentOperationPopupStatistics.textContent = "Комментарий пока не добавлен" : commentOperationPopupStatistics.textContent = findObjOperation.comment;
+        operationPopupStatistics.classList.add("popup-operation-statistics_open");
+        changeChart(sortByDate(allOperationsByCurrentDate.filter(obj => obj.title == findObjOperation.title), "decrease"), objXYChartOperationsStatistics.chart, objXYChartOperationsStatistics.series, objXYChartOperationsStatistics.xAxis);
+        overblock.classList.add("overblock_open")
+        if (findObjOperation.type == "expenses") document.querySelector(".popup-operation-statistics__button_delete").classList.add("popup-operation-statistics__button_delete-expenses")
+        if (findObjOperation.type == "income") document.querySelector(".popup-operation-statistics__button_delete").classList.add("popup-operation-statistics__button_delete-income")
+    }
+})
+overblock.addEventListener("click", function() {
+    operationPopupStatistics.classList.remove("popup-operation-statistics_open");
+    overblock.classList.remove("overblock_open")
+})
+
 // delete operations
-window.addEventListener("click", (event) => deleteOperation(event, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie))
-window.addEventListener("click", (event) => deleteOperation(event, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie))
-
+window.addEventListener("click", function(event) {
+    if (event.target.closest(".popup-operation-statistics__button_delete-expenses")) {
+        deleteOperation(event, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate, chartExpensesPie)
+    }
+    if (event.target.closest(".popup-operation-statistics__button_delete-income")) {
+        deleteOperation(event, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate, chartIncomePie)
+    }
+})
 function deleteOperation(event, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
-    if (event.target.closest(`.expand-operation_${typeS} .operation__button_delete`)) {
-        let deleteBtn = event.target.closest(`.expand-operation_${typeS} .operation__button_delete`);
-        let operation = deleteBtn.closest(".expand-operation");
-
-        sortOperations(operation, operations);
-        sortOperations(operation, operationsByCurrentDate);
-
+        let operation = operationPopupStatistics.querySelector(".operation")
+        let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+  
+        sortOperations(findObjOperation, operations)
+        sortOperations(findObjOperation, operationsByCurrentDate)
         categories = Object.assign(categories, updateCategoryCost(categories, operations));
         categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateCategoryCost(categoriesByCurrentDate, operationsByCurrentDate));
-
         allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
 
         addToFirestore(operations, `operations${typeXL}`, userEmail);
@@ -563,28 +592,42 @@ function deleteOperation(event, typeS, typeXL, operations, operationsByCurrentDa
         addToFirestore(categories, `operations${typeXL}`, userEmail);
         addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`, userEmail);
 
-        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
+        if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
+            switchChart.classList.add("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = true;
+            titleChart.textContent = "График доходов";
+        } else {
+            switchChart.classList.remove("switch-chart_act");
+            switchChart.querySelector(".switch-chart__input").checked = false;
+            titleChart.textContent = "График расходов";
+        }
 
+        if (findObjOperation.title) changeChart(sortByDate(allOperationsByCurrentDate.filter(obj => obj.title == findObjOperation.title), "decrease"), objXYChartOperationsStatistics.chart, objXYChartOperationsStatistics.series, objXYChartOperationsStatistics.xAxis);
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]));
         setDataToChartPieCategories(categoriesByCurrentDate, chartPie);
         changeCostsOfCategories(categoriesByCurrentDate, typeS);
-
-        changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
-
+        changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
         accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
-        setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr)
+        setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
         swiperAcoounts.update()
         addToFirestore(accountArr, `accounts`, userEmail);
-
         setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
         setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
+        document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-expenses")
+        document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-income")
+        operationPopupStatistics.classList.remove("popup-operation-statistics_open");
+        overblock.classList.remove("overblock_open");
 
-        function sortOperations(operation, operations) {
-            let temp = operations.filter(item => item.index != operation.dataset.index);
+        function sortOperations(findObjOperation, operations) {
+            let temp = operations.filter(item => item.index != findObjOperation.index);
             operations.forEach(item => operations.pop())
             operations = Object.assign(operations, temp);
         }
-    }
 }
+overblock.addEventListener("click", function() {
+    document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-expenses")
+    document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-income")
+})
 
 // change operations
 window.addEventListener("click", (event) => addOperationToPopupChangeOperation(event, "expenses", popupOperation, operationsExpensesByCurrentDate))
@@ -608,12 +651,13 @@ overblock.addEventListener("click", function() {
 })
 
 function addOperationToPopupChangeOperation(event, typeS, popup, operationsByCurrentDate) {
-    if (event.target.closest(`.expand-operation_${typeS} .operation__button_change`)) {
-        let button = event.target.closest(`.expand-operation_${typeS} .operation__button_change`);
-        let operation = button.closest(".expand-operation");  
-        operation.classList.add("expand-operation_act");
-        
+    if (event.target.closest(`.popup-operation-statistics__button_change`)) {
+        let button = event.target.closest(`.popup-operation-statistics__button_change`);
+        let operation = operationPopupStatistics.querySelector(".operation")
         let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+
+        if (!findObjOperation.title) return
+        findObjOperation.cost = Math.abs(findObjOperation.cost);
         setDataFromInput(findObjOperation);
         addCategoryToPopup(findObjOperation, typeS, `popup-operation`);
 
@@ -638,7 +682,7 @@ function addOperationToPopupChangeOperation(event, typeS, popup, operationsByCur
 }
 function changeOperations(event, popup, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate, chartPie) {
 
-    let operation = document.querySelector(".expand-operation_act");
+    let operation = popup.querySelector(".item-category");
     let account = document.querySelector(`.account-choose_act`);
         
     let findObjAccount = findObjectByHtmlIndex(account, accountArr);
@@ -646,7 +690,7 @@ function changeOperations(event, popup, typeS, typeXL, operations, operationsByC
     let inpCost = document.querySelector(`.popup-operation .input-cost__input`);
     let inpComm = document.querySelector(`.popup-operation .textarrea__input`);
     let inpDate = document.querySelector(`.popup-operation .input-date__input`);
-    findObjOperation.cost = +inpCost.value;
+    findObjOperation.cost = (typeS == "expenses") ? -(+inpCost.value) : +inpCost.value;
     findObjOperation.comment = inpComm.value;
     findObjOperation.date = inpDate.value;
     findObjOperation.account = findObjAccount.title;
@@ -671,29 +715,42 @@ function changeOperations(event, popup, typeS, typeXL, operations, operationsByC
         }
     }
 
+    operationsByCurrentDate.length = 0;
+    operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
+
     categories = Object.assign(categories, updateCategoryCost(categories, operations));
     categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateCategoryCost(categoriesByCurrentDate, operationsByCurrentDate));
 
     allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
 
-    addToFirestore(operations, `operations${typeXL}`)
-    addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`)
-    addToFirestore(categories, `categories${typeXL}`)
-    addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`)
+    addToFirestore(operations, `operations${typeXL}`,userEmail)
+    addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`,userEmail)
+    addToFirestore(categories, `categories${typeXL}`,userEmail)
+    addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`,userEmail)
 
     setDataToChartPieCategories(categoriesByCurrentDate, chartPie)
     changeCostsOfCategories(categoriesByCurrentDate, typeS)
     setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-operations", true, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-list"), document.querySelector(".no-data-list").querySelector(".no-data__video"), [document.querySelector(".operation-list__header"), document.querySelector(".operation-list__body")]))
-    changeChart(sortByDate(allOperationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+    changeChart(sortByDate(operationsByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(operationsByCurrentDate, document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
 
     accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
 
-    setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr)
+    setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
     swiperAcoounts.update()
-    addToFirestore(accountArr, `accounts`);
+    addToFirestore(accountArr, `accounts`, userEmail);
 
     setDataToProgressBar(progressBarExpenses, operationsExpensesByCurrentDate, allOperationsByCurrentDate);
     setDataToProgressBar(progressBarIncome, operationsIncomeByCurrentDate, allOperationsByCurrentDate);
+
+    if (operationsByCurrentDate == operationsIncomeByCurrentDate) {
+        switchChart.classList.add("switch-chart_act");
+        switchChart.querySelector(".switch-chart__input").checked = true;
+        titleChart.textContent = "График доходов";
+    } else {
+        switchChart.classList.remove("switch-chart_act");
+        switchChart.querySelector(".switch-chart__input").checked = false;
+        titleChart.textContent = "График расходов";
+    }
 
     operation.classList.remove("expand-operation_act");
     account.classList.remove("account-choose_act");
@@ -701,17 +758,18 @@ function changeOperations(event, popup, typeS, typeXL, operations, operationsByC
     document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-expenses")
     document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-income")
     overblock.classList.remove("overblock_open");
+    operationPopupStatistics.classList.remove("popup-operation-statistics_open");
 }
 
 // change chart
 switchChart.addEventListener("click", () => {
     if (switchChart.classList.contains("switch-chart_act")) {
         switchChart.classList.remove("switch-chart_act");
-        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+        changeChart(sortByDate(operationsExpensesByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsExpensesByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
         titleChart.textContent = "График расходов";
     } else {
         switchChart.classList.add("switch-chart_act");
-        changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis);
+        changeChart(sortByDate(operationsIncomeByCurrentDate, "decrease"), objXYChartOperations.chart, objXYChartOperations.series, objXYChartOperations.xAxis, () => noDataToggle(sortByDate(operationsIncomeByCurrentDate, "decrease"), document.querySelector(".no-data-chart"), document.querySelector(".no-data-chart").querySelector(".no-data__video"), [document.querySelector(".operation-chart__hide-logo"), document.querySelector("#chartdiv")]));
         titleChart.textContent = "График доходов";
     }
 })

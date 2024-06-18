@@ -8,7 +8,6 @@ function setDots() {
                 if (name.clientWidth == nameWrapper.clientWidth) {
                     string = string.slice(0, string.length - 1)
                     name.textContent = string;
-                    console.log(string, name.clientWidth)
                     name.textContent = string + "..."
                 }
             }

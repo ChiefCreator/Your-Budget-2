@@ -15,6 +15,16 @@ import getDaysOfMonth from './modules/functions/getDaysOfMonth';
 import getMaxCost from './modules/functions/getMaxCost';
 import setCategoriesToFilter from "./modules/functions/setCategoriesToFilter";
 import initChartBarOperations from './modules/initChartBarOperations';
+import addOperationToPopup from "./modules/functions/addOperationToPopup";
+import findObjectByHtmlIndex from "./modules/functions/findObjectByHtmlIndex";
+import setOperationsToAccounts from "./modules/functions/setOperationsToAccounts";
+import addCategoryToPopup from "./modules/functions/addCategoryToPopup";
+import airDatepicker from "./modules/airDatepicker";
+import Swiper from 'swiper/bundle';
+import 'swiper/css/bundle';
+import setAccountsToList from "./modules/functions/setAccountsToList";
+import initXYChartOperationsStatistics from "./modules/initXYChartOperationStatistics";
+import changeChart from "./modules/changeChartExpensesAndIncome";
 
 // expenses переменные
 let operationsExpenses = [];
@@ -27,15 +37,26 @@ let categoriesIncomeByCurrentDate = [];
 let operationsIncomeByCurrentDate = [];
 let categoriesIncome = [];
 // general variables 
+let objXYChartOperationsStatistics = {};
+let accountArr = [];
+let chartsArr = [];
 let allOperationsByCurrentDate = [];
 let allCategoriesByCurrentDate = [];
 let objChartBarOperations = {};
+const swiperAcoounts = new Swiper('.swiper-accounts-operations', {
+    speed: 600,
+    spaceBetween: 15,
+    slidesPerView: 1,
+    loop: true,
+})
 // general html-elements
+let popupOperation = document.querySelector(".popup-operation");
 let inputFromCost = document.querySelector("[data-range='price-from']");
 let inputToCost = document.querySelector("[data-range='price-to']");
 let inputFromDate = document.querySelector("[data-range='date-from']");
 let inputToDate = document.querySelector("[data-range='date-to']");
 initChartBarOperations(objChartBarOperations);
+initXYChartOperationsStatistics(objXYChartOperationsStatistics);
 rangeValue(inputFromCost,inputToCost,".range__input_cost", 0);
 rangeValue(inputFromDate,inputToDate,".range__input_date", 1);
 // date
@@ -48,7 +69,7 @@ dateText.textContent = transformDate(localStorage.getItem("currentDate"))
 
 // get data
 let userEmail = localStorage.getItem("email").replace(".", "*");
-Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromFirestore("categoriesExpensesByDate", userEmail),getDataFromFirestore("categoriesIncome", userEmail), getDataFromFirestore("categoriesIncomeByDate", userEmail),  getDataFromFirestore("operationsExpenses", userEmail), getDataFromFirestore("operationsExpensesByDate", userEmail), getDataFromFirestore("operationsIncome", userEmail), getDataFromFirestore("operationsIncomeByDate", userEmail)])
+Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromFirestore("categoriesExpensesByDate", userEmail),getDataFromFirestore("categoriesIncome", userEmail), getDataFromFirestore("categoriesIncomeByDate", userEmail),  getDataFromFirestore("operationsExpenses", userEmail), getDataFromFirestore("operationsExpensesByDate", userEmail), getDataFromFirestore("operationsIncome", userEmail), getDataFromFirestore("operationsIncomeByDate", userEmail), getDataFromFirestore("accounts", userEmail)])
         .then(response => {
             return Promise.all([response[0].json(), response[1].json(), response[2].json(), response[3].json(), response[4].json(), response[5].json(),response[6].json(), response[7].json()]);
         })
@@ -62,12 +83,15 @@ Promise.all([getDataFromFirestore("categoriesExpenses", userEmail), getDataFromF
             operationsExpensesByCurrentDate = (data[5] != null) ? data[5] : [];
             operationsIncome = data[6] ? data[6] : [];
             operationsIncomeByCurrentDate = (data[7] != null) ? data[7] : [];
+            accountArr = (data[8] != null) ? data[8] : [{bg: "rgb(229, 151, 78)", chartId: "chartCash", color: "#ffffff", cost: 0, icon: "icon-money7", iconBg: "rgb(205, 129, 59)", index: "Обычный счет1", title: "Наличные", type: "Обычный счет"}, {bg: "#73b813", chartId: "chartCard", color: "#ffffff", cost: 0, icon: "icon-money6", iconBg: "#5f9c09", index: "Обычный счет2", title: "Карта", type: "Обычный счет"}];
             
             allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
             allCategoriesByCurrentDate = categoriesExpensesByCurrentDate.concat(categoriesIncomeByCurrentDate);
 
             setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
             setCategoriesToFilter(allCategoriesByCurrentDate);
+
+            setAccountsToList(accountArr, "swiper-accounts-operations", chartsArr, "account-choose", false)
 
             var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
             noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
@@ -417,4 +441,208 @@ applyFilter.addEventListener("click", function() {
 })
 
 expandOperation();
-tabletMenu()
+tabletMenu();
+airDatepicker();
+
+
+window.addEventListener("click", (event) => chooseAccount(event))
+function chooseAccount(event) {
+    if (event.target.closest(".swiper-accounts-operations .account-choose")) {
+        let account = event.target.closest(".swiper-accounts-operations .account-choose");
+        let actAccount = document.querySelector(`.account-choose_act`);
+        if (actAccount && actAccount != account) {
+            actAccount.classList.remove(`account-choose_act`);
+        }
+        account.classList.toggle("account-choose_act")
+    }
+}
+
+// delete operations
+let operationPopupStatistics = document.querySelector(".popup-operation-statistics");
+let accountOperationPopupStatistics = operationPopupStatistics.querySelector(".popup-operation-statistics__property_account .popup-operation-statistics__property-name")
+let commentOperationPopupStatistics = operationPopupStatistics.querySelector(".popup-operation-statistics__property_comment .popup-operation-statistics__property-name")
+window.addEventListener("click", (event) => {
+    let operation = event.target.closest(".expand-operation");
+    if (event.target.closest(".expand-operation")) {
+        let findObjOperation = findObjectByHtmlIndex(operation, allOperationsByCurrentDate);
+        addOperationToPopup(findObjOperation, "popup-operation-statistics");
+        accountOperationPopupStatistics.textContent = findObjOperation.account;
+        (findObjOperation.comment.length == 0) ? commentOperationPopupStatistics.textContent = "Комментарий пока не добавлен" : commentOperationPopupStatistics.textContent = findObjOperation.comment;
+        operationPopupStatistics.classList.add("popup-operation-statistics_open");
+        changeChart(sortByDate(allOperationsByCurrentDate.filter(obj => obj.title == findObjOperation.title), "decrease"), objXYChartOperationsStatistics.chart, objXYChartOperationsStatistics.series, objXYChartOperationsStatistics.xAxis);
+        overblock.classList.add("overblock_open")
+        if (findObjOperation.type == "expenses") document.querySelector(".popup-operation-statistics__button_delete").classList.add("popup-operation-statistics__button_delete-expenses")
+        if (findObjOperation.type == "income") document.querySelector(".popup-operation-statistics__button_delete").classList.add("popup-operation-statistics__button_delete-income")
+    }
+})
+overblock.addEventListener("click", function() {
+    operationPopupStatistics.classList.remove("popup-operation-statistics_open");
+    overblock.classList.remove("overblock_open")
+})
+
+window.addEventListener("click", function(event) {
+    if (event.target.closest(".popup-operation-statistics__button_delete-expenses")) {
+        deleteOperation(event, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate)
+    }
+    if (event.target.closest(".popup-operation-statistics__button_delete-income")) {
+        deleteOperation(event, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate)
+    }
+})
+function deleteOperation(event, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate) {
+        let operation = operationPopupStatistics.querySelector(".operation")
+        let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+  
+        sortOperations(findObjOperation, operations)
+        sortOperations(findObjOperation, operationsByCurrentDate)
+        categories = Object.assign(categories, updateCategoryCost(categories, operations));
+        categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateCategoryCost(categoriesByCurrentDate, operationsByCurrentDate));
+        allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
+        addToFirestore(operations, `operations${typeXL}`, userEmail);
+        addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`, userEmail);
+        addToFirestore(categories, `operations${typeXL}`, userEmail);
+        addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`, userEmail);
+
+        setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
+        objChartBarOperations.chart.series.clear();
+        var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
+        noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
+        createSeries(allCategoriesByCurrentDate, data)
+        objChartBarOperations.chart.appear(1000, 100);
+        
+        accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
+        addToFirestore(accountArr, `accounts`, userEmail);
+        document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-expenses")
+        document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-income")
+        operationPopupStatistics.classList.remove("popup-operation-statistics_open");
+        overblock.classList.remove("overblock_open");
+
+        function sortOperations(findObjOperation, operations) {
+            let temp = operations.filter(item => item.index != findObjOperation.index);
+            operations.forEach(item => operations.pop())
+            operations = Object.assign(operations, temp);
+        }
+}
+overblock.addEventListener("click", function() {
+    document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-expenses")
+    document.querySelector(".popup-operation-statistics__button_delete").classList.remove("popup-operation-statistics__button_delete-income")
+})
+
+// change operations
+window.addEventListener("click", (event) => addOperationToPopupChangeOperation(event, "expenses", popupOperation, operationsExpensesByCurrentDate))
+window.addEventListener("click", (event) => addOperationToPopupChangeOperation(event, "income", popupOperation, operationsIncomeByCurrentDate))
+window.addEventListener("click", function(event) {
+    if (event.target.closest(`.popup-operation__button_change-expenses`)) {
+        changeOperations(event, popupOperation, "expenses", "Expenses", operationsExpenses, operationsExpensesByCurrentDate, categoriesExpenses, categoriesExpensesByCurrentDate)
+    }
+    if (event.target.closest(`.popup-operation__button_change-income`)) {
+        changeOperations(event, popupOperation, "income", "Income", operationsIncome, operationsIncomeByCurrentDate, categoriesIncome, categoriesIncomeByCurrentDate)
+    }
+})
+overblock.addEventListener("click", function() {
+    popupOperation.classList.remove("popup-operation_open");
+    document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-expenses")
+    document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-income")
+    overblock.classList.remove("overblock_open");
+
+    let account = document.querySelector(`.account-choose_act`);
+    account.classList.remove("account-choose_act");
+})
+
+function addOperationToPopupChangeOperation(event, typeS, popup, operationsByCurrentDate) {
+    if (event.target.closest(`.popup-operation-statistics__button_change`)) {
+        let button = event.target.closest(`.popup-operation-statistics__button_change`);
+        let operation = operationPopupStatistics.querySelector(".operation")
+        let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+
+        if (!findObjOperation.title) return
+        findObjOperation.cost = Math.abs(findObjOperation.cost);
+        setDataFromInput(findObjOperation);
+        addCategoryToPopup(findObjOperation, typeS, `popup-operation`);
+
+        let activeAccount = document.querySelector(`[data-index="${findObjOperation.accountIndex}"]`);
+        activeAccount.classList.add("account-choose_act")
+       
+        popup.classList.add("popup-operation_open");
+        overblock.classList.add("overblock_open");
+
+        popup.querySelector(".popup-operation__button").classList.add(`popup-operation__button_change-${typeS}`);
+    }
+
+    function setDataFromInput(modifiedObj) {
+        let inpCost = document.querySelector(`.popup-operation .input-cost__input`);
+        let inpComm = document.querySelector(`.popup-operation .textarrea__input`);
+        let inpDate = document.querySelector(`.popup-operation .input-date__input`);
+
+        inpCost.value = modifiedObj.cost;
+        inpComm.value = modifiedObj.comment;
+        inpDate.value = modifiedObj.date;
+    }
+}
+function changeOperations(event, popup, typeS, typeXL, operations, operationsByCurrentDate, categories, categoriesByCurrentDate) {
+
+    let operation = popup.querySelector(".item-category");
+    let account = document.querySelector(`.account-choose_act`);
+        
+    let findObjAccount = findObjectByHtmlIndex(account, accountArr);
+    let findObjOperation = findObjectByHtmlIndex(operation, operationsByCurrentDate);
+    let inpCost = document.querySelector(`.popup-operation .input-cost__input`);
+    let inpComm = document.querySelector(`.popup-operation .textarrea__input`);
+    let inpDate = document.querySelector(`.popup-operation .input-date__input`);
+    findObjOperation.cost = (typeS == "expenses") ? -(+inpCost.value) : +inpCost.value;
+    findObjOperation.comment = inpComm.value;
+    findObjOperation.date = inpDate.value;
+    findObjOperation.account = findObjAccount.title;
+    findObjOperation.accountIndex = findObjAccount.index;
+
+    for (let obj of operationsByCurrentDate) {
+        if (findObjOperation.index == obj.index) {
+            obj.cost = findObjOperation.cost;
+            obj.comment = findObjOperation.comment;
+            obj.date = findObjOperation.date;
+            obj.account = findObjOperation.account;
+            obj.accountIndex = findObjOperation.accountIndex;
+        }
+    }
+    for (let obj of operations) {
+        if (findObjOperation.index == obj.index) {
+            obj.cost = findObjOperation.cost;
+            obj.comment = findObjOperation.comment;
+            obj.date = findObjOperation.date;
+            obj.account = findObjOperation.account;
+            obj.accountIndex = findObjOperation.accountIndex;
+        }
+    }
+
+    operationsByCurrentDate.length = 0;
+    operationsByCurrentDate = Object.assign(operationsByCurrentDate, sortArrayByCurrentDate(operations));
+
+    categories = Object.assign(categories, updateCategoryCost(categories, operations));
+    categoriesByCurrentDate = Object.assign(categoriesByCurrentDate, updateCategoryCost(categoriesByCurrentDate, operationsByCurrentDate));
+
+    allOperationsByCurrentDate = operationsExpensesByCurrentDate.concat(operationsIncomeByCurrentDate);
+
+    addToFirestore(operations, `operations${typeXL}`,userEmail)
+    addToFirestore(operationsByCurrentDate, `operations${typeXL}ByDate`,userEmail)
+    addToFirestore(categories, `categories${typeXL}`,userEmail)
+    addToFirestore(categoriesByCurrentDate, `categories${typeXL}ByDate`,userEmail)
+
+    setOperationToList(sortByDate(allOperationsByCurrentDate, "decrease"), "list-all-operations", false, () => noDataToggle(allOperationsByCurrentDate, document.querySelector(".no-data-operations-all"), document.querySelector(".no-data-operations-all").querySelector(".no-data__video"), [document.querySelector(".page-operation__header")]));
+
+    accountArr = setOperationsToAccounts(operationsExpenses.concat(operationsIncome), accountArr);
+    addToFirestore(accountArr, `accounts`, userEmail);
+
+    objChartBarOperations.chart.series.clear();
+    var data = transformAllOperationsToObjectsForChartBar(sortByDate(allOperationsByCurrentDate, "increase"));
+    noDataToggle(data, document.querySelector(".no-data-chart-operations-all"), document.querySelector(".no-data-chart-operations-all").querySelector(".no-data__video"), [document.querySelector(".operations-chart-bar__hide-logo"), document.querySelector("#chartExpensesAndIncomeBar")])
+    createSeries(allCategoriesByCurrentDate, data)
+    objChartBarOperations.chart.appear(1000, 100);
+
+    operation.classList.remove("expand-operation_act");
+    account.classList.remove("account-choose_act");
+    popupOperation.classList.remove("popup-operation_open");
+    document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-expenses")
+    document.querySelector(".popup-operation__button").classList.remove("popup-operation__button_change-income")
+    overblock.classList.remove("overblock_open");
+    operationPopupStatistics.classList.remove("popup-operation-statistics_open");
+}

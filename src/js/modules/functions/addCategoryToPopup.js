@@ -2,12 +2,12 @@ import setDots from "../setDots";
 
 function addCategoryToPopup(obj, typeS, popupClass) {
     document.querySelectorAll(`.${popupClass}__body .item-category`).forEach(category => {
-        category.style.display = "none";
+        category.remove()
     })
 
     let blockToPaste = document.querySelector(`.${popupClass} .list-categories`);
                   
-    let itemCategory = `<div class="item-category item-category_${typeS}">
+    let itemCategory = `<div class="item-category item-category_${typeS}" data-index="${obj.index}">
     <div class="item-category__head">
         <div class="item-category__icon ${obj.icon}" style="background-color: ${obj.bg}"></div>
         <div class="item-category__info element-name-wrapper">
